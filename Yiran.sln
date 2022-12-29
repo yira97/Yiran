@@ -2,6 +2,10 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blog.Api", "Blog.Api\Blog.Api.csproj", "{5DC86067-49D4-4180-9793-83A40E3F4233}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blog.Web", "Blog.Web\Blog.Web.csproj", "{4760E667-6034-4E59-8C7F-252F552CF405}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blog.Admin", "Blog.Admin\Blog.Admin.csproj", "{82C99295-578E-4B3D-B569-2A747E8BC320}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +16,13 @@ Global
 		{5DC86067-49D4-4180-9793-83A40E3F4233}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5DC86067-49D4-4180-9793-83A40E3F4233}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5DC86067-49D4-4180-9793-83A40E3F4233}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4760E667-6034-4E59-8C7F-252F552CF405}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4760E667-6034-4E59-8C7F-252F552CF405}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4760E667-6034-4E59-8C7F-252F552CF405}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4760E667-6034-4E59-8C7F-252F552CF405}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82C99295-578E-4B3D-B569-2A747E8BC320}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82C99295-578E-4B3D-B569-2A747E8BC320}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82C99295-578E-4B3D-B569-2A747E8BC320}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82C99295-578E-4B3D-B569-2A747E8BC320}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
