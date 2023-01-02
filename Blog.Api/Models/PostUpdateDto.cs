@@ -8,7 +8,7 @@ public record PostUpdateDto
     int Topic,
     int Category,
     string Language,
-    bool isPublic,
+    bool IsPublic,
     PostContentDto Content,
     string? DomainId = null
 );

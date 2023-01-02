@@ -6,5 +6,7 @@ public interface IUnitOfWork
 {
     IPostRepository PostRepository { get; }
     
+    IStaticResourceRepository StaticResourceRepository { get; }
+    
     Task<bool> CompleteAsync();
 }

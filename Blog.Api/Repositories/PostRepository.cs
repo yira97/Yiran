@@ -24,11 +24,10 @@ public class PostRepository : IPostRepository
     /// 不检查 Domain 是否存在
     /// </summary>
     /// <param name="updateDto"></param>
-    /// <param name="domainId"></param>
     /// <param name="userId"></param>
     /// <returns></returns>
     /// <exception cref="BadHttpRequestException"></exception>
-    public StaticResourceRelatedResult<PostDto> CreatePost(PostUpdateDto updateDto, string domainId, string userId)
+    public StaticResourceRelatedResult<PostDto> CreatePost(PostUpdateDto updateDto, string userId)
     {
         var model = new PostEntity();
 
@@ -40,14 +39,14 @@ public class PostRepository : IPostRepository
         model.Topic = updateDto.Topic;
         model.Category = updateDto.Category;
         model.Language = updateDto.Language;
-        model.isPublic = updateDto.isPublic;
+        model.isPublic = updateDto.IsPublic;
 
         model.Content = updateDto.Content.GeneratePostContent();
         
         // 统计新增资源
         var newElements = model.PostDto().CollectStaticResource().ToList();
         
-        model.DomainId = domainId;
+        model.DomainId = updateDto.DomainId!;
         
         model.CreatedById = userId;
         model.CreatedAt = now;
@@ -64,6 +63,8 @@ public class PostRepository : IPostRepository
 
         return result;
     }
+    
+
     
     public async Task<CursorBasedQueryResult<PostDto>> ListPosts(CursorBasedQuery order)
     {
@@ -275,7 +276,7 @@ public class PostRepository : IPostRepository
         return post;
     }
     
-    private async Task<PostDto?> GetPostInfo(string postId)
+    public async Task<PostDto?> GetPostInfo(string postId)
     {
         var post = await GetPostOrDefault(postId);
 
@@ -295,7 +296,7 @@ public class PostRepository : IPostRepository
         post.Topic = updateDto.Topic;
         post.Category = updateDto.Category;
         post.Language = updateDto.Language;
-        post.isPublic = updateDto.isPublic;
+        post.isPublic = updateDto.IsPublic;
         post.Content = updateDto.Content.GeneratePostContent();
         
         post.UpdatedAt = DateTime.UtcNow;

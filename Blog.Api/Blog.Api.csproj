@@ -25,4 +25,8 @@
       </EmbeddedResource>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Blog.Core\Blog.Core.csproj" />
+    </ItemGroup>
+
 </Project>

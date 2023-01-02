@@ -12,6 +12,19 @@ public static class StaticResourceEntityExtensions
         return dto;
     }
 
+    public static StaticResourceArchiveDto StaticResourceArchiveDto(this StaticResourceEntity src)
+    {
+        var dto = new StaticResourceArchiveDto(
+            Id: src.Id,
+            Key: src.Key,
+            Category: src.Category,
+            ReferenceId: src.ReferenceId,
+            Action: src.Action
+        );
+
+        return dto;
+    }
+
     public static IEnumerable<CategoryResource> CollectStaticResource(this PostDto src)
     {
         var srcElements = new List<CategoryResource>();
@@ -53,7 +66,6 @@ public static class StaticResourceEntityExtensions
 
         var removeElements = srcElements.Except(targetElements).ToList();
         var addElements = targetElements.Except(srcElements).ToList();
-
 
 
         return new StaticResourceRelatedResult<bool>
