@@ -23,6 +23,15 @@ public class PostController : ControllerBase
         _objectStorageService = objectStorageService;
     }
 
+    /// <summary>
+    /// 列出 Post
+    /// </summary>
+    /// <param name="pageSize">分页大小</param>
+    /// <param name="pageToken">分页Token</param>
+    /// <param name="orderBy">排序</param>
+    /// <param name="ascending">是否升序</param>
+    /// <param name="filter">筛选</param>
+    /// <returns></returns>
     [AllowAnonymous]
     [HttpGet]
     public async Task<ActionResult<CursorBasedQueryResult<PostDto>>> List(
@@ -64,8 +73,13 @@ public class PostController : ControllerBase
         return Ok(list);
     }
 
+    /// <summary>
+    /// 获取单个 Post
+    /// </summary>
+    /// <param name="postId"></param>
+    /// <returns></returns>
     [AllowAnonymous]
-    [HttpGet(Name = "{postId}")]
+    [HttpGet("{postId}")]
     public async Task<ActionResult<PostDto>> Get(string postId)
     {
         var post = await _unitOfWork.PostRepository.GetPostInfo(postId);
@@ -81,6 +95,11 @@ public class PostController : ControllerBase
         return Ok(post);
     }
 
+    /// <summary>
+    /// 创建 Post
+    /// </summary>
+    /// <param name="updateDto"></param>
+    /// <returns></returns>
     [HttpPost]
     public async Task<ActionResult<PostDto>> Create(PostUpdateDto updateDto)
     {
@@ -101,10 +120,16 @@ public class PostController : ControllerBase
             return info;
         });
 
-        return Ok(result.Data);
+        return CreatedAtAction(nameof(Get), new { postId = result.Data.Id }, result.Data);
     }
 
-    [HttpPut(Name = "{postId}")]
+    /// <summary>
+    /// 更新 Post
+    /// </summary>
+    /// <param name="updateDto"></param>
+    /// <param name="postId"></param>
+    /// <returns></returns>
+    [HttpPut("{postId}")]
     public async Task<ActionResult<PostDto>> Update(PostUpdateDto updateDto, string postId)
     {
         var userId = "TODO";
@@ -130,7 +155,12 @@ public class PostController : ControllerBase
         return Ok(result.Data);
     }
 
-    [HttpDelete(Name = "{postId}")]
+    /// <summary>
+    /// 删除 Post
+    /// </summary>
+    /// <param name="postId"></param>
+    /// <returns></returns>
+    [HttpDelete("{postId}")]
     public async Task<ActionResult> Delete(string postId)
     {
         var userId = "TODO";

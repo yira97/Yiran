@@ -19,15 +19,24 @@ public class DomainController : ControllerBase
         _unitOfWork = unitOfWork;
     }
 
+    /// <summary>
+    /// 获取所有的 Domain
+    /// </summary>
+    /// <returns></returns>
     [AllowAnonymous]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<DomainDto>>> List()
     {
-        var data =  await _unitOfWork.PostRepository.ListAllDomains();
+        var data = await _unitOfWork.PostRepository.ListAllDomains();
         return Ok(data);
     }
-    
-    [HttpGet(Name = "{domainId}")]
+
+    /// <summary>
+    /// 获取单个 Domain
+    /// </summary>
+    /// <param name="domainId"></param>
+    /// <returns></returns>
+    [HttpGet("{domainId}")]
     public async Task<ActionResult<DomainDto>> Get(string domainId)
     {
         var data = await _unitOfWork.PostRepository.GetDomainInfo(domainId);
@@ -39,6 +48,11 @@ public class DomainController : ControllerBase
         return Ok(data);
     }
 
+    /// <summary>
+    /// 创建 Domain
+    /// </summary>
+    /// <param name="updateDto"></param>
+    /// <returns></returns>
     [HttpPost]
     public async Task<ActionResult<DomainDto>> Create(DomainUpdateDto updateDto)
     {
@@ -50,7 +64,13 @@ public class DomainController : ControllerBase
         return CreatedAtAction(nameof(Get), new { domainId = result.Id }, result);
     }
 
-    [HttpPut(Name = "{domainId}")]
+    /// <summary>
+    /// 更新 Domain
+    /// </summary>
+    /// <param name="domainId"></param>
+    /// <param name="updateDto"></param>
+    /// <returns></returns>
+    [HttpPut("{domainId}")]
     public async Task<ActionResult<DomainDto>> Update(string domainId, DomainUpdateDto updateDto)
     {
         // var userId = HttpContext.User.
@@ -61,7 +81,12 @@ public class DomainController : ControllerBase
         return Ok(result);
     }
 
-    [HttpDelete(Name = "{domainId}")]
+    /// <summary>
+    /// 删除 Domain
+    /// </summary>
+    /// <param name="domainId"></param>
+    /// <returns></returns>
+    [HttpDelete("{domainId}")]
     public async Task<ActionResult> Delete(string domainId)
     {
         // var userId = HttpContext.User.
@@ -70,5 +95,5 @@ public class DomainController : ControllerBase
         await _unitOfWork.CompleteAsync();
 
         return Ok();
-    } 
+    }
 }

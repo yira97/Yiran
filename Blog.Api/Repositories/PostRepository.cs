@@ -42,12 +42,12 @@ public class PostRepository : IPostRepository
         model.isPublic = updateDto.IsPublic;
 
         model.Content = updateDto.Content.GeneratePostContent();
-        
+
         // 统计新增资源
         var newElements = model.PostDto().CollectStaticResource().ToList();
-        
+
         model.DomainId = updateDto.DomainId!;
-        
+
         model.CreatedById = userId;
         model.CreatedAt = now;
         model.UpdatedById = userId;
@@ -63,9 +63,8 @@ public class PostRepository : IPostRepository
 
         return result;
     }
-    
 
-    
+
     public async Task<CursorBasedQueryResult<PostDto>> ListPosts(CursorBasedQuery order)
     {
         var query = _context.Posts.Where(p => p.DeletedAt == null);
@@ -75,10 +74,10 @@ public class PostRepository : IPostRepository
         {
             case PostOrderBy.CreatedAt:
                 query = order.Ascending ? query.OrderBy(e => e.CreatedAt) : query.OrderByDescending(e => e.CreatedAt);
-                
+
                 DateTime? createdAtOrdercreatedAt = null;
                 var createdAtOrdercreatedAtKey = nameof(PostOrderBy.CreatedAt);
-                
+
                 try
                 {
                     if (!string.IsNullOrEmpty(order.PageToken))
@@ -101,18 +100,18 @@ public class PostRepository : IPostRepository
                             : e.CreatedAt <= createdAtOrdercreatedAt
                     );
                 }
-                
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
-        
+
         // 筛选
         foreach (var (key, value) in order.Filter)
         {
             var filterKey = (PostFilterKey)key;
             var count = value.Count;
-            
+
             switch (filterKey)
             {
                 case PostFilterKey.DomainId:
@@ -128,13 +127,15 @@ public class PostRepository : IPostRepository
                 case PostFilterKey.Topic:
                     // 长度范围： 等于1
                     if (count != 1) throw new BadHttpRequestException("length invalid");
-                    if (!int.TryParse(value[0], out var topic)) throw new BadHttpRequestException("topic should be a integer");
+                    if (!int.TryParse(value[0], out var topic))
+                        throw new BadHttpRequestException("topic should be a integer");
                     query = query.Where(p => p.Topic == topic);
                     break;
                 case PostFilterKey.Category:
                     // 长度范围： 等于1
                     if (count != 1) throw new BadHttpRequestException("length invalid");
-                    if (!int.TryParse(value[0], out var category)) throw new BadHttpRequestException("category should be a integer");
+                    if (!int.TryParse(value[0], out var category))
+                        throw new BadHttpRequestException("category should be a integer");
                     query = query.Where(p => p.Category == category);
                     break;
                 default:
@@ -145,10 +146,10 @@ public class PostRepository : IPostRepository
         // 个数
         query = query.Take(order.PageSize + 1);
         _logger.LogInformation("Exec sql: {Sql}", query.ToQueryString());
-        
+
         var queryResult = await query.ToListAsync();
         var returnList = queryResult.Take(order.PageSize).Select(e => e.PostDto()).ToList();
-        
+
         var result = new CursorBasedQueryResult<PostDto>
         {
             Data = returnList,
@@ -163,7 +164,10 @@ public class PostRepository : IPostRepository
             {
                 PostOrderBy.CreatedAt => PageTokenHelper.FromDict(new Dictionary<string, string>
                 {
-                    { nameof(PostOrderBy.CreatedAt), next.CreatedAt.ToUniversalTime().ToString(CultureInfo.InvariantCulture) },
+                    {
+                        nameof(PostOrderBy.CreatedAt),
+                        next.CreatedAt.ToUniversalTime().ToString(CultureInfo.InvariantCulture)
+                    },
                 }),
             };
         }
@@ -179,7 +183,7 @@ public class PostRepository : IPostRepository
 
         return result.Select(r => r.DomainDto()).ToList();
     }
-    
+
     public DomainDto CreateDomain(DomainUpdateDto updateDto, string userId)
     {
         var model = new DomainEntity();
@@ -189,13 +193,15 @@ public class PostRepository : IPostRepository
         model.UpdatedById = userId;
         model.CreatedById = userId;
 
+        _context.Add(model);
+
         return model.DomainDto();
     }
-    
+
     private async Task<DomainEntity?> GetDomainOrDefault(string domainId)
     {
         var domain = await _context.Domains.FindAsync(domainId);
-        
+
         if (domain == null || domain.DeletedAt != null)
         {
             return null;
@@ -203,11 +209,11 @@ public class PostRepository : IPostRepository
 
         return domain;
     }
-    
+
     private async Task<DomainEntity> GetDomain(string domainId)
     {
         var domain = await _context.Domains.FindAsync(domainId);
-        
+
         if (domain == null || domain.DeletedAt != null)
         {
             throw new BadHttpRequestException("id not found");
@@ -227,7 +233,7 @@ public class PostRepository : IPostRepository
         var domain = await GetDomain(domainId);
 
         domain.Name = updateDto.Name;
-        
+
         domain.UpdatedAt = DateTime.UtcNow;
         domain.UpdatedById = userId;
 
@@ -242,7 +248,7 @@ public class PostRepository : IPostRepository
             return false;
         }
 
-        var now =  DateTime.UtcNow;
+        var now = DateTime.UtcNow;
         domain.UpdatedById = userId;
         domain.UpdatedAt = now;
         domain.DeletedAt = now;
@@ -255,7 +261,7 @@ public class PostRepository : IPostRepository
     private async Task<PostEntity?> GetPostOrDefault(string postId)
     {
         var post = await _context.Posts.FindAsync(postId);
-        
+
         if (post == null || post.DeletedAt != null)
         {
             return null;
@@ -263,11 +269,11 @@ public class PostRepository : IPostRepository
 
         return post;
     }
-    
+
     private async Task<PostEntity> GetPost(string postId)
     {
         var post = await _context.Posts.FindAsync(postId);
-        
+
         if (post == null || post.DeletedAt != null)
         {
             throw new BadHttpRequestException("id not found");
@@ -275,7 +281,7 @@ public class PostRepository : IPostRepository
 
         return post;
     }
-    
+
     public async Task<PostDto?> GetPostInfo(string postId)
     {
         var post = await GetPostOrDefault(postId);
@@ -283,7 +289,8 @@ public class PostRepository : IPostRepository
         return post?.PostDto();
     }
 
-    public async Task<StaticResourceRelatedResult<PostDto>> UpdatePost(string postId, PostUpdateDto updateDto, string userId)
+    public async Task<StaticResourceRelatedResult<PostDto>> UpdatePost(string postId, PostUpdateDto updateDto,
+        string userId)
     {
         var post = await GetPost(postId);
         var current = post.PostDto();
@@ -298,12 +305,12 @@ public class PostRepository : IPostRepository
         post.Language = updateDto.Language;
         post.isPublic = updateDto.IsPublic;
         post.Content = updateDto.Content.GeneratePostContent();
-        
+
         post.UpdatedAt = DateTime.UtcNow;
         post.UpdatedById = userId;
 
         var newState = post.PostDto();
-        
+
         var diff = current.CompareStaticResource(newState);
         if (diff.Data)
         {
@@ -312,7 +319,7 @@ public class PostRepository : IPostRepository
         }
 
         result.Data = newState;
-        
+
         return result;
     }
 
@@ -328,7 +335,7 @@ public class PostRepository : IPostRepository
             return result;
         }
 
-        var now =  DateTime.UtcNow;
+        var now = DateTime.UtcNow;
         post.UpdatedById = userId;
         post.UpdatedAt = now;
         post.DeletedAt = now;
@@ -337,7 +344,7 @@ public class PostRepository : IPostRepository
 
         result.Data = true;
         result.Removed = post.PostDto().CollectStaticResource().Select(e => e.ResourceId).ToList();
-        
+
         return result;
     }
 }

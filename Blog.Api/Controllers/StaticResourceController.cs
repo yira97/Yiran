@@ -16,7 +16,7 @@ public class StaticResourceController : ControllerBase
 
 
     [AllowAnonymous]
-    [HttpGet(Name = "{resourceId}")]
+    [HttpGet("{resourceId}")]
     public async Task<ActionResult<GetInfo>> GetTempGetInfo(string resourceId)
     {
         var userId = "Todo";

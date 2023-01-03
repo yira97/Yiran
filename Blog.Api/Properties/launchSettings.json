@@ -6,7 +6,13 @@
       "dotnetRunMessages": true,
       "applicationUrl": "http://localhost:4010",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "JwtSettings__IssuerKeyPath": "/Users/yiran/Developer/RockMoss/src/Auth/rsa-public-key.pem",
+        "ConnectionSettings__Postgres__Address": "localhost",
+        "ConnectionSettings__Postgres__Port": "35532",
+        "ConnectionSettings__Postgres__Username": "postgres",
+        "ConnectionSettings__Postgres__Password": "mypostgres",
+        "ConnectionSettings__Postgres__Database": "postgres"
       }
     }
   }

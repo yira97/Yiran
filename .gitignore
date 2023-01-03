@@ -13,3 +13,9 @@ obj/
 /packages/
 riderModule.iml
 /_ReSharper.Caches/
+
+##############################
+*.sln.DotSettings.user
+*.env.dev
+*.env.staging
+*.env.prod
