@@ -1,4 +1,4 @@
-using Blog.Api.Models;
+using Blog.Domain.Models;
 using Blog.Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

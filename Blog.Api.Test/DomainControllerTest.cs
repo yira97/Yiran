@@ -1,5 +1,5 @@
 using Blog.Api.Controllers;
-using Blog.Api.Models;
+using Blog.Domain.Models;
 using Blog.Api.Test.Mocks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

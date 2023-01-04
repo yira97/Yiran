@@ -12,7 +12,9 @@
         "ConnectionSettings__Postgres__Port": "35532",
         "ConnectionSettings__Postgres__Username": "postgres",
         "ConnectionSettings__Postgres__Password": "mypostgres",
-        "ConnectionSettings__Postgres__Database": "postgres"
+        "ConnectionSettings__Postgres__Database": "postgres",
+        "RSA_PRIVATE_KEY_PATH": "/Users/yiran/Developer/RockMoss/src/Auth/rsa-private-key.pem",
+        "RSA_PUBLIC_KEY_PATH": "/Users/yiran/Developer/RockMoss/src/Auth/rsa-public-key.pem"
       }
     }
   }

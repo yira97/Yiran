@@ -1,9 +1,10 @@
 using Blog.Api.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Blog.Api.Data;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext : IdentityDbContext<ApplicationUserEntity, ApplicationRoleEntity, string>
 {
     // If 'AddDbContext' is used, then also ensure that your DbContext type accepts a DbContextOptions<TContext> object
     // in its constructor and passes it to the base constructor for DbContext

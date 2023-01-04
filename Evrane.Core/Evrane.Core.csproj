@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Authors>Yiran Feng</Authors>
+        <RepositoryUrl>https://github.com/yira97/Yiran</RepositoryUrl>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="AWSSDK.CloudFront" Version="3.7.102.14" />
+      <PackageReference Include="AWSSDK.S3" Version="3.7.101.44" />
+      <PackageReference Include="AWSSDK.SecretsManager" Version="3.7.101" />
+      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.1" />
+    </ItemGroup>
+
+</Project>

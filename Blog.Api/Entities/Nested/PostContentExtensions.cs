@@ -1,4 +1,4 @@
-using Blog.Api.Models;
+using Blog.Domain.Models;
 
 namespace Blog.Api.Entities.Nested;
 
@@ -13,7 +13,7 @@ public static class PostContentExtensions
 
         return dto;
     }
-    
+
     public static PostContent GeneratePostContent(this PostContentDto dto)
     {
         var model = new PostContent();

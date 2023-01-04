@@ -1,6 +1,6 @@
 using Blog.Api.Entities;
-using Blog.Api.Enums;
-using Blog.Api.Models;
+using Blog.Domain.Enums;
+using Blog.Domain.Models;
 using Blog.Api.Repositories;
 using Moq;
 

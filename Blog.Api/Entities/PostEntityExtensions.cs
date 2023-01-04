@@ -1,11 +1,10 @@
 using Blog.Api.Entities.Nested;
-using Blog.Api.Models;
+using Blog.Domain.Models;
 
 namespace Blog.Api.Entities;
 
 public static class PostEntityExtensions
 {
-
     public static PostDto PostDto(this PostEntity src)
     {
         var dto = new PostDto(

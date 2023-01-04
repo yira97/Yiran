@@ -1,4 +1,4 @@
-using Blog.Api.Models;
+using Blog.Domain.Models;
 
 namespace Blog.Api.Entities.Nested;
 
@@ -14,7 +14,7 @@ public static class PostContentBlockExtensions
 
         return dto;
     }
-    
+
     public static PostContentBlock GeneratePostContentBlock(this PostContentBlockDto dto)
     {
         var model = new PostContentBlock();
@@ -22,7 +22,7 @@ public static class PostContentBlockExtensions
         model.Image = dto.Image?.GenerateImageWithCaption();
         model.Images = dto.Images?.Select(i => i.GenerateImageWithCaption()).ToList();
         model.Paragraph = dto.Paragraph;
-        
+
         return model;
     }
 }

@@ -1,5 +1,5 @@
-using Blog.Api.Enums;
-using Blog.Api.Models;
+using Blog.Domain.Enums;
+using Blog.Domain.Models;
 
 namespace Blog.Api.Repositories;
 

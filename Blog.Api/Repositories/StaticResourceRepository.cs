@@ -1,7 +1,7 @@
 using Blog.Api.Data;
 using Blog.Api.Entities;
-using Blog.Api.Enums;
-using Blog.Api.Models;
+using Blog.Domain.Enums;
+using Blog.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Blog.Api.Repositories;
@@ -17,7 +17,7 @@ public class StaticResourceRepository : IStaticResourceRepository
         _logger = logger;
     }
 
-    private const string KeyPrefix = "com/evrane/yiran";
+    private const string KeyPrefix = "com/evrane/blog";
 
     public StaticResourceArchiveDto Create(StaticResourceUpdateDto updateDto, string userId)
     {

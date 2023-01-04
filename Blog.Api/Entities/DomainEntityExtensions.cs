@@ -1,4 +1,4 @@
-using Blog.Api.Models;
+using Blog.Domain.Models;
 
 namespace Blog.Api.Entities;
 

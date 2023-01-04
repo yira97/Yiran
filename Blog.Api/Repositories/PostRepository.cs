@@ -2,9 +2,9 @@ using System.Globalization;
 using Blog.Api.Data;
 using Blog.Api.Entities;
 using Blog.Api.Entities.Nested;
-using Blog.Api.Enums;
+using Blog.Domain.Enums;
 using Blog.Api.Helper;
-using Blog.Api.Models;
+using Blog.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Blog.Api.Repositories;

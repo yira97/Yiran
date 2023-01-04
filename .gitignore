@@ -19,3 +19,6 @@ riderModule.iml
 *.env.dev
 *.env.staging
 *.env.prod
+
+.DS_Store
+*.swp

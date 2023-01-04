@@ -1,7 +1,7 @@
-using Blog.Api.Enums;
-using Blog.Api.Models;
+using Blog.Domain.Enums;
+using Blog.Domain.Models;
 using Blog.Api.Services;
-using Blog.Core.ObjectStorage;
+using Evrane.Core.ObjectStorage;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

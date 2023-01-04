@@ -1,4 +1,4 @@
-using Blog.Api.Models;
+using Blog.Domain.Models;
 
 namespace Blog.Api.Repositories;
 
@@ -12,10 +12,10 @@ public interface IPostRepository
     /// <param name="userId"></param>
     /// <returns></returns>
     /// <exception cref="BadHttpRequestException"></exception>
-    StaticResourceRelatedResult<PostDto> CreatePost(PostUpdateDto updateDto,  string userId);
+    StaticResourceRelatedResult<PostDto> CreatePost(PostUpdateDto updateDto, string userId);
 
     Task<PostDto?> GetPostInfo(string postId);
-    
+
     Task<CursorBasedQueryResult<PostDto>> ListPosts(CursorBasedQuery order);
     Task<IEnumerable<DomainDto>> ListAllDomains();
     DomainDto CreateDomain(DomainUpdateDto updateDto, string userId);

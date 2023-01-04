@@ -1,6 +1,6 @@
-using Blog.Api.Models;
+using Blog.Domain.Models;
 using Blog.Api.Services;
-using Blog.Core.ObjectStorage;
+using Evrane.Core.ObjectStorage;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
