@@ -13,8 +13,8 @@
         "ConnectionSettings__Postgres__Username": "postgres",
         "ConnectionSettings__Postgres__Password": "mypostgres",
         "ConnectionSettings__Postgres__Database": "postgres",
-        "RSA_PRIVATE_KEY_PATH": "/Users/yiran/Developer/RockMoss/src/Auth/rsa-private-key.pem",
-        "RSA_PUBLIC_KEY_PATH": "/Users/yiran/Developer/RockMoss/src/Auth/rsa-public-key.pem"
+        "RsaSettings__PemFilePath__PrivateKeyFilePath": "/Users/yiran/Developer/RockMoss/src/Auth/rsa-private-key.pem",
+        "RsaSettings__PemFilePath__PublicKeyFilePath": "/Users/yiran/Developer/RockMoss/src/Auth/rsa-public-key.pem"
       }
     }
   }

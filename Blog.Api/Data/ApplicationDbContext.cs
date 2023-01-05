@@ -21,6 +21,9 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUserEntity, App
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        // call super first
+        base.OnModelCreating(modelBuilder);
+
         modelBuilder.Entity<PostEntity>().OwnsOne(
             post => post.Content,
             ownedNavigationBuilder =>

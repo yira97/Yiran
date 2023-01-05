@@ -18,6 +18,4 @@ public interface IAccountRepository
     bool IsRefreshTokenExpired(ApplicationUserEntity user);
 
     Task<ApplicationUserEntity?> UserInRole(ApplicationRoleEntity role);
-
-    Task<ApplicationRoleEntity> GetRoleOrCreate(string roleName);
 }

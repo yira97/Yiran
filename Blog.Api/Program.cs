@@ -71,6 +71,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddSingleton<IRsaCryptographyTool, RsaCryptographyTool>();
 builder.Services.AddSingleton<IJwtService, JwtService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 

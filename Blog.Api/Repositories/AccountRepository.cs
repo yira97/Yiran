@@ -27,21 +27,6 @@ public class AccountRepository : IAccountRepository
         return user.RefreshTokenExpiresAt < DateTime.UtcNow;
     }
 
-    public async Task<ApplicationRoleEntity> GetRoleOrCreate(string roleName)
-    {
-        var adminRole = await _context.Roles.Where(r => r.Name == roleName).FirstOrDefaultAsync();
-        if (adminRole == null)
-        {
-            adminRole = new ApplicationRoleEntity
-            {
-                Name = Role.Admin.ToString(),
-            };
-            _context.Add(adminRole);
-        }
-
-        return adminRole;
-    }
-
     public async Task<ApplicationUserEntity?> UserInRole(ApplicationRoleEntity role)
     {
         var roleId = role.Id;

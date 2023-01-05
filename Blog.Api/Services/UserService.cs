@@ -51,6 +51,7 @@ public class UserService : IUserService
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
+            Audience = _jwtService.Audience,
             Issuer = _jwtService.Issuer,
             Subject = new ClaimsIdentity(customClaims),
             IssuedAt = DateTime.UtcNow,
@@ -66,27 +67,44 @@ public class UserService : IUserService
 
     private async Task<AccessTokenDto> GenerateAccessToken(ApplicationUserEntity user, IEnumerable<string> roles)
     {
-        string refreshToken;
-        if (AccountRepository.IsRefreshTokenExpired(user))
-        {
-            refreshToken = AccessTokenHelper.NewRefreshToken();
-            AccountRepository.SetRefreshToken(user, refreshToken, DateTime.UtcNow.AddDays(30));
-            await _unitOfWork.CompleteAsync();
-        }
-        else
-        {
-            refreshToken = AccountRepository.GetRefreshToken(user);
-        }
+        var refreshToken = AccountRepository.GetRefreshToken(user);
 
         var accessToken = GenerateJwtToken(user, roles);
 
         return new AccessTokenDto(accessToken, refreshToken);
     }
 
+    private async Task TryRefreshToken(ApplicationUserEntity user)
+    {
+        var refreshToken = AccessTokenHelper.NewRefreshToken();
+        AccountRepository.SetRefreshToken(user, refreshToken, DateTime.UtcNow.AddDays(30));
+        await _unitOfWork.CompleteAsync();
+    }
+
+    private async Task AutoRefreshToken(ApplicationUserEntity user)
+    {
+        if (!AccountRepository.IsRefreshTokenExpired(user)) return;
+        await TryRefreshToken(user);
+    }
+
+    private async Task<ApplicationRoleEntity> GetOrCreateRole(string roleName)
+    {
+        var role = await _roleManager.FindByNameAsync(roleName);
+        if (role != null) return role;
+
+        var result = await _roleManager.CreateAsync(new ApplicationRoleEntity
+        {
+            Name = roleName
+        });
+        if (!result.Succeeded) throw new BadHttpRequestException("create role failed");
+
+        role = await _roleManager.FindByNameAsync(roleName);
+        return role!;
+    }
+
     private async Task<bool> ExistAdmin()
     {
-        var adminRole = await AccountRepository.GetRoleOrCreate(Role.Admin.ToString());
-        await _unitOfWork.CompleteAsync();
+        var adminRole = await GetOrCreateRole(Role.Admin.ToString());
 
         var user = await AccountRepository.UserInRole(adminRole);
         return user != null;
@@ -101,6 +119,7 @@ public class UserService : IUserService
     {
         var model = new ApplicationUserEntity
         {
+            UserName = Guid.NewGuid().ToString(),
             Email = authDto.Email
         };
 
@@ -117,6 +136,7 @@ public class UserService : IUserService
             await CreateAdmin(user!);
         }
 
+        await AutoRefreshToken(user!);
         var userRoles = await _userManager.GetRolesAsync(user!);
 
         return await GenerateAccessToken(user!, userRoles);
@@ -124,19 +144,14 @@ public class UserService : IUserService
 
     public async Task<AccessTokenDto> EmailPasswordLogin(EmailPasswordAuthDto authDto)
     {
-        var model = new ApplicationUserEntity
-        {
-            Email = authDto.Email
-        };
-        var ok = await _userManager.CheckPasswordAsync(model, authDto.Password);
-        if (!ok)
-        {
-            throw new BadHttpRequestException("wrong password");
-        }
-
         var user = await _userManager.FindByEmailAsync(authDto.Email);
-        var userRoles = await _userManager.GetRolesAsync(user!);
-        return await GenerateAccessToken(user!, userRoles);
+        if (user == null) throw new BadHttpRequestException("wrong password");
+        var ok = await _userManager.CheckPasswordAsync(user, authDto.Password);
+        if (!ok) throw new BadHttpRequestException("wrong password");
+
+        var userRoles = await _userManager.GetRolesAsync(user);
+        await AutoRefreshToken(user);
+        return await GenerateAccessToken(user, userRoles);
     }
 
     public async Task<AccessTokenDto> RefreshAccessToken(string accessToken, string refreshToken)
@@ -152,6 +167,8 @@ public class UserService : IUserService
             throw new BadHttpRequestException("refresh token is invalid");
 
         var userRoles = await _userManager.GetRolesAsync(user!);
+
+        await TryRefreshToken(user!);
         return await GenerateAccessToken(user!, userRoles);
     }
 }
