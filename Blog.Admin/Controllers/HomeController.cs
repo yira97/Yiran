@@ -20,7 +20,12 @@ public class HomeController : Controller
         return View();
     }
 
-    public IActionResult Privacy()
+    public IActionResult Domain()
+    {
+        return View();
+    }
+
+    public IActionResult Post()
     {
         return View();
     }
