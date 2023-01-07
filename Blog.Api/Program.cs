@@ -25,9 +25,12 @@ builder.Services
 
 builder.Services.AddIdentityCore<ApplicationUserEntity>(options =>
     {
-        options.User.RequireUniqueEmail = false;
+        options.User.RequireUniqueEmail = true;
         options.SignIn.RequireConfirmedAccount = false;
+
         options.Password.RequireNonAlphanumeric = false;
+        options.Password.RequireDigit = false;
+        options.Password.RequireUppercase = false;
     })
     .AddRoles<ApplicationRoleEntity>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
