@@ -75,15 +75,15 @@ public class PostRepository : IPostRepository
             case PostOrderBy.CreatedAt:
                 query = order.Ascending ? query.OrderBy(e => e.CreatedAt) : query.OrderByDescending(e => e.CreatedAt);
 
-                DateTime? createdAtOrdercreatedAt = null;
-                var createdAtOrdercreatedAtKey = nameof(PostOrderBy.CreatedAt);
+                DateTime? createdAtOrderCreatedAt = null;
+                var createdAtOrderCreatedAtKey = nameof(PostOrderBy.CreatedAt);
 
                 try
                 {
                     if (!string.IsNullOrEmpty(order.PageToken))
                     {
                         var m = PageTokenHelper.ToDict(order.PageToken);
-                        createdAtOrdercreatedAt = DateTime.Parse(m[createdAtOrdercreatedAtKey]);
+                        createdAtOrderCreatedAt = DateTime.Parse(m[createdAtOrderCreatedAtKey]);
                     }
                 }
                 catch (Exception e)
@@ -92,12 +92,12 @@ public class PostRepository : IPostRepository
                         order.PageToken, e.ToString());
                 }
 
-                if (createdAtOrdercreatedAt != null)
+                if (createdAtOrderCreatedAt != null)
                 {
                     query = query.Where(e =>
                         order.Ascending
-                            ? e.CreatedAt >= createdAtOrdercreatedAt
-                            : e.CreatedAt <= createdAtOrdercreatedAt
+                            ? e.CreatedAt >= createdAtOrderCreatedAt
+                            : e.CreatedAt <= createdAtOrderCreatedAt
                     );
                 }
 

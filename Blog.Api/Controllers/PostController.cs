@@ -1,6 +1,7 @@
 using Blog.Domain.Enums;
 using Blog.Domain.Models;
 using Blog.Api.Services;
+using Blog.Domain.Extensions;
 using Evrane.Core.ObjectStorage;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -103,7 +104,7 @@ public class PostController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<PostDto>> Create(PostUpdateDto updateDto)
     {
-        var userId = "TODO";
+        var userId = HttpContext.User.GetUserId();
         var result = _unitOfWork.PostRepository.CreatePost(updateDto, userId);
         foreach (var (resourceId, category) in result.Added)
         {
@@ -132,7 +133,7 @@ public class PostController : ControllerBase
     [HttpPut("{postId}")]
     public async Task<ActionResult<PostDto>> Update(PostUpdateDto updateDto, string postId)
     {
-        var userId = "TODO";
+        var userId = HttpContext.User.GetUserId();
         var result = await _unitOfWork.PostRepository.UpdatePost(postId, updateDto, userId);
 
         foreach (var (resourceId, category) in result.Added)
@@ -163,7 +164,7 @@ public class PostController : ControllerBase
     [HttpDelete("{postId}")]
     public async Task<ActionResult> Delete(string postId)
     {
-        var userId = "TODO";
+        var userId = HttpContext.User.GetUserId();
         _ = await _unitOfWork.PostRepository.DeletePost(postId, userId);
         return Ok();
     }

@@ -1,5 +1,6 @@
 using Blog.Domain.Models;
 using Blog.Api.Services;
+using Blog.Domain.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -56,8 +57,7 @@ public class DomainController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<DomainDto>> Create(DomainUpdateDto updateDto)
     {
-        // var userId = HttpContext.User.
-        var userId = "TODO";
+        var userId = HttpContext.User.GetUserId();
         var result = _unitOfWork.PostRepository.CreateDomain(updateDto, userId);
         await _unitOfWork.CompleteAsync();
 
@@ -73,8 +73,7 @@ public class DomainController : ControllerBase
     [HttpPut("{domainId}")]
     public async Task<ActionResult<DomainDto>> Update(string domainId, DomainUpdateDto updateDto)
     {
-        // var userId = HttpContext.User.
-        var userId = "TODO";
+        var userId = HttpContext.User.GetUserId();
         var result = await _unitOfWork.PostRepository.UpdateDomain(domainId, updateDto, userId);
         await _unitOfWork.CompleteAsync();
 
@@ -89,8 +88,7 @@ public class DomainController : ControllerBase
     [HttpDelete("{domainId}")]
     public async Task<ActionResult> Delete(string domainId)
     {
-        // var userId = HttpContext.User.
-        var userId = "TODO";
+        var userId = HttpContext.User.GetUserId();
         _ = await _unitOfWork.PostRepository.DeleteDomain(domainId, userId);
         await _unitOfWork.CompleteAsync();
 

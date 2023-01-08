@@ -1,5 +1,6 @@
 using Blog.Domain.Models;
 using Blog.Api.Services;
+using Blog.Domain.Extensions;
 using Evrane.Core.ObjectStorage;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,7 +20,7 @@ public class StaticResourceController : ControllerBase
     [HttpGet("{resourceId}")]
     public async Task<ActionResult<GetInfo>> GetTempGetInfo(string resourceId)
     {
-        var userId = "Todo";
+        var userId = HttpContext.User.GetUserId();
 
         var r = await _unitOfWork.StaticResourceRepository.Get(resourceId);
 
@@ -32,7 +33,7 @@ public class StaticResourceController : ControllerBase
     [HttpGet("upload")]
     public async Task<ActionResult<PutInfo>> GetPutInfo(StaticResourceUpdateDto resourceDto)
     {
-        var userId = "todo";
+        var userId = HttpContext.User.GetUserId();
 
         var r = _unitOfWork.StaticResourceRepository.Create(resourceDto, userId);
 

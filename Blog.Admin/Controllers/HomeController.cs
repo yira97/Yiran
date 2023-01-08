@@ -1,6 +1,8 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Blog.Admin.Models;
+using Blog.Domain.Extensions;
+using Blog.Domain.Services.Client;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Blog.Admin.Controllers;
@@ -9,10 +11,12 @@ namespace Blog.Admin.Controllers;
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
+    private readonly BlogService _blogService;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(ILogger<HomeController> logger, BlogService blogService)
     {
         _logger = logger;
+        _blogService = blogService;
     }
 
     public IActionResult Index()
@@ -20,9 +24,14 @@ public class HomeController : Controller
         return View();
     }
 
-    public IActionResult Domain()
+    public async Task<IActionResult> Domain()
     {
-        return View();
+        var domains = await _blogService.ListDomains();
+        var vm = new DomainViewModel
+        {
+            Domains = domains
+        };
+        return View(vm);
     }
 
     public IActionResult Post()
