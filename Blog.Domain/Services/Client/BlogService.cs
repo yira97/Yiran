@@ -82,6 +82,18 @@ public class BlogService
         return result!;
     }
 
+    public async Task<DomainDto> CreateDomain(DomainUpdateDto updateDto)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Post, "api/v1/Domain");
+        request.Content =
+            new StringContent(JsonSerializer.Serialize(updateDto), Encoding.UTF8, "application/json");
+
+        var resp = await _httpClient.SendAsync(request);
+        resp.EnsureSuccessStatusCode();
+        var result = await resp.Content.ReadFromJsonAsync<DomainDto>();
+        return result!;
+    }
+
     public async Task DeletePost(string postId)
     {
         var request = new HttpRequestMessage(HttpMethod.Delete, $"api/v1/Post/{postId}");
@@ -96,6 +108,38 @@ public class BlogService
 
         var resp = await _httpClient.SendAsync(request);
         resp.EnsureSuccessStatusCode();
+    }
+
+    public async Task<DomainDto> GetDomain(string domainId)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, $"api/v1/Domain/{domainId}");
+
+        var resp = await _httpClient.SendAsync(request);
+        resp.EnsureSuccessStatusCode();
+        var result = await resp.Content.ReadFromJsonAsync<DomainDto>();
+        return result!;
+    }
+
+    public async Task<DomainDto> UpdateDomain(string domainId, DomainUpdateDto updateDto)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Put, $"api/v1/Domain/{domainId}");
+        request.Content =
+            new StringContent(JsonSerializer.Serialize(updateDto), Encoding.UTF8, "application/json");
+
+        var resp = await _httpClient.SendAsync(request);
+        resp.EnsureSuccessStatusCode();
+        var result = await resp.Content.ReadFromJsonAsync<DomainDto>();
+        return result!;
+    }
+
+    public async Task<PostDto> GetPost(string postId)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, $"api/v1/Post/{postId}");
+
+        var resp = await _httpClient.SendAsync(request);
+        resp.EnsureSuccessStatusCode();
+        var result = await resp.Content.ReadFromJsonAsync<PostDto>();
+        return result!;
     }
 
     public async Task<CursorBasedQueryResult<PostDto>> ListPosts(
