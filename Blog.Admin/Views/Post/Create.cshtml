@@ -1,8 +1,116 @@
 @model Blog.Admin.Models.CreatePostViewModel
 
 @{
-    ViewBag.Title = "title";
-    Layout = "_Layout";
+    Layout = "_LeveledLayout";
 }
 
-<h2>title</h2>
+<form class="space-y-8 divide-y divide-gray-200 mt-4" method="post">
+    <div class="space-y-8 divide-y divide-gray-200 sm:space-y-5">
+        <div class="space-y-6 sm:space-y-5">
+            <div>
+                <h3 class="text-lg font-medium leading-6 text-gray-900">Post Information</h3>
+                <p class="mt-1 max-w-2xl text-sm text-gray-500">Basic Info</p>
+            </div>
+            <div class="space-y-6 sm:space-y-5">
+                <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+                    <label asp-for="Title" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"></label>
+                    <div class="mt-1 sm:col-span-2 sm:mt-0">
+                        <input type="text" asp-for="Title" id="name" class="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm">
+                    </div>
+                    <span asp-validation-for="Title" class="mt-2 text-sm text-red-600" id="name-error"></span>
+                </div>
+            </div>
+
+            <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+                <label asp-for="SubTitle" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">Sub Title</label>
+                <div class="mt-1 sm:col-span-2 sm:mt-0">
+                    <textarea id="sub-title" asp-for="SubTitle" rows="3" class="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
+                </div>
+                <span asp-validation-for="SubTitle" class="mt-2 text-sm text-red-600" id="sub-title-error"></span>
+            </div>
+
+            <div class="space-y-6 sm:space-y-5">
+                <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+                    <label asp-for="Slug" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"></label>
+                    <div class="mt-1 sm:col-span-2 sm:mt-0">
+                        <input type="text" asp-for="Slug" id="slug" class="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm">
+                    </div>
+                    <span asp-validation-for="Slug" class="mt-2 text-sm text-red-600" id="slug-error"></span>
+                </div>
+            </div>
+
+            <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+                <label class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">Cover photo</label>
+                <div x-data="cover" class="mt-1 sm:col-span-2 sm:mt-0">
+                    <div x-show="!uploaded" class="cover-file-upload-area flex max-w-lg justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6">
+                        <div class="space-y-1 text-center">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <div class="flex text-sm text-gray-600">
+                                <label for="cover-file-upload" class="relative cursor-pointer rounded-md bg-white font-medium text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:text-indigo-500">
+                                    <span>Upload a file</span>
+                                    <input x-on:change="coverUploadChange($event)" id="cover-file-upload" name="file-upload" type="file" class="sr-only">
+                                </label>
+                                <p class="pl-1">or drag and drop</p>
+                            </div>
+                            <p class="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+                        </div>
+                    </div>
+                    <div x-show="uploaded">
+                        <img alt="cover" src=""/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="pt-5">
+        <div class="flex justify-end">
+            <button type="button" onclick="history.back()" class="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Back</button>
+            <button type="submit" class="ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Create</button>
+        </div>
+    </div>
+</form>
+
+
+@section Scripts {
+    <script>
+        const getPutInfoPostCoverUrl = `@(Url.RouteUrl("UploadPostCover"))`
+        const getPutInfoPostContentImageUrl = `@(Url.RouteUrl("UploadPostContentImage"))`
+    
+        const form = document.querySelector("form");
+        const coverFileUploadArea = form.querySelector(".cover-file-upload-area");
+        const coverFileUpload = coverFileUploadArea.querySelector("input");
+        
+        document.addEventListener('alpine:init', () => {
+          Alpine.data('cover', () => ({
+            coverUploading: false,
+            cover: null,
+            async coverUploadChange(e) {
+               this.coverUploading = true      
+               
+               const file = e.target.files[0];
+               if (!file) return;
+               
+               const formData = new FormData();
+               formData.append("file", file);
+               
+               const resp = await fetch(getPutInfoPostCoverUrl, {
+                   method: "POST",
+                   body: formData
+               })
+               const info = await resp.json();
+               
+               this.cover = {
+                   url: info.url,
+                   resourceId: info.resourceId, 
+               };
+               console.log(this.cover)
+               
+               this.coverUploading = false
+           } 
+          }))
+        })
+        
+    </script>
+}

@@ -1,6 +1,6 @@
 namespace Blog.Domain.Enums;
 
-public enum Role
+public class Role
 {
-    Admin
+    public const string Admin = "Admin";
 }

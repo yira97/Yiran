@@ -3,6 +3,8 @@ using Blog.Api.Data;
 using Blog.Api.Entities;
 using Blog.Domain.Enums;
 using Blog.Api.Services;
+using Evrane.Core.ObjectStorage;
+using Evrane.Core.ObjectStorage.ServerlessImageHandlerSolution;
 using Evrane.Core.Security;
 using Evrane.Core.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -63,8 +65,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy(nameof(Policy.RequireAdmin),
-        policyBuilder => { policyBuilder.RequireRole(Role.Admin.ToString()); });
+    options.AddPolicy(Policy.RequireAdmin,
+        policyBuilder => { policyBuilder.RequireRole(Role.Admin); });
 });
 
 builder.Services.AddControllers();
@@ -75,6 +77,7 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddSingleton<IRsaCryptographyTool, RsaCryptographyTool>();
 builder.Services.AddSingleton<IJwtService, JwtService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddSingleton<IObjectStorageService, ServerlessImageHandlerSolution>();
 
 var app = builder.Build();
 

@@ -99,6 +99,6 @@ public class ServerlessImageHandlerSolution : S3.S3
         var resultExpiresAt = DateTime.Now.AddDays(1);
 
         return new ImageGetInfoDto(Url: resultUrlLg, UrlXs: resultUrlXs, UrlSm: resultUrlSm, UrlMd: resultUrlMd,
-            UrlLg: resultUrlLg, UrlXl: resultUrlXl, ExpiresAt: resultExpiresAt);
+            UrlLg: resultUrlLg, UrlXl: resultUrlXl, ExpiresAt: resultExpiresAt, "");
     }
 }

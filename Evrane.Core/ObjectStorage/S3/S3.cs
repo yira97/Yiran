@@ -38,7 +38,7 @@ public class S3 : IObjectStorageService
         var url = _client.GetPreSignedURL(request);
 
         return Task.FromResult(new PutInfo
-            (Url: url, ExpiresAt: expiresAt.ToUniversalTime()));
+            (Url: url, ExpiresAt: expiresAt.ToUniversalTime(), ""));
     }
 
     public Task<GetInfo> GetInfo(string key, TimeSpan duration, Dictionary<int, string>? extraInfo = null)
@@ -59,6 +59,7 @@ public class S3 : IObjectStorageService
         (
             url,
             expiresAt.ToUniversalTime()
+            , ""
         ));
     }
 
@@ -75,7 +76,8 @@ public class S3 : IObjectStorageService
             result.Url,
             result.Url,
             result.Url,
-            result.ExpiresAt
+            result.ExpiresAt,
+            ""
         );
     }
 }

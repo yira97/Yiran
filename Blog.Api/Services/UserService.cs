@@ -11,6 +11,7 @@ using Evrane.Core.Security;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Claim = System.Security.Claims.Claim;
+using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
 
 namespace Blog.Api.Services;
 
@@ -44,6 +45,7 @@ public class UserService : IUserService
         if (userRoles != null)
         {
             customClaims.AddRange(userRoles.Select(r => new Claim(Domain.Enums.Claim.Role, r)));
+            customClaims.AddRange(userRoles.Select(r => new Claim(ClaimTypes.Role, r)));
         }
 
         var rsa = new RSACryptoServiceProvider();

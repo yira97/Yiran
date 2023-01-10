@@ -10,4 +10,6 @@ public interface IJwtService
 
     bool Verify(string jwtToken);
     ClaimsPrincipal GetPrincipal(string jwtToken);
+
+    DateTime GetExpiresTime(string jwtToken);
 }

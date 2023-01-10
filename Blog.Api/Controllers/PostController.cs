@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Api.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/v1/[controller]")]
 public class PostController : ControllerBase
@@ -101,6 +102,7 @@ public class PostController : ControllerBase
     /// </summary>
     /// <param name="updateDto"></param>
     /// <returns></returns>
+    [Authorize(Policy = Policy.RequireAdmin)]
     [HttpPost]
     public async Task<ActionResult<PostDto>> Create(PostUpdateDto updateDto)
     {
@@ -130,6 +132,7 @@ public class PostController : ControllerBase
     /// <param name="updateDto"></param>
     /// <param name="postId"></param>
     /// <returns></returns>
+    [Authorize(Policy = Policy.RequireAdmin)]
     [HttpPut("{postId}")]
     public async Task<ActionResult<PostDto>> Update(PostUpdateDto updateDto, string postId)
     {
@@ -161,6 +164,7 @@ public class PostController : ControllerBase
     /// </summary>
     /// <param name="postId"></param>
     /// <returns></returns>
+    [Authorize(Policy = Policy.RequireAdmin)]
     [HttpDelete("{postId}")]
     public async Task<ActionResult> Delete(string postId)
     {

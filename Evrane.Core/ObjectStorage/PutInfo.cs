@@ -3,5 +3,6 @@ namespace Evrane.Core.ObjectStorage;
 public record PutInfo
 (
     string Url,
-    DateTime ExpiresAt
+    DateTime ExpiresAt,
+    string ResourceId
 );

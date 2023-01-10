@@ -8,5 +8,6 @@ public record ImageGetInfoDto
     string UrlMd,
     string UrlLg,
     string UrlXl,
-    DateTime ExpiresAt
-) : GetInfo(Url, ExpiresAt);
+    DateTime ExpiresAt,
+    string ResourceId
+) : GetInfo(Url, ExpiresAt, ResourceId);

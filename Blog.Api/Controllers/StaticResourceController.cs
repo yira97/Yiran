@@ -7,16 +7,23 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Api.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/v1/[controller]")]
 public class StaticResourceController : ControllerBase
 {
-    private readonly ILogger<PostController> _logger;
+    private readonly ILogger<StaticResourceController> _logger;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IObjectStorageService _objectStorageService;
 
+    public StaticResourceController(ILogger<StaticResourceController> logger, IUnitOfWork unitOfWork,
+        IObjectStorageService objectStorageService)
+    {
+        _logger = logger;
+        _unitOfWork = unitOfWork;
+        _objectStorageService = objectStorageService;
+    }
 
-    [AllowAnonymous]
     [HttpGet("{resourceId}")]
     public async Task<ActionResult<GetInfo>> GetTempGetInfo(string resourceId)
     {
@@ -26,11 +33,11 @@ public class StaticResourceController : ControllerBase
 
         var info = await _objectStorageService.GetInfo(r.Key, TimeSpan.FromHours(1));
 
-        return info;
+        return info with { ResourceId = r.Id };
     }
 
     [AllowAnonymous]
-    [HttpGet("upload")]
+    [HttpPost]
     public async Task<ActionResult<PutInfo>> GetPutInfo(StaticResourceUpdateDto resourceDto)
     {
         var userId = HttpContext.User.GetUserId();
@@ -39,10 +46,10 @@ public class StaticResourceController : ControllerBase
 
         await _unitOfWork.CompleteAsync();
 
-        var info = await _objectStorageService.PutInfo(r.Key, TimeSpan.FromHours(12));
+        var info = await _objectStorageService.PutInfo(r.Key, TimeSpan.FromHours(12), new Dictionary<int, string>());
 
         await _unitOfWork.CompleteAsync();
 
-        return info;
+        return info with { ResourceId = r.Id };
     }
 }

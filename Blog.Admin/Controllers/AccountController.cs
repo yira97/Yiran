@@ -1,3 +1,4 @@
+using Blog.Admin.Helper;
 using Blog.Admin.Models;
 using Blog.Domain.Models;
 using Blog.Domain.Services.Client;
@@ -16,6 +17,7 @@ public class AccountController : Controller
         _blogService = blogService;
     }
 
+
     public IActionResult Register()
     {
         var vm = new RegisterViewModel();
@@ -32,11 +34,7 @@ public class AccountController : Controller
 
         var result = await _blogService.EmailRegister(new EmailPasswordAuthDto(Email: vm.Email, Password: vm.Password));
 
-        Response.Cookies.Append("X-Access-Token", result.AccessToken,
-            new CookieOptions { HttpOnly = true, SameSite = SameSiteMode.Strict });
-        Response.Cookies.Append("X-Refresh-Token", result.RefreshToken,
-            new CookieOptions { HttpOnly = true, SameSite = SameSiteMode.Strict });
-
+        CookieHelper.WriteAccessTokenToCookie(HttpContext, result);
         return RedirectToAction(nameof(HomeController.Index), "Home");
     }
 

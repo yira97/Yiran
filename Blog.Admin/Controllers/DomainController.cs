@@ -1,3 +1,4 @@
+using Blog.Admin.Helper;
 using Blog.Admin.Models;
 using Blog.Domain.Extensions;
 using Blog.Domain.Models;
@@ -30,8 +31,21 @@ public class DomainController : Controller
     [HttpPost]
     public async Task<IActionResult> Create(CreateDomainViewModel vm)
     {
+        if (!ModelState.IsValid)
+        {
+            return View(vm);
+        }
+
         var shape = new DomainUpdateDto(Name: vm.Name);
-        var domain = await _blogService.CreateDomain(shape);
+
+        var (tokenUpdated, accessTokenDto) =
+            await _blogService.EnsureAccessToken(CookieHelper.GetAccessTokenFromCookie(HttpContext));
+        if (tokenUpdated)
+        {
+            CookieHelper.WriteAccessTokenToCookie(HttpContext, accessTokenDto);
+        }
+
+        var domain = await _blogService.CreateDomain(shape, accessTokenDto.AccessToken);
         return RedirectToAction("Index", new { id = domain.Id });
     }
 

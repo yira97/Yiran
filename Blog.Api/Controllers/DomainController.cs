@@ -1,12 +1,13 @@
 using Blog.Domain.Models;
 using Blog.Api.Services;
+using Blog.Domain.Enums;
 using Blog.Domain.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Api.Controllers;
 
-// [Authorize]
+[Authorize]
 [ApiController]
 [Route("api/v1/[controller]")]
 public class DomainController : ControllerBase
@@ -37,6 +38,7 @@ public class DomainController : ControllerBase
     /// </summary>
     /// <param name="domainId"></param>
     /// <returns></returns>
+    [AllowAnonymous]
     [HttpGet("{domainId}")]
     public async Task<ActionResult<DomainDto>> Get(string domainId)
     {
@@ -54,6 +56,7 @@ public class DomainController : ControllerBase
     /// </summary>
     /// <param name="updateDto"></param>
     /// <returns></returns>
+    [Authorize(Policy = Policy.RequireAdmin)]
     [HttpPost]
     public async Task<ActionResult<DomainDto>> Create(DomainUpdateDto updateDto)
     {
@@ -70,6 +73,7 @@ public class DomainController : ControllerBase
     /// <param name="domainId"></param>
     /// <param name="updateDto"></param>
     /// <returns></returns>
+    [Authorize(Policy = Policy.RequireAdmin)]
     [HttpPut("{domainId}")]
     public async Task<ActionResult<DomainDto>> Update(string domainId, DomainUpdateDto updateDto)
     {
@@ -85,6 +89,7 @@ public class DomainController : ControllerBase
     /// </summary>
     /// <param name="domainId"></param>
     /// <returns></returns>
+    [Authorize(Policy = Policy.RequireAdmin)]
     [HttpDelete("{domainId}")]
     public async Task<ActionResult> Delete(string domainId)
     {

@@ -1,6 +1,6 @@
 namespace Blog.Domain.Enums;
 
-public enum Policy
+public class Policy
 {
-    RequireAdmin
+    public const string RequireAdmin = "RequireAdmin";
 }

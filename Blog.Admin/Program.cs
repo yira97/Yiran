@@ -1,5 +1,7 @@
 using System.Security.Cryptography;
 using Blog.Domain.Services.Client;
+using Evrane.Core.ObjectStorage.S3;
+using Evrane.Core.Security;
 using Evrane.Core.Settings;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -9,6 +11,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddSingleton<IJwtService, JwtService>();
 
 builder.Services.AddAuthentication(options =>
     {
@@ -58,7 +62,10 @@ builder.Services.AddAuthentication(options =>
     })
     .AddCookie(options => { options.LoginPath = new PathString("/Account/Login"); });
 
+// The typed client is registered as transient with DI container
 builder.Services.AddHttpClient<BlogService>();
+builder.Services.AddHttpClient<S3HttpClient>();
+
 
 var app = builder.Build();
 

@@ -1,3 +1,4 @@
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using Evrane.Core.Settings;
@@ -65,5 +66,15 @@ public class JwtService : IJwtService
 
         var user = new ClaimsPrincipal(result.ClaimsIdentity);
         return user;
+    }
+
+    public DateTime GetExpiresTime(string jwtToken)
+    {
+        var handler = new JwtSecurityTokenHandler();
+        var jwtSecurityToken = handler.ReadJwtToken(jwtToken);
+        var tokenExp = jwtSecurityToken.Claims.First(claim => claim.Type.Equals("exp")).Value;
+        var ticks = long.Parse(tokenExp);
+        var tokenDate = DateTimeOffset.FromUnixTimeSeconds(ticks).UtcDateTime;
+        return tokenDate;
     }
 }
