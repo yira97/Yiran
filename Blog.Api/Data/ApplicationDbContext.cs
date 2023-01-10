@@ -17,6 +17,10 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUserEntity, App
 
     public DbSet<DomainEntity> Domains => Set<DomainEntity>();
 
+    public DbSet<DomainCategoryEntity> DomainCategories => Set<DomainCategoryEntity>();
+
+    public DbSet<DomainTopicEntity> DomainTopics => Set<DomainTopicEntity>();
+
     public DbSet<StaticResourceEntity> StaticResources => Set<StaticResourceEntity>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -24,16 +28,19 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUserEntity, App
         // call super first
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<PostEntity>().OwnsOne(
-            post => post.Content,
-            ownedNavigationBuilder =>
-            {
-                ownedNavigationBuilder.OwnsOne(content => content.Cover);
-                ownedNavigationBuilder.OwnsMany(content => content.Blocks, builder =>
-                {
-                    builder.OwnsOne(block => block.Image);
-                    builder.OwnsMany(block => block.Images);
-                });
-            });
+        // Npgsql
+        modelBuilder.Entity<PostEntity>()
+            .Property(b => b.Content)
+            .HasColumnType("jsonb");
+
+        modelBuilder.Entity<DomainCategoryEntity>()
+            .HasOne(dc => dc.Domain)
+            .WithMany(d => d.Categories)
+            .HasForeignKey(dc => dc.DomainId);
+
+        modelBuilder.Entity<DomainTopicEntity>()
+            .HasOne(dc => dc.Domain)
+            .WithMany(d => d.Topics)
+            .HasForeignKey(dc => dc.DomainId);
     }
 }

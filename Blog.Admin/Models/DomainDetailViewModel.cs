@@ -4,5 +4,5 @@ namespace Blog.Admin.Models;
 
 public class DomainDetailViewModel
 {
-    public DomainDto? Domain { get; set; }
+    public DomainDto Domain { get; set; } = default!;
 }

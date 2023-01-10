@@ -99,4 +99,74 @@ public class DomainController : ControllerBase
 
         return Ok();
     }
+
+    [Authorize(Policy = Policy.RequireAdmin)]
+    [HttpPost("{domainId}/categories")]
+    public async Task<ActionResult<DomainCategoryDto>> AddCategory(string domainId, DomainCategoryUpdateDto updateDto)
+    {
+        var userId = HttpContext.User.GetUserId();
+        var category = await _unitOfWork.PostRepository.AddDomainCategory(domainId: domainId, updateDto: updateDto,
+            userId: userId);
+        await _unitOfWork.CompleteAsync();
+
+        return Ok(category);
+    }
+
+    [Authorize(Policy = Policy.RequireAdmin)]
+    [HttpPost("{domainId}/topics")]
+    public async Task<ActionResult<DomainCategoryDto>> AddTopic(string domainId, DomainTopicUpdateDto updateDto)
+    {
+        var userId = HttpContext.User.GetUserId();
+        var topic = await _unitOfWork.PostRepository.AddDomainTopic(domainId: domainId, updateDto: updateDto,
+            userId: userId);
+        await _unitOfWork.CompleteAsync();
+
+        return Ok(topic);
+    }
+
+    [Authorize(Policy = Policy.RequireAdmin)]
+    [HttpPost("{domainId}/categories/{categoryId}")]
+    public async Task<ActionResult<DomainCategoryDto>> UpdateCategory(string domainId, string categoryId,
+        DomainCategoryUpdateDto updateDto)
+    {
+        var userId = HttpContext.User.GetUserId();
+        var category = await _unitOfWork.PostRepository.UpdateDomainCategory(domainCategoryId: categoryId,
+            updateDto: updateDto, userId: userId);
+        await _unitOfWork.CompleteAsync();
+
+        return Ok(category);
+    }
+
+    [Authorize(Policy = Policy.RequireAdmin)]
+    [HttpPost("{domainId}/topics/{topicId}")]
+    public async Task<ActionResult<DomainTopicDto>> UpdateTopic(string domainId, string topicId,
+        DomainTopicUpdateDto updateDto)
+    {
+        var userId = HttpContext.User.GetUserId();
+        var category = await _unitOfWork.PostRepository.UpdateDomainTopic(domainTopicId: topicId,
+            updateDto: updateDto, userId: userId);
+        await _unitOfWork.CompleteAsync();
+
+        return Ok(category);
+    }
+
+    [Authorize(Policy = Policy.RequireAdmin)]
+    [HttpDelete("{domainId}/category/{categoryId}")]
+    public async Task<ActionResult> DeleteCategory(string categoryId)
+    {
+        var userId = HttpContext.User.GetUserId();
+        _ = await _unitOfWork.PostRepository.DeleteDomainCategoryImmediately(categoryId, userId);
+
+        return Ok();
+    }
+
+    [Authorize(Policy = Policy.RequireAdmin)]
+    [HttpDelete("{domainId}/topics/{topicId}")]
+    public async Task<ActionResult> DeleteTopic(string topicId)
+    {
+        var userId = HttpContext.User.GetUserId();
+        _ = await _unitOfWork.PostRepository.DeleteDomainTopicImmediately(topicId, userId);
+
+        return Ok();
+    }
 }

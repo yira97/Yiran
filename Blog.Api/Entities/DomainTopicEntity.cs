@@ -1,14 +1,11 @@
 namespace Blog.Api.Entities;
 
-public class DomainEntity
+public class DomainTopicEntity
 {
     public string Id { get; set; } = Guid.NewGuid().ToString();
     public string Name { get; set; } = string.Empty;
-    public List<PostEntity> Posts = default!;
-
-    public List<DomainCategoryEntity> Categories = default!;
-
-    public List<DomainTopicEntity> Topics = default!;
+    public string DomainId { get; set; } = string.Empty;
+    public DomainEntity Domain { get; set; } = default!;
 
     public string CreatedById { get; set; } = string.Empty;
     public string UpdatedById { get; set; } = string.Empty;

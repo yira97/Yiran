@@ -5,6 +5,7 @@ using Blog.Api.Entities.Nested;
 using Blog.Domain.Enums;
 using Blog.Api.Helper;
 using Blog.Domain.Models;
+using Evrane.Core.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Blog.Api.Repositories;
@@ -127,15 +128,13 @@ public class PostRepository : IPostRepository
                 case PostFilterKey.Topic:
                     // 长度范围： 等于1
                     if (count != 1) throw new BadHttpRequestException("length invalid");
-                    if (!int.TryParse(value[0], out var topic))
-                        throw new BadHttpRequestException("topic should be a integer");
+                    var topic = value[0];
                     query = query.Where(p => p.Topic == topic);
                     break;
                 case PostFilterKey.Category:
                     // 长度范围： 等于1
                     if (count != 1) throw new BadHttpRequestException("length invalid");
-                    if (!int.TryParse(value[0], out var category))
-                        throw new BadHttpRequestException("category should be a integer");
+                    var category = value[0];
                     query = query.Where(p => p.Category == category);
                     break;
                 default:
@@ -200,7 +199,11 @@ public class PostRepository : IPostRepository
 
     private async Task<DomainEntity?> GetDomainOrDefault(string domainId)
     {
-        var domain = await _context.Domains.FindAsync(domainId);
+        var domain = await _context.Domains
+            .Include(d => d.Categories)
+            .Include(d => d.Topics)
+            .Where(d => d.Id == domainId)
+            .FirstOrDefaultAsync();
 
         if (domain == null || domain.DeletedAt != null)
         {
@@ -212,7 +215,11 @@ public class PostRepository : IPostRepository
 
     private async Task<DomainEntity> GetDomain(string domainId)
     {
-        var domain = await _context.Domains.FindAsync(domainId);
+        var domain = await _context.Domains
+            .Include(d => d.Categories)
+            .Include(d => d.Topics)
+            .Where(d => d.Id == domainId)
+            .FirstAsync();
 
         if (domain == null || domain.DeletedAt != null)
         {
@@ -239,6 +246,126 @@ public class PostRepository : IPostRepository
 
         return domain.DomainDto();
     }
+
+    public async Task<DomainCategoryDto> AddDomainCategory(string domainId, DomainCategoryUpdateDto updateDto,
+        string userId)
+    {
+        if (await _context.DomainCategories.Where(dc => dc.DomainId == domainId && dc.Name == updateDto.Name)
+                .AnyAsync())
+        {
+            throw new EvraneException(EvraneStatusCode.BadRequest, "category already exists");
+        }
+
+        var category = new DomainCategoryEntity
+        {
+            Name = updateDto.Name,
+            DomainId = domainId,
+            UpdatedById = userId,
+            CreatedById = userId,
+        };
+
+        _context.Add(category);
+
+        return category.DomainCategoryDto();
+    }
+
+    public async Task<DomainCategoryDto> UpdateDomainCategory(string domainCategoryId,
+        DomainCategoryUpdateDto updateDto, string userId)
+    {
+        var category = await _context.DomainCategories.FindAsync(domainCategoryId);
+        if (category == null || category.DeletedAt != null)
+        {
+            throw new EvraneException(EvraneStatusCode.ResourceNotFound, "category not exists");
+        }
+
+        category.Name = updateDto.Name;
+        category.UpdatedById = userId;
+        category.UpdatedAt = DateTime.UtcNow;
+
+        return category.DomainCategoryDto();
+    }
+
+    public async Task<bool> DeleteDomainCategoryImmediately(string domainCategoryId, string userId)
+    {
+        var category = await _context.DomainCategories.FindAsync(domainCategoryId);
+        if (category == null || category.DeletedAt != null)
+        {
+            return false;
+        }
+
+        var now = DateTime.UtcNow;
+        category.DeletedAt = now;
+        category.UpdatedById = userId;
+        category.UpdatedAt = now;
+
+        await _context.SaveChangesAsync();
+
+        await _context.Posts
+            .Where(p => p.DomainId == category.DomainId && p.Category == category.Name)
+            .ExecuteUpdateAsync(spc => spc.SetProperty(p => p.Category, c => ""));
+
+        return true;
+    }
+
+    public async Task<DomainTopicDto> AddDomainTopic(string domainId, DomainTopicUpdateDto updateDto, string userId)
+    {
+        if (await _context.DomainTopics.Where(dc => dc.DomainId == domainId && dc.Name == updateDto.Name)
+                .AnyAsync())
+        {
+            throw new EvraneException(EvraneStatusCode.BadRequest, "topic already exists");
+        }
+
+        var category = new DomainTopicEntity()
+        {
+            Name = updateDto.Name,
+            DomainId = domainId,
+            UpdatedById = userId,
+            CreatedById = userId,
+        };
+
+        _context.Add(category);
+
+        return category.DomainTopicDto();
+    }
+
+    public async Task<DomainTopicDto> UpdateDomainTopic(string domainTopicId,
+        DomainTopicUpdateDto updateDto, string userId)
+    {
+        var topic = await _context.DomainTopics.FindAsync(domainTopicId);
+        if (topic == null || topic.DeletedAt != null)
+        {
+            throw new EvraneException(EvraneStatusCode.ResourceNotFound, "topic not exists");
+        }
+
+        topic.Name = updateDto.Name;
+        topic.UpdatedById = userId;
+        topic.UpdatedAt = DateTime.UtcNow;
+
+        return topic.DomainTopicDto();
+    }
+
+    public async Task<bool> DeleteDomainTopicImmediately(string domainTopicId, string userId)
+    {
+        var topic = await _context.DomainTopics.FindAsync(domainTopicId);
+        if (topic == null || topic.DeletedAt != null)
+        {
+            return false;
+        }
+
+        var now = DateTime.UtcNow;
+        topic.DeletedAt = now;
+        topic.UpdatedById = userId;
+        topic.UpdatedAt = now;
+
+        await _context.SaveChangesAsync();
+
+        await _context.Posts
+            .Where(p => p.DomainId == topic.DomainId && p.Topic == topic.Name)
+            .ExecuteUpdateAsync(spc => spc.SetProperty(p => p.Category, c => ""));
+
+        return true;
+    }
+
 
     public async Task<bool> DeleteDomain(string domainId, string userId)
     {

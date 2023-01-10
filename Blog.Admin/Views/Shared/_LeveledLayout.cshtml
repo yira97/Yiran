@@ -1,13 +1,12 @@
 @{
     Layout = "_Layout";
-    var activeLevel = ViewData["ActiveLevel"] != null ? (int)ViewData["ActiveLevel"]! : 0;
     var levels = ViewData["Levels"] != null ? (IList<string>)ViewData["Levels"]! : new List<string>();
+    var activeLevel = levels.Count > 0 ? levels.Count - 1 : 0;
     var levelLinks = ViewData["LevelLinks"] != null ? (IList<string>)ViewData["LevelLinks"]! : new List<string>();
     string LevelLink(int index) => levelLinks[index] ?? "#";
 }
 
-<div class="bg-white h-full">
-
+<div class="bg-white">
     <div class="max-w-screen-xl mx-auto py-4">
         <nav class="flex h-8" aria-label="Breadcrumb">
             <ol role="list" class="flex items-center space-x-4">
@@ -42,6 +41,7 @@
                 }
             </ol>
         </nav>
+
         @RenderBody()
     </div>
 </div>

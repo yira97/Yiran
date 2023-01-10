@@ -138,9 +138,10 @@ public class BlogService
         return result!;
     }
 
-    public async Task<DomainDto> UpdateDomain(string domainId, DomainUpdateDto updateDto)
+    public async Task<DomainDto> UpdateDomain(string domainId, DomainUpdateDto updateDto, string accessToken)
     {
         var request = new HttpRequestMessage(HttpMethod.Put, $"api/v1/Domain/{domainId}");
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         request.Content =
             new StringContent(JsonSerializer.Serialize(updateDto), Encoding.UTF8, "application/json");
 
@@ -208,5 +209,33 @@ public class BlogService
         resp.EnsureSuccessStatusCode();
         var result = await resp.Content.ReadFromJsonAsync<PutInfo>();
         return result!;
+    }
+
+    public async Task<DomainCategoryDto> AddCategory(string domainId, DomainCategoryUpdateDto updateDto,
+        string accessToken)
+    {
+    }
+
+    public async Task<DomainTopicDto> AddTopic(string domainId, DomainTopicUpdateDto updateDto,
+        string accessToken)
+    {
+    }
+
+    public async Task<DomainCategoryDto> EditCategory(string domainId, string categoryId,
+        DomainCategoryUpdateDto updateDto, string accessToken)
+    {
+    }
+
+    public async Task<DomainTopicDto> EditTopic(string domainId, string topicId,
+        DomainTopicUpdateDto updateDto, string accessToken)
+    {
+    }
+
+    public async Task DeleteCategory(string domainId, string categoryId, string accessToken)
+    {
+    }
+
+    public async Task DeleteTopic(string domainId, string topicId, string accessToken)
+    {
     }
 }

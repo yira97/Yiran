@@ -25,4 +25,19 @@ public interface IPostRepository
     Task<bool> DeleteDomain(string domainId, string userId);
     Task<StaticResourceRelatedResult<PostDto>> UpdatePost(string postId, PostUpdateDto updateDto, string userId);
     Task<StaticResourceRelatedResult<bool>> DeletePost(string postId, string userId);
+
+    Task<DomainCategoryDto> AddDomainCategory(string domainId, DomainCategoryUpdateDto updateDto,
+        string userId);
+
+    Task<DomainCategoryDto> UpdateDomainCategory(string domainCategoryId,
+        DomainCategoryUpdateDto updateDto, string userId);
+
+    Task<bool> DeleteDomainCategoryImmediately(string domainCategoryId, string userId);
+
+    Task<DomainTopicDto> AddDomainTopic(string domainId, DomainTopicUpdateDto updateDto, string userId);
+
+    Task<DomainTopicDto> UpdateDomainTopic(string domainTopicId,
+        DomainTopicUpdateDto updateDto, string userId);
+
+    Task<bool> DeleteDomainTopicImmediately(string domainTopicId, string userId);
 }

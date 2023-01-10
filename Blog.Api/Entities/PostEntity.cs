@@ -8,8 +8,8 @@ public class PostEntity
     public string Title { get; set; } = string.Empty;
     public string SubTitle { get; set; } = string.Empty;
     public string Slug { get; set; } = string.Empty;
-    public int Topic { get; set; }
-    public int Category { get; set; }
+    public string Topic { get; set; } = string.Empty;
+    public string Category { get; set; } = string.Empty;
     public string CreatedById { get; set; } = string.Empty;
     public string UpdatedById { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

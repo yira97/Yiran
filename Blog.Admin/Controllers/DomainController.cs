@@ -24,9 +24,61 @@ public class DomainController : Controller
 
         ViewData["Levels"] = new List<string> { "Domains", "Create Domain" };
         ViewData["LevelLinks"] = new List<string> { Url.Action("Domain", "Home")!, Url.Action("Create")! };
-        ViewData["ActiveLevel"] = 1;
         return View(vm);
     }
+
+    public async Task<IActionResult> AddCategory(string id)
+    {
+        var domainDto = await _blogService.GetDomain(id);
+
+        var vm = new AddCategoryViewModel();
+
+        ViewData["Levels"] = new List<string>
+        {
+            "Domains",
+            $"Domains({domainDto.Name})",
+            "Add Category",
+        };
+        ViewData["LevelLinks"] = new List<string>
+        {
+            Url.Action("Domain", "Home")!,
+            Url.Action("Index", "Domain", new { id })!,
+            Url.Action("AddCategory", "Domain", new { id })!,
+        };
+        return View(vm);
+    }
+
+    public async Task<IActionResult> AddTopic(string id)
+    {
+        var domainDto = await _blogService.GetDomain(id);
+
+        var vm = new AddTopicViewModel();
+
+        ViewData["Levels"] = new List<string>
+        {
+            "Domains",
+            $"Domains({domainDto.Name})",
+            "Add Topic",
+        };
+        ViewData["LevelLinks"] = new List<string>
+        {
+            Url.Action("Domain", "Home")!,
+            Url.Action("Index", "Domain", new { id })!,
+            Url.Action("AddTopic", "Domain", new { id })!,
+        };
+        return View(vm);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> AddCategory(string id, AddCategoryViewModel vm)
+    {
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> AddTopic(string id, AddTopicViewModel vm)
+    {
+    }
+
 
     [HttpPost]
     public async Task<IActionResult> Create(CreateDomainViewModel vm)
@@ -56,10 +108,9 @@ public class DomainController : Controller
         var vm = new DomainDetailViewModel();
         vm.Domain = domainDto;
 
-        ViewData["Levels"] = new List<string> { "Domains", domainDto.Name };
+        ViewData["Levels"] = new List<string> { "Domains", $"Domain({domainDto.Name})" };
         ViewData["LevelLinks"] = new List<string>
             { Url.Action("Domain", "Home")!, Url.Action("Index", new { id = domainDto.Id })! };
-        ViewData["ActiveLevel"] = 1;
         return View(vm);
     }
 
@@ -76,15 +127,22 @@ public class DomainController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Edit(EditDomainViewModel vm)
+    public async Task<IActionResult> Edit(string id, EditDomainViewModel vm)
     {
         if (!ModelState.IsValid)
         {
             return View(vm);
         }
 
-        _ = await _blogService.UpdateDomain(vm.Id, new DomainUpdateDto(vm.Name));
+        var (tokenUpdated, accessTokenDto) =
+            await _blogService.EnsureAccessToken(CookieHelper.GetAccessTokenFromCookie(HttpContext));
+        if (tokenUpdated)
+        {
+            CookieHelper.WriteAccessTokenToCookie(HttpContext, accessTokenDto);
+        }
 
-        return RedirectToAction("Index", new { id = vm.Id });
+        _ = await _blogService.UpdateDomain(id, new DomainUpdateDto(vm.Name), accessTokenDto.AccessToken);
+
+        return RedirectToAction("Index", new { id });
     }
 }

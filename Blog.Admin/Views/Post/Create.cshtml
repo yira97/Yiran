@@ -11,6 +11,8 @@
                 <h3 class="text-lg font-medium leading-6 text-gray-900">Post Information</h3>
                 <p class="mt-1 max-w-2xl text-sm text-gray-500">Basic Info</p>
             </div>
+
+            <!-- 标题 -->
             <div class="space-y-6 sm:space-y-5">
                 <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
                     <label asp-for="Title" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"></label>
@@ -21,6 +23,7 @@
                 </div>
             </div>
 
+            <!-- 副标题 -->
             <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
                 <label asp-for="SubTitle" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">Sub Title</label>
                 <div class="mt-1 sm:col-span-2 sm:mt-0">
@@ -29,6 +32,7 @@
                 <span asp-validation-for="SubTitle" class="mt-2 text-sm text-red-600" id="sub-title-error"></span>
             </div>
 
+            <!-- slug -->
             <div class="space-y-6 sm:space-y-5">
                 <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
                     <label asp-for="Slug" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"></label>
@@ -39,10 +43,11 @@
                 </div>
             </div>
 
+            <!-- 封面 -->
             <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
                 <label class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">Cover photo</label>
                 <div x-data="cover" class="mt-1 sm:col-span-2 sm:mt-0">
-                    <div x-show="!uploaded" class="cover-file-upload-area flex max-w-lg justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6">
+                    <div x-show="!cover" class="cover-file-upload-area flex max-w-lg justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6">
                         <div class="space-y-1 text-center">
                             <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
                                 <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -57,9 +62,39 @@
                             <p class="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
                         </div>
                     </div>
-                    <div x-show="uploaded">
-                        <img alt="cover" src=""/>
+                    <div x-show="cover">
+                        <div class="flex gap-4 items-end">
+                            <img alt="cover" :src="cover?.url" class="h-28 p-2 border border-gray-200 rounded-md"/>
+                            <div class="">
+                                <div class="font-medium text-gray-700" x-text="cover?.fileName"></div>
+                                <div class="text-gray-500" x-text="formatBytes(cover?.fileSize)"></div>
+
+                                <button x-on:click="deleteCover()" type="button" class="h-8 inline-flex items-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Delete</button>
+                            </div>
+                        </div>
                     </div>
+                </div>
+            </div><!-- 封面结束 -->
+
+            <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+                <label for="topic" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">Topic</label>
+                <div class="mt-1 sm:col-span-2 sm:mt-0">
+                    <select id="topic" name="country" autocomplete="country-name" class="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm">
+                        <option>United States</option>
+                        <option>Canada</option>
+                        <option>Mexico</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+                <label for="category" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">Category</label>
+                <div class="mt-1 sm:col-span-2 sm:mt-0">
+                    <select id="category" name="country" autocomplete="country-name" class="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm">
+                        <option>United States</option>
+                        <option>Canada</option>
+                        <option>Mexico</option>
+                    </select>
                 </div>
             </div>
         </div>
@@ -75,6 +110,18 @@
 
 @section Scripts {
     <script>
+        const formatBytes = (bytes, decimals = 2) => {
+            if (!+bytes) return '0 Bytes'
+        
+            const k = 1024
+            const dm = decimals < 0 ? 0 : decimals
+            const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+        
+            const i = Math.floor(Math.log(bytes) / Math.log(k))
+        
+            return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
+        }
+    
         const getPutInfoPostCoverUrl = `@(Url.RouteUrl("UploadPostCover"))`
         const getPutInfoPostContentImageUrl = `@(Url.RouteUrl("UploadPostContentImage"))`
     
@@ -104,11 +151,17 @@
                this.cover = {
                    url: info.url,
                    resourceId: info.resourceId, 
+                   fileName: file.name,
+                   fileSize: file.size
                };
                console.log(this.cover)
                
-               this.coverUploading = false
-           } 
+               coverFileUpload.value = null;
+               this.coverUploading = false;
+           },
+           deleteCover() {
+               this.cover = null;  
+           }
           }))
         })
         
