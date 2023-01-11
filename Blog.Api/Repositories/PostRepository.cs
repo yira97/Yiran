@@ -273,7 +273,7 @@ public class PostRepository : IPostRepository
         DomainCategoryUpdateDto updateDto, string userId)
     {
         var category = await _context.DomainCategories.FindAsync(domainCategoryId);
-        if (category == null || category.DeletedAt != null)
+        if (category == null)
         {
             throw new EvraneException(EvraneStatusCode.ResourceNotFound, "category not exists");
         }
@@ -288,15 +288,12 @@ public class PostRepository : IPostRepository
     public async Task<bool> DeleteDomainCategoryImmediately(string domainCategoryId, string userId)
     {
         var category = await _context.DomainCategories.FindAsync(domainCategoryId);
-        if (category == null || category.DeletedAt != null)
+        if (category == null)
         {
             return false;
         }
 
-        var now = DateTime.UtcNow;
-        category.DeletedAt = now;
-        category.UpdatedById = userId;
-        category.UpdatedAt = now;
+        _context.Remove(category);
 
         await _context.SaveChangesAsync();
 
@@ -332,7 +329,7 @@ public class PostRepository : IPostRepository
         DomainTopicUpdateDto updateDto, string userId)
     {
         var topic = await _context.DomainTopics.FindAsync(domainTopicId);
-        if (topic == null || topic.DeletedAt != null)
+        if (topic == null)
         {
             throw new EvraneException(EvraneStatusCode.ResourceNotFound, "topic not exists");
         }
@@ -347,15 +344,12 @@ public class PostRepository : IPostRepository
     public async Task<bool> DeleteDomainTopicImmediately(string domainTopicId, string userId)
     {
         var topic = await _context.DomainTopics.FindAsync(domainTopicId);
-        if (topic == null || topic.DeletedAt != null)
+        if (topic == null)
         {
             return false;
         }
 
-        var now = DateTime.UtcNow;
-        topic.DeletedAt = now;
-        topic.UpdatedById = userId;
-        topic.UpdatedAt = now;
+        _context.Remove(topic);
 
         await _context.SaveChangesAsync();
 

@@ -125,7 +125,7 @@ public class DomainController : ControllerBase
     }
 
     [Authorize(Policy = Policy.RequireAdmin)]
-    [HttpPost("{domainId}/categories/{categoryId}")]
+    [HttpPut("{domainId}/categories/{categoryId}")]
     public async Task<ActionResult<DomainCategoryDto>> UpdateCategory(string domainId, string categoryId,
         DomainCategoryUpdateDto updateDto)
     {
@@ -138,7 +138,7 @@ public class DomainController : ControllerBase
     }
 
     [Authorize(Policy = Policy.RequireAdmin)]
-    [HttpPost("{domainId}/topics/{topicId}")]
+    [HttpPut("{domainId}/topics/{topicId}")]
     public async Task<ActionResult<DomainTopicDto>> UpdateTopic(string domainId, string topicId,
         DomainTopicUpdateDto updateDto)
     {
@@ -151,8 +151,8 @@ public class DomainController : ControllerBase
     }
 
     [Authorize(Policy = Policy.RequireAdmin)]
-    [HttpDelete("{domainId}/category/{categoryId}")]
-    public async Task<ActionResult> DeleteCategory(string categoryId)
+    [HttpDelete("{domainId}/categories/{categoryId}")]
+    public async Task<ActionResult> DeleteCategory(string categoryId, string domainId)
     {
         var userId = HttpContext.User.GetUserId();
         _ = await _unitOfWork.PostRepository.DeleteDomainCategoryImmediately(categoryId, userId);
@@ -162,7 +162,7 @@ public class DomainController : ControllerBase
 
     [Authorize(Policy = Policy.RequireAdmin)]
     [HttpDelete("{domainId}/topics/{topicId}")]
-    public async Task<ActionResult> DeleteTopic(string topicId)
+    public async Task<ActionResult> DeleteTopic(string topicId, string domainId)
     {
         var userId = HttpContext.User.GetUserId();
         _ = await _unitOfWork.PostRepository.DeleteDomainTopicImmediately(topicId, userId);
