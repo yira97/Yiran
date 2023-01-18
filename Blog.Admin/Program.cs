@@ -1,4 +1,5 @@
 using System.Security.Cryptography;
+using Blog.Admin.Middlewares;
 using Blog.Domain.Services.Client;
 using Evrane.Core.ObjectStorage.S3;
 using Evrane.Core.Security;
@@ -84,6 +85,8 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseMiddleware<DomainInfoMiddleware>();
 
 app.MapControllerRoute(
     name: "default",

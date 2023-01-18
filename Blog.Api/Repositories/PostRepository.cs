@@ -176,7 +176,7 @@ public class PostRepository : IPostRepository
 
     public async Task<IEnumerable<DomainDto>> ListAllDomains()
     {
-        var query = _context.Domains.Take(10).AsQueryable();
+        var query = _context.Domains.Where(d => d.DeletedAt == null).Take(20).AsQueryable();
 
         var result = await query.ToListAsync();
 
@@ -364,7 +364,7 @@ public class PostRepository : IPostRepository
     public async Task<bool> DeleteDomain(string domainId, string userId)
     {
         var domain = await _context.Domains.FindAsync(domainId);
-        if (domain == null || domain.DeletedAt == null)
+        if (domain == null || domain.DeletedAt != null)
         {
             return false;
         }

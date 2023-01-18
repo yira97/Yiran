@@ -35,7 +35,7 @@ namespace Blog.Admin.Controllers
             return RedirectToAction("Index", new { id = post.Id });
         }
 
-        public IActionResult Index(string id)
+        public IActionResult Index()
         {
             return View();
         }

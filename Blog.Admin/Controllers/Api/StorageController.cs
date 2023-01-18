@@ -8,7 +8,7 @@ using Evrane.Core.ObjectStorage.S3;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Blog.Admin.Controllers.Api
+namespace Blog.Admin.Controllers.Mvc.Api
 {
     [Route("api/[controller]")]
     [ApiController]

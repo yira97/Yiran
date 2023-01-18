@@ -4,7 +4,7 @@ using Blog.Domain.Models;
 using Blog.Domain.Services.Client;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Blog.Admin.Controllers;
+namespace Blog.Admin.Controllers.Mvc;
 
 public class AccountController : Controller
 {
@@ -65,8 +65,7 @@ public class AccountController : Controller
     [HttpGet]
     public IActionResult Logout()
     {
-        Response.Cookies.Delete("X-Access-Token");
-        Response.Cookies.Delete("X-Refresh-Token");
+        CookieHelper.ClearLoginInfo(HttpContext);
 
         return RedirectToAction("Index", "Home");
     }

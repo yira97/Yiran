@@ -120,10 +120,10 @@ public class BlogService
         resp.EnsureSuccessStatusCode();
     }
 
-    public async Task DeleteDomain(string domainId)
+    public async Task DeleteDomain(string domainId, string accessToken)
     {
         var request = new HttpRequestMessage(HttpMethod.Delete, $"api/v1/Domain/{domainId}");
-
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         var resp = await _httpClient.SendAsync(request);
         resp.EnsureSuccessStatusCode();
     }

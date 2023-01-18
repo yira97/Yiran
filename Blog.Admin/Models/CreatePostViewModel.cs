@@ -14,4 +14,8 @@ public class CreatePostViewModel
     public ImageWithCaptionDto? Cover { get; set; }
     public List<PostContentBlockDto> Blocks = new List<PostContentBlockDto>();
     public string? DomainId { get; set; }
+
+
+    public List<string> DomainCategories { get; set; } = new();
+    public List<string> DomainTopics { get; set; } = new();
 }
