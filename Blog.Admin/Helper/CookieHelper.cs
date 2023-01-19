@@ -64,6 +64,6 @@ public static class CookieHelper
         var email = httpContext.Request.Cookies[UserEmailKey];
         var displayName = httpContext.Request.Cookies[UserDisplayNameKey];
 
-        return new UserInfoDto(email ?? "", displayName ?? "");
+        return new UserInfoDto(email, displayName);
     }
 }

@@ -1,6 +1,6 @@
 namespace Blog.Admin.Models;
 
 public record UserInfoDto(
-    string Email,
-    string DisplayName
+    string? Email,
+    string? DisplayName
 );

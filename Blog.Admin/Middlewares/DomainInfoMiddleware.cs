@@ -16,7 +16,7 @@ public class DomainInfoMiddleware
     public async Task InvokeAsync(HttpContext context)
     {
         // 如果　Query　中存在 - 使用 Query 中的存入 Items
-        var domainIdQuery = context.Request.Query["domainId"];
+        var domainIdQuery = context.Request.Query["domainId"].ToString();
         var domainIdCookie = CookieHelper.GetDefaultDomainFromCookie(context);
 
         if (!string.IsNullOrEmpty(domainIdQuery))

@@ -11,16 +11,21 @@ public class UserAccountDropDownViewComponent : ViewComponent
     }
 
     public async Task<IViewComponentResult> InvokeAsync(
-        string currentDomainId)
+        string type = "Default")
     {
         var userInfo = CookieHelper.GetUserInfoFromCookie(HttpContext);
 
         var vm = new UserAccountDropDownViewModel
         {
-            DisplayName = userInfo.DisplayName,
-            Email = userInfo.Email,
+            DisplayName = userInfo.DisplayName ?? "NO_DISPLAY_NAME",
+            Email = "NO_EMAIL",
+            UserNavigation = new List<NavigationDto>
+            {
+                new NavigationDto(Name: "Setting", Href: Url.Action("Logout", "Account")!, Current: false),
+                new NavigationDto(Name: "Logout", Href: Url.Action("Logout", "Account")!, Current: false),
+            }
         };
 
-        return View(vm);
+        return View(type, vm);
     }
 }

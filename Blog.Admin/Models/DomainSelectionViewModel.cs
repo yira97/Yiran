@@ -5,5 +5,5 @@ namespace Blog.Admin.Models;
 public class DomainSelectionViewModel
 {
     public string CurrentDomainId { get; set; } = string.Empty;
-    public IEnumerable<DomainDto> Domains = new List<DomainDto>();
+    public List<DomainDto> Domains = new List<DomainDto>();
 }

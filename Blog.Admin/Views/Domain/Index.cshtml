@@ -39,7 +39,7 @@
                                 var domain = Model.Domains[i];
                                 <tr>
                                     <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 md:pl-0">
-                                        <a asp-controller="Post" asp-action="Index" asp-route-domainId="@domain.Id">@domain.Name</a>
+                                        <a asp-controller="Home" asp-action="Index" asp-route-domainId="@domain.Id">@domain.Name</a>
                                     </td>
                                     @if (Model.DefaultDomain == domain.Id)
                                     {

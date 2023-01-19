@@ -1,22 +1,37 @@
 @model UserAccountDropDownViewModel
 
-@{
-
-}
-
 <div x-data="{
-                 userAccountDropdownOpen: false,
-                 closeUserAccountDropdown() {
-                     this.userAccountDropdownOpen = false
-                 },
-                 toggleUserAccountDropdown() {
-                     this.userAccountDropdownOpen = !this.userAccountDropdownOpen
-                 }
-             }"
-     x-on:keydown.escape.prevent.stop="closeUserAccountDropdown()"
+         userAccountDropdownOpen: false,
+         toggleUserAccountDropdown() {
+             this.userAccountDropdownOpen = !this.userAccountDropdownOpen
+         },
+        dropDownItemIdPrefix: 'user-account-dropdown-item-id',
+        activeIndex: null,
+        activeItem: null,
+        onEscClick() {
+          this.close()
+        },
+        onMouseMove(event, index) {
+          if (this.activeIndex === index) return;
+          this.activeIndex = index;
+          this.activeItem = event.target;
+        },
+        onMouseLeave(event) {
+          if (event.toElement.id.includes(this.menuItemIdPrefix)) return;
+          this.activeIndex = null;
+          this.activeItem = null;
+        },
+        close() {
+          this.userAccountDropdownOpen = false;
+        },
+     }"
+     x-on:keydown.escape.prevent.stop="close()"
+     x-on:click.outside="close()"
      class="relative inline-block px-3 text-left">
     <div>
-        <button x-on:click="toggleUserAccountDropdown()" type="button" class="group w-full rounded-md bg-gray-100 px-3.5 py-2 text-left text-sm font-medium text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-100" id="options-menu-button" :aria-expanded="userAccountDropdownOpen" aria-haspopup="true">
+        <button
+            x-on:click="toggleUserAccountDropdown()"
+            type="button" class="group w-full rounded-md bg-gray-100 px-3.5 py-2 text-left text-sm font-medium text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-100" id="options-menu-button" :aria-expanded="userAccountDropdownOpen" aria-haspopup="true">
             <span class="flex w-full items-center justify-between">
                 <span class="flex min-w-0 items-center justify-between space-x-3">
                     <img class="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300" src="https://images.unsplash.com/photo-1502685104226-ee32379fefbe?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=3&w=256&h=256&q=80" alt="">
@@ -34,6 +49,7 @@
 
     <div
         x-show="userAccountDropdownOpen"
+        style="display: none;"
         x-transition:enter="transition ease-out duration-100"
         x-transition:enter-start="transform opacity-0 scale-95"
         x-transition:enter-end="transform opacity-100 scale-100"
@@ -42,13 +58,12 @@
         x-transition:leave-end="transform opacity-0 scale-95"
         class="absolute right-0 left-0 z-10 mx-3 mt-1 origin-top divide-y divide-gray-200 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="options-menu-button" tabindex="-1">
         <div class="py-1" role="none">
-            <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
-            <a href="#" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="options-menu-item-0">View profile</a>
-            <a href="#" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="options-menu-item-1">Settings</a>
-            <a href="#" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="options-menu-item-2">Notifications</a>
-        </div>
-        <div class="py-1" role="none">
-            <a href="#" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="options-menu-item-5">Logout</a>
+
+            @for (var i = 0; i < Model.UserNavigation.Count; i++)
+            {
+                var nav = Model.UserNavigation[i];
+                <a href="@nav.Href" x-on:mouseleave="onMouseLeave($event)" x-on:mousemove="onMouseMove($event, @i)" x-bind:class=" activeIndex === @i ? 'bg-gray-100 text-gray-900': 'text-gray-700'" class="block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="user-account-dropdown-item-id-@i">@nav.Name</a>
+            }
         </div>
     </div>
 </div>
