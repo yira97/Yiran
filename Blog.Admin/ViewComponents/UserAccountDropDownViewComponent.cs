@@ -21,7 +21,8 @@ public class UserAccountDropDownViewComponent : ViewComponent
             Email = "NO_EMAIL",
             UserNavigation = new List<NavigationDto>
             {
-                new NavigationDto(Name: "Setting", Href: Url.Action("Logout", "Account")!, Current: false),
+                new NavigationDto(Name: "Home", Href: Url.Action("Index", "Home")!, Current: false),
+                new NavigationDto(Name: "Domain", Href: Url.Action("Index", "Domain")!, Current: false),
                 new NavigationDto(Name: "Logout", Href: Url.Action("Logout", "Account")!, Current: false),
             }
         };
