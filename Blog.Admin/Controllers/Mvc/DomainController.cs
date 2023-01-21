@@ -34,17 +34,11 @@ public class DomainController : Controller
     public IActionResult Create()
     {
         var vm = new CreateDomainViewModel();
-
-        ViewData["Levels"] = new List<string>
+        ViewData["Levels"] = new BreadcrumbsDto(Links: new[]
         {
-            "Domain",
-            "Create Domain"
-        };
-        ViewData["LevelLinks"] = new List<string>
-        {
-            Url.Action("Index", "Domain")!,
-            Url.Action("Create", "Domain")!,
-        };
+            new NavigationDto("Domain", Url.Action("Index", "Domain")!, false),
+            new NavigationDto("Create Domain", Url.Action("Create", "Domain")!, true)
+        });
         return View(vm);
     }
 
@@ -88,16 +82,11 @@ public class DomainController : Controller
         vm.Id = domain.Id;
         vm.Name = domain.Name;
 
-        ViewData["Levels"] = new List<string>
+        ViewData["Levels"] = new BreadcrumbsDto(Links: new[]
         {
-            "Domain",
-            $"Edit Domain ({domain.Name})"
-        };
-        ViewData["LevelLinks"] = new List<string>
-        {
-            Url.Action("Index", "Domain")!,
-            Url.Action("Edit", "Domain")!,
-        };
+            new NavigationDto("Domain", Url.Action("Index", "Domain")!, false),
+            new NavigationDto($"Edit Domain ({domain.Name})", Url.Action("Edit", "Domain")!, true)
+        });
         _logger.LogInformation($"user {userId} edited domain {domain.Id}");
         return View(vm);
     }

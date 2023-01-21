@@ -17,15 +17,22 @@ public static class CookieHelper
         var accessToken = httpContext.Request.Cookies[AccessTokenKey];
         var refreshToken = httpContext.Request.Cookies[RefreshTokenKey];
 
-        return new AccessTokenDto(accessToken!, refreshToken!);
+        return new AccessTokenDto(accessToken, refreshToken);
     }
 
     public static void WriteAccessTokenToCookie(HttpContext httpContext, AccessTokenDto accessToken)
     {
-        httpContext.Response.Cookies.Append(AccessTokenKey, accessToken.AccessToken,
-            new CookieOptions { HttpOnly = true, SameSite = SameSiteMode.Strict });
-        httpContext.Response.Cookies.Append(RefreshTokenKey, accessToken.RefreshToken,
-            new CookieOptions { HttpOnly = true, SameSite = SameSiteMode.Strict });
+        if (accessToken.AccessToken != null)
+        {
+            httpContext.Response.Cookies.Append(AccessTokenKey, accessToken.AccessToken,
+                new CookieOptions { HttpOnly = true, SameSite = SameSiteMode.Strict });
+        }
+
+        if (accessToken.RefreshToken != null)
+        {
+            httpContext.Response.Cookies.Append(RefreshTokenKey, accessToken.RefreshToken,
+                new CookieOptions { HttpOnly = true, SameSite = SameSiteMode.Strict });
+        }
     }
 
     public static string GetLanguageFromCookie(HttpContext httpContext, string defaultValue = "zh")

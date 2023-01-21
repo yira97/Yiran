@@ -2,6 +2,7 @@ using Blog.Domain.Enums;
 using Blog.Domain.Models;
 using Blog.Api.Services;
 using Blog.Domain.Extensions;
+using Evrane.Core.Helper;
 using Evrane.Core.ObjectStorage;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -32,23 +33,39 @@ public class PostController : ControllerBase
     /// <param name="pageToken">分页Token</param>
     /// <param name="orderBy">排序</param>
     /// <param name="ascending">是否升序</param>
-    /// <param name="filter">筛选</param>
     /// <returns></returns>
     [AllowAnonymous]
     [HttpGet]
     public async Task<ActionResult<CursorBasedQueryResult<PostDto>>> List(
-        int pageSize,
-        string pageToken,
-        int orderBy,
-        bool ascending,
-        [FromQuery(Name = "filter")] Dictionary<int, string> filter
+        int pageSize = 5,
+        int orderBy = 0,
+        bool ascending = false,
+        string pageToken = "",
+        string? domainId = null,
+        bool? publicOnly = null,
+        string? categoryId = null,
+        string? topicId = null
     )
     {
         var parsedFilter = new Dictionary<int, List<string>>();
-
-        foreach (var (key, value) in filter)
+        if (domainId != null)
         {
-            parsedFilter[key] = value.Split(',').ToList();
+            parsedFilter[(int)PostFilterKey.DomainId] = new() { domainId };
+        }
+
+        if (publicOnly != null)
+        {
+            parsedFilter[(int)PostFilterKey.PublicOnly] = new() { publicOnly.ToString() };
+        }
+
+        if (categoryId != null)
+        {
+            parsedFilter[(int)PostFilterKey.Category] = new() { categoryId };
+        }
+
+        if (topicId != null)
+        {
+            parsedFilter[(int)PostFilterKey.Topic] = new() { topicId };
         }
 
         var query = new CursorBasedQuery

@@ -32,6 +32,8 @@ public class BlogService
 
     public async Task<(bool, AccessTokenDto)> EnsureAccessToken(AccessTokenDto currentAccessToken)
     {
+        if (string.IsNullOrEmpty(currentAccessToken.AccessToken)) return (false, currentAccessToken);
+
         var t = _jwtService.GetExpiresTime(currentAccessToken.AccessToken);
         var needRefresh = t < DateTime.UtcNow.AddSeconds(10);
         var newAccessToken = currentAccessToken;
@@ -168,15 +170,19 @@ public class BlogService
         bool ascending,
         string? domainId,
         bool? publicOnly,
-        int? category,
-        int? topic
+        string? categoryId,
+        string? topicId
     )
     {
         var query = new Dictionary<string, string>();
-        if (domainId != null) query.Add(PostFilterKey.DomainId.IntString(), domainId);
-        if (publicOnly != null) query.Add(PostFilterKey.PublicOnly.IntString(), "true");
-        if (category != null) query.Add(PostFilterKey.Category.IntString(), category.ToString()!);
-        if (topic != null) query.Add(PostFilterKey.Topic.IntString(), topic.ToString()!);
+        query.Add("pageSize", pageSize.ToString());
+        if (!string.IsNullOrEmpty(pageToken)) query.Add("pageToken", pageToken);
+        query.Add("orderBy", orderBy.ToString());
+        query.Add("ascending", ascending.ToString());
+        if (!string.IsNullOrEmpty(domainId)) query.Add("domainId", domainId);
+        if (publicOnly != null) query.Add("publicOnly", publicOnly.ToString()!);
+        if (!string.IsNullOrEmpty(categoryId)) query.Add("categoryId", categoryId);
+        if (!string.IsNullOrEmpty(topicId)) query.Add("topicId", topicId);
 
         var requestUri = QueryHelpers.AddQueryString("api/v1/Post", query!);
         var request = new HttpRequestMessage(HttpMethod.Get, requestUri);

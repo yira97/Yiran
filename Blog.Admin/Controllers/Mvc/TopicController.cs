@@ -1,4 +1,5 @@
 using Blog.Admin.Helper;
+using Blog.Admin.Middlewares;
 using Blog.Admin.Models;
 using Blog.Domain.Models;
 using Blog.Domain.Services.Client;
@@ -16,84 +17,80 @@ public class TopicController : Controller
     }
 
     // GET
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
+        var domainId = HttpContext.GetDomainIdFromHttpContextItems();
+        if (string.IsNullOrEmpty(domainId)) return RedirectToAction("Index", "Domain");
+
+        var domain = await _blogService.GetDomain(domainId);
+
+        var vm = new TopicViewModel();
+        vm.Topics = domain.Topics.ToList();
+        ViewData[ViewHelper.ViewData.ActiveNav] = RouteHelper.Controller.Topic;
         return View();
     }
 
-    public async Task<IActionResult> AddTopic(string id)
+    public async Task<IActionResult> AddTopic()
     {
-        var domainDto = await _blogService.GetDomain(id);
+        var domainId = HttpContext.GetDomainIdFromHttpContextItems();
+        if (string.IsNullOrEmpty(domainId)) return RedirectToAction("Index", "Domain");
+        var domain = await _blogService.GetDomain(domainId);
 
         var vm = new AddTopicViewModel();
 
-        ViewData["Levels"] = new List<string>
+        ViewData["Levels"] = new BreadcrumbsDto(Links: new[]
         {
-            "Topic",
-            "Add Topic",
-        };
-        ViewData["LevelLinks"] = new List<string>
-        {
-            Url.Action("Index", "Topic")!,
-            Url.Action("AddTopic", "Topic", new { id })!,
-        };
+            new NavigationDto("Topic", Url.Action("Index", "Topic")!, false),
+            new NavigationDto($"Add Topic", Url.Action("AddTopic", "Topic")!, true)
+        });
         return View(vm);
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddTopic(string id, AddTopicViewModel vm)
+    public async Task<IActionResult> AddTopic(AddTopicViewModel vm)
     {
-        var (tokenUpdated, accessTokenDto) =
-            await _blogService.EnsureAccessToken(CookieHelper.GetAccessTokenFromCookie(HttpContext));
-        if (tokenUpdated)
-        {
-            CookieHelper.WriteAccessTokenToCookie(HttpContext, accessTokenDto);
-        }
+        var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
 
-        var res = await _blogService.AddTopic(id, new DomainTopicUpdateDto(Name: vm.Name),
-            accessTokenDto.AccessToken);
+        var domainId = HttpContext.GetDomainIdFromHttpContextItems();
+        if (string.IsNullOrEmpty(domainId)) return RedirectToAction("Index", "Domain");
 
-        return RedirectToAction("Index", new { id });
+        var res = await _blogService.AddTopic(domainId, new DomainTopicUpdateDto(Name: vm.Name),
+            accessToken.AccessToken);
+
+        return RedirectToAction("Index");
     }
 
-    public async Task<IActionResult> EditTopic(string id, string topicId)
+    public async Task<IActionResult> EditTopic(string topicId)
     {
-        var domainDto = await _blogService.GetDomain(id);
+        var domainId = HttpContext.GetDomainIdFromHttpContextItems();
+        if (string.IsNullOrEmpty(domainId)) return RedirectToAction("Index", "Domain");
+
+        var domainDto = await _blogService.GetDomain(domainId);
         var topic = domainDto.Topics.FirstOrDefault(c => c.Id == topicId);
         if (topic == null) return NotFound();
 
         var vm = new EditTopicViewModel();
         vm.Name = topic.Name;
+        vm.TopicId = topic.Id;
+        vm.DomainId = domainId;
 
-        ViewData["Levels"] = new List<string>
+        ViewData["Levels"] = new BreadcrumbsDto(Links: new[]
         {
-            "Domains",
-            $"Domains({domainDto.Name})",
-            "Edit Topic",
-        };
-        ViewData["LevelLinks"] = new List<string>
-        {
-            Url.Action("Domain", "Home")!,
-            Url.Action("Index", "Domain", new { id })!,
-            Url.Action("EditTopic", "Domain", new { id })!,
-        };
+            new NavigationDto("Topic", Url.Action("Index", "Topic")!, false),
+            new NavigationDto($"Edit Topic ({topic.Name})", Url.Action("EditTopic", "Topic")!, true)
+        });
         return View(vm);
     }
 
     [HttpPost]
-    public async Task<IActionResult> EditTopic(string id, EditTopicViewModel vm)
+    public async Task<IActionResult> EditTopic(EditTopicViewModel vm)
     {
-        var (tokenUpdated, accessTokenDto) =
-            await _blogService.EnsureAccessToken(CookieHelper.GetAccessTokenFromCookie(HttpContext));
-        if (tokenUpdated)
-        {
-            CookieHelper.WriteAccessTokenToCookie(HttpContext, accessTokenDto);
-        }
+        var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
 
-        var res = await _blogService.EditTopic(id, vm.TopicId, new DomainTopicUpdateDto(Name: vm.Name),
-            accessTokenDto.AccessToken);
+        var res = await _blogService.EditTopic(vm.DomainId, vm.TopicId, new DomainTopicUpdateDto(Name: vm.Name),
+            accessToken.AccessToken!);
 
-        return RedirectToAction("Index", new { id });
+        return RedirectToAction("Index");
     }
 
     /// <summary>

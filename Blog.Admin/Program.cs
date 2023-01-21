@@ -86,6 +86,7 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseMiddleware<AccessTokenInfoMiddleware>();
 app.UseMiddleware<DomainInfoMiddleware>();
 
 app.MapControllerRoute(

@@ -1,18 +1,6 @@
 @using Blog.Admin.ViewComponents
 @{
-    var navigation = new List<NavigationDto>
-    {
-        new NavigationDto(Name: "Help", Href: Url.Action("Logout", "Account"), Current: false)
-    };
-    var userNavigation = new List<NavigationDto>
-    {
-        new NavigationDto(Name: "Domains", Href: Url.Action("Index", "Domain"), Current: false),
-        new NavigationDto(Name: "Logout", Href: Url.Action("Logout", "Account"), Current: false),
-    };
-    // Active: "bg-gray-100", Not Active: ""
-    var userNavigationClass = (bool isActive) => isActive ? "bg-gray-100" : "";
-    //  Current: "bg-gray-100 text-gray-900", Default: "hover:bg-gray-50"
-    string NavigationCLass(bool isActive) => isActive ? "bg-gray-100 text-gray-900" : "hover:bg-gray-50";
+    var levels = ViewData["Levels"] != null ? (BreadcrumbsDto)ViewData["Levels"]! : new BreadcrumbsDto(Links: new List<NavigationDto>());
 }
 
 <!DOCTYPE html>
@@ -97,12 +85,6 @@
 
     @* Mobile menu, show/hide based on menu state. *@
     <nav x-show="mobileMenuOpen" style="display: none;" class="lg:hidden" aria-label="Global">
-        <div class="mx-auto max-w-3xl space-y-1 px-2 pt-2 pb-3 sm:px-4">
-            @foreach (var nav in navigation)
-            {
-                <a href="@nav.Href" aria-current="page" class="@NavigationCLass(nav.Current) block rounded-md py-2 px-3 text-base font-medium">@nav.Name</a>
-            }
-        </div>
         <div class="border-t border-gray-200 pt-4 pb-3">
             @(await Component.InvokeAsync<UserAccountDropDownViewComponent>("Type3"))
         </div>
@@ -110,7 +92,13 @@
 </header>
 
 <div x-data="modal">
-    @RenderBody()
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-4">
+        @if (levels.Links.ToList().Count > 0)
+        {
+            @(await Component.InvokeAsync<BreadcrumbsViewComponent>(levels))
+        }
+        @RenderBody()
+    </div>
 
     <div x-show="showModal" style="display: none;" class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <!--
