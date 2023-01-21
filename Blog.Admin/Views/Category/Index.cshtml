@@ -1,7 +1,10 @@
+@using Blog.Admin.Middlewares
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model CategoryViewModel
 @{
     ViewBag.Title = "title";
     Layout = "_Layout1";
+    var domainId = Context.GetDomainIdFromHttpContextItems();
 }
 
 
@@ -11,7 +14,7 @@
         <h1 class="text-lg font-medium leading-6 text-gray-900 sm:truncate">Category</h1>
     </div>
     <div class="mt-4 flex sm:mt-0 sm:ml-4">
-        <a asp-action="AddCategory" asp-controller="Category" type="button" class="order-0 inline-flex items-center rounded-md border border-transparent bg-purple-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 sm:order-1 sm:ml-3">Create</a>
+        <a asp-action="AddCategory" asp-controller="Category" asp-route-domainId="@domainId" type="button" class="order-0 inline-flex items-center rounded-md border border-transparent bg-purple-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 sm:order-1 sm:ml-3">Create</a>
     </div>
 </div>
 
@@ -41,7 +44,12 @@
                 </td>
                 <td class="hidden px-3 py-4 text-sm text-gray-500 lg:table-cell">@category.Id</td>
                 <td class="py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                    <a href="#" class="text-indigo-600 hover:text-indigo-900">Edit</a>
+                    <a asp-action="EditCategory" asp-route-id="@category.Id" asp-route-domainId="@Context.GetDomainIdFromHttpContextItems()" class="text-indigo-600 hover:text-indigo-900">Edit</a>
+                    <form id="delete-category-form-@category.Id" method="POST" asp-action="DeleteCategory" asp-controller="Category">
+                        <input type="hidden" name="@nameof(DeleteCategoryDto.CategoryId)" value="@category.Id"/>
+                        <input type="hidden" name="@nameof(DeleteCategoryDto.DomainId)" value="@category.Id"/>
+                    </form>
+                    <button x-on:click="popUpDanger('Delete category confirm', 'are you sure you want to delete the category of @category.Name (@category.Id)?', 'Cancel', 'Delete', '#delete-category-form-@category.Id')" class="text-indigo-600 hover:text-indigo-900">Delete</button>
                 </td>
             </tr>
         }

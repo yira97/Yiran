@@ -40,8 +40,8 @@ public class CategoryController : Controller
 
         ViewData["Levels"] = new BreadcrumbsDto(Links: new[]
         {
-            new NavigationDto("Category", Url.Action("Index", "Category")!, false),
-            new NavigationDto($"Add Category", Url.Action("AddCategory", "Category")!, true)
+            new NavigationDto("Category", Url.Action("Index", "Category", new { domainId })!, false),
+            new NavigationDto($"Add Category", Url.Action("AddCategory", "Category", new { domainId })!, true)
         });
         return View(vm);
     }
@@ -58,16 +58,16 @@ public class CategoryController : Controller
         var res = await _blogService.AddCategory(domainId, new DomainCategoryUpdateDto(Name: vm.Name),
             accessToken.AccessToken!);
 
-        return RedirectToAction("Index");
+        return RedirectToAction("Index", new { domainId });
     }
 
-    public async Task<IActionResult> EditCategory(string categoryId)
+    public async Task<IActionResult> EditCategory(string id)
     {
         var domainId = HttpContext.GetDomainIdFromHttpContextItems();
         if (string.IsNullOrEmpty(domainId)) return RedirectToAction("Index", "Domain");
 
         var domainDto = await _blogService.GetDomain(domainId);
-        var category = domainDto.Categories.FirstOrDefault(c => c.Id == categoryId);
+        var category = domainDto.Categories.FirstOrDefault(c => c.Id == id);
         if (category == null) return NotFound();
 
         var vm = new EditCategoryViewModel();
@@ -77,8 +77,9 @@ public class CategoryController : Controller
 
         ViewData["Levels"] = new BreadcrumbsDto(Links: new[]
         {
-            new NavigationDto("Category", Url.Action("Index", "Category")!, false),
-            new NavigationDto($"Edit Category ({category.Name})", Url.Action("EditCategory", "Category")!, true)
+            new NavigationDto("Category", Url.Action("Index", "Category", new { domainId })!, false),
+            new NavigationDto($"Edit Category ({category.Name})",
+                Url.Action("EditCategory", "Category", new { domainId })!, true)
         });
         return View(vm);
     }
@@ -93,27 +94,22 @@ public class CategoryController : Controller
             new DomainCategoryUpdateDto(Name: vm.Name),
             accessToken.AccessToken!);
 
-        return RedirectToAction("Index");
+        return RedirectToAction("Index", new { domainId = vm.DomainId });
     }
 
     /// <summary>
     /// 删除一个 Category
     /// </summary>
-    /// <param name="id"></param>
-    /// <param name="categoryId"></param>
     /// <returns></returns>
     [HttpPost]
-    public async Task<IActionResult> DeleteCategory(string id, string categoryId)
+    public async Task<IActionResult> DeleteCategory(DeleteCategoryDto deleteCategoryDto)
     {
-        var (tokenUpdated, accessTokenDto) =
-            await _blogService.EnsureAccessToken(CookieHelper.GetAccessTokenFromCookie(HttpContext));
-        if (tokenUpdated)
-        {
-            CookieHelper.WriteAccessTokenToCookie(HttpContext, accessTokenDto);
-        }
+        var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
+        if (string.IsNullOrEmpty(accessToken.RefreshToken)) return RedirectToAction("Register", "Account");
 
-        await _blogService.DeleteCategory(id, categoryId, accessTokenDto.AccessToken);
+        await _blogService.DeleteCategory(deleteCategoryDto.DomainId, deleteCategoryDto.CategoryId,
+            accessToken.AccessToken!);
 
-        return RedirectToAction("Index", new { id });
+        return RedirectToAction("Index", new { domainId = deleteCategoryDto.DomainId });
     }
 }
