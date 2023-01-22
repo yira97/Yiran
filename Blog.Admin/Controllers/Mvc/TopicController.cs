@@ -27,21 +27,21 @@ public class TopicController : Controller
         var vm = new TopicViewModel();
         vm.Topics = domain.Topics.ToList();
         ViewData[ViewHelper.ViewData.ActiveNav] = RouteHelper.Controller.Topic;
-        return View();
+        return View(vm);
     }
 
     public async Task<IActionResult> AddTopic()
     {
         var domainId = HttpContext.GetDomainIdFromHttpContextItems();
         if (string.IsNullOrEmpty(domainId)) return RedirectToAction("Index", "Domain");
-        var domain = await _blogService.GetDomain(domainId);
 
         var vm = new AddTopicViewModel();
+        vm.DomainId = domainId;
 
         ViewData["Levels"] = new BreadcrumbsDto(Links: new[]
         {
-            new NavigationDto("Topic", Url.Action("Index", "Topic")!, false),
-            new NavigationDto($"Add Topic", Url.Action("AddTopic", "Topic")!, true)
+            new NavigationDto("Topic", Url.Action("Index", "Topic", new { domainId })!, false),
+            new NavigationDto($"Add Topic", Url.Action("AddTopic", "Topic", new { domainId })!, true)
         });
         return View(vm);
     }
@@ -50,23 +50,21 @@ public class TopicController : Controller
     public async Task<IActionResult> AddTopic(AddTopicViewModel vm)
     {
         var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
+        if (string.IsNullOrEmpty(accessToken.AccessToken)) return RedirectToAction("Register", "Account");
 
-        var domainId = HttpContext.GetDomainIdFromHttpContextItems();
-        if (string.IsNullOrEmpty(domainId)) return RedirectToAction("Index", "Domain");
-
-        var res = await _blogService.AddTopic(domainId, new DomainTopicUpdateDto(Name: vm.Name),
+        var res = await _blogService.AddTopic(vm.DomainId, new DomainTopicUpdateDto(Name: vm.Name),
             accessToken.AccessToken);
 
-        return RedirectToAction("Index");
+        return RedirectToAction("Index", new { domainId = vm.DomainId });
     }
 
-    public async Task<IActionResult> EditTopic(string topicId)
+    public async Task<IActionResult> EditTopic(string id)
     {
         var domainId = HttpContext.GetDomainIdFromHttpContextItems();
         if (string.IsNullOrEmpty(domainId)) return RedirectToAction("Index", "Domain");
 
         var domainDto = await _blogService.GetDomain(domainId);
-        var topic = domainDto.Topics.FirstOrDefault(c => c.Id == topicId);
+        var topic = domainDto.Topics.FirstOrDefault(c => c.Id == id);
         if (topic == null) return NotFound();
 
         var vm = new EditTopicViewModel();
@@ -76,8 +74,8 @@ public class TopicController : Controller
 
         ViewData["Levels"] = new BreadcrumbsDto(Links: new[]
         {
-            new NavigationDto("Topic", Url.Action("Index", "Topic")!, false),
-            new NavigationDto($"Edit Topic ({topic.Name})", Url.Action("EditTopic", "Topic")!, true)
+            new NavigationDto("Topic", Url.Action("Index", "Topic", new { domainId })!, false),
+            new NavigationDto($"Edit Topic ({topic.Name})", Url.Action("EditTopic", "Topic", new { domainId })!, true)
         });
         return View(vm);
     }
@@ -86,32 +84,28 @@ public class TopicController : Controller
     public async Task<IActionResult> EditTopic(EditTopicViewModel vm)
     {
         var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
+        if (string.IsNullOrEmpty(accessToken.AccessToken)) return RedirectToAction("Register", "Account");
 
         var res = await _blogService.EditTopic(vm.DomainId, vm.TopicId, new DomainTopicUpdateDto(Name: vm.Name),
             accessToken.AccessToken!);
 
-        return RedirectToAction("Index");
+        return RedirectToAction("Index", new { domainId = vm.DomainId });
     }
 
     /// <summary>
     /// 删除一个 Topic
     /// </summary>
-    /// <param name="id"></param>
-    /// <param name="topicId"></param>
     /// <returns></returns>
     [HttpPost]
-    public async Task<IActionResult> DeleteTopic(string id, string topicId)
+    public async Task<IActionResult> DeleteTopic(DeleteTopicDto deleteTopicDto)
     {
-        var (tokenUpdated, accessTokenDto) =
-            await _blogService.EnsureAccessToken(CookieHelper.GetAccessTokenFromCookie(HttpContext));
-        if (tokenUpdated)
-        {
-            CookieHelper.WriteAccessTokenToCookie(HttpContext, accessTokenDto);
-        }
+        var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
+        if (string.IsNullOrEmpty(accessToken.RefreshToken)) return RedirectToAction("Register", "Account");
 
-        await _blogService.DeleteTopic(id, topicId,
-            accessTokenDto.AccessToken);
 
-        return RedirectToAction("Index", new { id });
+        await _blogService.DeleteTopic(deleteTopicDto.DomainId, deleteTopicDto.TopicId,
+            accessToken.AccessToken!);
+
+        return RedirectToAction("Index", new { domainId = deleteTopicDto.DomainId });
     }
 }

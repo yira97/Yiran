@@ -47,7 +47,7 @@
                     <a asp-action="EditCategory" asp-route-id="@category.Id" asp-route-domainId="@Context.GetDomainIdFromHttpContextItems()" class="text-indigo-600 hover:text-indigo-900">Edit</a>
                     <form id="delete-category-form-@category.Id" method="POST" asp-action="DeleteCategory" asp-controller="Category">
                         <input type="hidden" name="@nameof(DeleteCategoryDto.CategoryId)" value="@category.Id"/>
-                        <input type="hidden" name="@nameof(DeleteCategoryDto.DomainId)" value="@category.Id"/>
+                        <input type="hidden" name="@nameof(DeleteCategoryDto.DomainId)" value="@domainId"/>
                     </form>
                     <button x-on:click="popUpDanger('Delete category confirm', 'are you sure you want to delete the category of @category.Name (@category.Id)?', 'Cancel', 'Delete', '#delete-category-form-@category.Id')" class="text-indigo-600 hover:text-indigo-900">Delete</button>
                 </td>

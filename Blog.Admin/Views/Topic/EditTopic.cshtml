@@ -1,31 +1,35 @@
 @model EditTopicViewModel
 
 @{
-    Layout = "_LeveledLayout";
+    Layout = "_Layout1";
 }
 
-<form class="space-y-8 divide-y divide-gray-200 mt-4" method="post">
-    <div class="space-y-8 divide-y divide-gray-200 sm:space-y-5">
-        <div class="space-y-6 sm:space-y-5">
-            <div>
-                <h3 class="text-lg font-medium leading-6 text-gray-900">Topic Information</h3>
-                <p class="mt-1 max-w-2xl text-sm text-gray-500">Basic Info</p>
-            </div>
+<div class="px-4 sm:px-6 lg:px-8 mt-4">
+    <form method="post">
+        <input type="hidden" asp-for="TopicId" value="@Model.TopicId"/>
+        <input type="hidden" asp-for="DomainId" value="@Model.DomainId"/>
+        <div class="space-y-8 divide-y divide-gray-200 sm:space-y-5">
             <div class="space-y-6 sm:space-y-5">
-                <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
-                    <label asp-for="Name" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"></label>
-                    <div class="mt-1 sm:col-span-2 sm:mt-0">
-                        <input type="text" asp-for="Name" id="name" class="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm">
+                <div>
+                    <h3 class="text-lg font-medium leading-6 text-gray-900">Category Information</h3>
+                    <p class="mt-1 max-w-2xl text-sm text-gray-500">Basic Info</p>
+                </div>
+                <div class="space-y-6 sm:space-y-5">
+                    <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+                        <label asp-for="Name" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"></label>
+                        <div class="mt-1 sm:col-span-2 sm:mt-0">
+                            <input type="text" asp-for="Name" id="name" class="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm">
+                        </div>
+                        <span asp-validation-for="Name" class="mt-2 text-sm text-red-600" id="name-error"></span>
                     </div>
-                    <span asp-validation-for="Name" class="mt-2 text-sm text-red-600" id="name-error"></span>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="pt-5">
-        <div class="flex justify-end">
-            <button type="button" onclick="history.back()" class="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Back</button>
-            <button type="submit" class="ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Create</button>
+        <div class="pt-5">
+            <div class="flex justify-end">
+                <button type="button" onclick="history.back()" class="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Back</button>
+                <button type="submit" class="ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Update</button>
+            </div>
         </div>
-    </div>
-</form>
+    </form>
+</div>

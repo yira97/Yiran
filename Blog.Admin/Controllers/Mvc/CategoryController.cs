@@ -52,13 +52,10 @@ public class CategoryController : Controller
         var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
         if (string.IsNullOrEmpty(accessToken.AccessToken)) return RedirectToAction("Register", "Account");
 
-        var domainId = HttpContext.GetDomainIdFromHttpContextItems();
-        if (string.IsNullOrEmpty(domainId)) return RedirectToAction("Index", "Domain");
-
-        var res = await _blogService.AddCategory(domainId, new DomainCategoryUpdateDto(Name: vm.Name),
+        var res = await _blogService.AddCategory(vm.DomainId, new DomainCategoryUpdateDto(Name: vm.Name),
             accessToken.AccessToken!);
 
-        return RedirectToAction("Index", new { domainId });
+        return RedirectToAction("Index", new { domainId = vm.DomainId });
     }
 
     public async Task<IActionResult> EditCategory(string id)
