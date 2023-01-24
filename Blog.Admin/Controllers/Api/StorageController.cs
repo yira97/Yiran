@@ -40,7 +40,7 @@ namespace Blog.Admin.Controllers.Mvc.Api
 
 
         [HttpPost("upload/post-cover", Name = "UploadPostCover")]
-        public async Task<ActionResult> UploadPostCover(IFormFile file)
+        public async Task<ActionResult<GetInfo>> UploadPostCover(IFormFile file)
         {
             var (tokenUpdated, accessTokenDto) =
                 await _blogService.EnsureAccessToken(CookieHelper.GetAccessTokenFromCookie(HttpContext));
@@ -66,7 +66,7 @@ namespace Blog.Admin.Controllers.Mvc.Api
 
 
         [HttpPost("upload/post-content-image", Name = "UploadPostContentImage")]
-        public async Task<ActionResult<PutInfo>> UploadPostContentImage(IFormFile file)
+        public async Task<ActionResult<GetInfo>> UploadPostContentImage(IFormFile file)
         {
             var (tokenUpdated, accessTokenDto) =
                 await _blogService.EnsureAccessToken(CookieHelper.GetAccessTokenFromCookie(HttpContext));

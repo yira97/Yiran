@@ -848,8 +848,20 @@ select {
   margin-left: auto;
 }
 
+.-mr-1 {
+  margin-right: -0.25rem;
+}
+
+.ml-2 {
+  margin-left: 0.5rem;
+}
+
 .block {
   display: block;
+}
+
+.\!block {
+  display: block !important;
 }
 
 .inline-block {
@@ -986,6 +998,14 @@ select {
 
 .w-4 {
   width: 1rem;
+}
+
+.w-56 {
+  width: 14rem;
+}
+
+.w-28 {
+  width: 7rem;
 }
 
 .min-w-0 {

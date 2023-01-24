@@ -114,10 +114,10 @@ public class BlogService
         return result!;
     }
 
-    public async Task DeletePost(string postId)
+    public async Task DeletePost(string postId, string accessToken)
     {
         var request = new HttpRequestMessage(HttpMethod.Delete, $"api/v1/Post/{postId}");
-
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         var resp = await _httpClient.SendAsync(request);
         resp.EnsureSuccessStatusCode();
     }
