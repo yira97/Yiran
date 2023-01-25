@@ -10,5 +10,5 @@ public class AwsSettings
 
     public S3Settings S3Settings { get; set; } = new S3Settings();
 
-    public AwsSolutionSettings AwsSolutionSettings = new AwsSolutionSettings();
+    public AwsSolutionSettings AwsSolutionSettings  { get; set; }= new AwsSolutionSettings();
 }

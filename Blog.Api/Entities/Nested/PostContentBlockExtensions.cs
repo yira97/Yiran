@@ -8,7 +8,6 @@ public static class PostContentBlockExtensions
     {
         var dto = new PostContentBlockDto(
             Paragraph: src.Paragraph,
-            Image: src.Image?.ImageWithCaptionDto(),
             Images: src.Images?.Select(i => i.ImageWithCaptionDto())
         );
 
@@ -19,7 +18,6 @@ public static class PostContentBlockExtensions
     {
         var model = new PostContentBlock();
 
-        model.Image = dto.Image?.GenerateImageWithCaption();
         model.Images = dto.Images?.Select(i => i.GenerateImageWithCaption()).ToList();
         model.Paragraph = dto.Paragraph;
 

@@ -12,9 +12,10 @@ public class CreatePostViewModel
     public string Category { get; set; } = string.Empty;
     public string Language { get; set; } = "zh";
     public bool IsPublic { get; set; } = true;
-    public string PostContentDtoJson = string.Empty;
+
+    public string PostContentJson { get; set; } = string.Empty;
     public string DomainId { get; set; } = string.Empty;
 
-    public List<SelectListItem> DomainCategories { get; set; } = new();
-    public List<SelectListItem> DomainTopics { get; set; } = new();
+    public List<SelectListItem> DomainCategories = new();
+    public List<SelectListItem> DomainTopics = new();
 }

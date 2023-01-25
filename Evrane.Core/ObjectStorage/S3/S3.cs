@@ -63,7 +63,7 @@ public class S3 : IObjectStorageService
         ));
     }
 
-    public async Task<ImageGetInfoDto> ImageGetInfo(string key, TimeSpan duration,
+    public virtual async Task<ImageGetInfoDto> ImageGetInfo(string key, TimeSpan duration,
         Dictionary<int, string>? extraInfo = null)
     {
         var result = await GetInfo(key, duration);

@@ -52,7 +52,8 @@ public class ServerlessImageHandlerSolution : S3.S3
             new AmazonSecretsManagerClient(awsCredentials, RegionEndpoint.GetBySystemName(_awsSettings.Region));
     }
 
-    public async Task<ImageGetInfoDto> GetImageAccessInfo(string key, TimeSpan duration)
+    public override async Task<ImageGetInfoDto> ImageGetInfo(string key, TimeSpan duration,
+        Dictionary<int, string>? extraInfo = null)
     {
         var secret = await GetSecretValue();
         var bSecret = Encoding.ASCII.GetBytes(secret);

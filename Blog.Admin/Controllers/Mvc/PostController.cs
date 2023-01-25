@@ -54,11 +54,13 @@ namespace Blog.Admin.Controllers.Mvc
         [HttpPost]
         public async Task<IActionResult> Create(CreatePostViewModel vm)
         {
-            var postContent = JsonSerializer.Deserialize<PostContentDto>(vm.PostContentDtoJson);
+            var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
+            if (string.IsNullOrEmpty(accessToken.AccessToken)) return RedirectToAction("Login", "Account");
+            var postContent = JsonSerializer.Deserialize<PostContentDto>(vm.PostContentJson);
             var updateDto = new PostUpdateDto(Title: vm.Title, SubTitle: vm.SubTitle, Slug: vm.Slug, Topic: vm.Topic,
                 Category: vm.Category, Language: vm.Language, IsPublic: vm.IsPublic, DomainId: vm.DomainId,
                 Content: postContent!);
-            var post = await _blogService.CreatePost(updateDto);
+            var post = await _blogService.CreatePost(updateDto, accessToken.AccessToken);
 
             return RedirectToAction("Index", new { id = post.Id });
         }

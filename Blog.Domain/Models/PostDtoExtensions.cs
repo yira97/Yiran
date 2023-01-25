@@ -24,25 +24,10 @@ public static class PostDtoExtensions
         {
             var block = contentBlocks[i];
 
-            var blockImage = block.Image;
-            if (blockImage != null)
-            {
-                blockImage = blockImage with
-                {
-                    GetInfo = await imageGetInfoSource(blockImage.ResourceId)
-                };
-
-                contentBlocks[i] = contentBlocks[i] with
-                {
-                    Image = blockImage
-                };
-                continue;
-            }
-
             var blockImages = block.Images?.ToList();
             if (blockImages != null)
             {
-                for (int j = 0; i < blockImages.Count; j++)
+                for (int j = 0; j < blockImages.Count; j++)
                 {
                     blockImages[j] = blockImages[j] with
                     {

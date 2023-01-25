@@ -37,13 +37,7 @@ public static class StaticResourceEntityExtensions
 
         foreach (var b in src.Content.Blocks)
         {
-            if (b.Image != null)
-            {
-                if (b.Image.ResourceId.Length > 0) throw new BadHttpRequestException("no resource id in cover");
-                _ = srcElements.Append(new CategoryResource(ResourceId: b.Image.ResourceId,
-                    Category: (int)StaticResourceCategory.POST_COVER));
-            }
-            else if (b.Images != null)
+            if (b.Images != null)
             {
                 foreach (var im in b.Images)
                 {

@@ -89,9 +89,10 @@ public class BlogService
         return result!;
     }
 
-    public async Task<PostDto> CreatePost(PostUpdateDto updateDto)
+    public async Task<PostDto> CreatePost(PostUpdateDto updateDto, string accessToken)
     {
         var request = new HttpRequestMessage(HttpMethod.Post, "api/v1/Post");
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         request.Content =
             new StringContent(JsonSerializer.Serialize(updateDto), Encoding.UTF8, "application/json");
 
