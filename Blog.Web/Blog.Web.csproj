@@ -18,4 +18,12 @@
       <Folder Include="wwwroot\lib" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="7.0.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Blog.Domain\Blog.Domain.csproj" />
+    </ItemGroup>
+
 </Project>

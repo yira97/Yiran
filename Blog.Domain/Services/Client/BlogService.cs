@@ -131,7 +131,7 @@ public class BlogService
         resp.EnsureSuccessStatusCode();
     }
 
-    public async Task<DomainDto> GetDomain(string domainId)
+    public async Task<DomainDto> GetDomainAsync(string domainId)
     {
         var request = new HttpRequestMessage(HttpMethod.Get, $"api/v1/Domain/{domainId}");
 

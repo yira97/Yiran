@@ -1,19 +1,17 @@
 using Blog.Admin.Helper;
-using Blog.Domain.Services.Client;
 
 namespace Blog.Admin.Middlewares;
 
-public class DomainInfoMiddleware
+public class DomainInfoMiddleware : IMiddleware
 {
-    private readonly RequestDelegate _next;
-    public static readonly object DomainIdHttpContextItemsMiddlewareKey = new();
+    public static readonly string DomainIdHttpContextItemsMiddlewareKey =
+        "com.evrane.blog.admin.middleware.DomainInfoMiddleware";
 
-    public DomainInfoMiddleware(RequestDelegate next)
+    public DomainInfoMiddleware()
     {
-        _next = next;
     }
 
-    public async Task InvokeAsync(HttpContext context)
+    public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
         var domainIdQuery = context.Request.Query["domainId"].ToString();
         var domainIdCookie = CookieHelper.GetDefaultDomainFromCookie(context);
@@ -29,12 +27,18 @@ public class DomainInfoMiddleware
             context.Items[DomainIdHttpContextItemsMiddlewareKey] = domainIdCookie;
         }
 
-        await _next(context);
+        await next(context);
     }
 }
 
-public static partial class HttpContextExtensions
+public static partial class Extensions
 {
+    public static IApplicationBuilder UseDomainInfoMiddleware(this
+        IApplicationBuilder app)
+    {
+        return app.UseMiddleware<DomainInfoMiddleware>();
+    }
+
     public static string? GetDomainIdFromHttpContextItems(this HttpContext context)
     {
         var domainId = context.Items[DomainInfoMiddleware.DomainIdHttpContextItemsMiddlewareKey];

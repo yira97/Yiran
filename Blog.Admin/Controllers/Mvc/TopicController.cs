@@ -22,7 +22,7 @@ public class TopicController : Controller
         var domainId = HttpContext.GetDomainIdFromHttpContextItems();
         if (string.IsNullOrEmpty(domainId)) return RedirectToAction("Index", "Domain");
 
-        var domain = await _blogService.GetDomain(domainId);
+        var domain = await _blogService.GetDomainAsync(domainId);
 
         var vm = new TopicViewModel();
         vm.Topics = domain.Topics.ToList();
@@ -63,7 +63,7 @@ public class TopicController : Controller
         var domainId = HttpContext.GetDomainIdFromHttpContextItems();
         if (string.IsNullOrEmpty(domainId)) return RedirectToAction("Index", "Domain");
 
-        var domainDto = await _blogService.GetDomain(domainId);
+        var domainDto = await _blogService.GetDomainAsync(domainId);
         var topic = domainDto.Topics.FirstOrDefault(c => c.Id == id);
         if (topic == null) return NotFound();
 

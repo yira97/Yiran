@@ -66,7 +66,8 @@ builder.Services.AddAuthentication(options =>
 // The typed client is registered as transient with DI container
 builder.Services.AddHttpClient<BlogService>();
 builder.Services.AddHttpClient<S3HttpClient>();
-
+builder.Services.AddSingleton<AccessTokenInfoMiddleware>();
+builder.Services.AddSingleton<DomainInfoMiddleware>();
 
 var app = builder.Build();
 
@@ -78,7 +79,6 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();

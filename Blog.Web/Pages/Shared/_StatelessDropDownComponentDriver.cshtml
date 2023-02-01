@@ -1,0 +1,16 @@
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('statelessDropDownComponent', () => ({
+           dropDownOpen: false,
+           toggleDropdown() {
+             this.dropDownOpen = !this.dropDownOpen
+           },
+           onEscClick() {
+             this.close()
+           },
+           close() {
+             this.dropDownOpen = false;
+           },
+        }))
+    })
+</script>

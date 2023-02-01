@@ -5,7 +5,10 @@
       "dotnetRunMessages": true,
       "applicationUrl": "http://localhost:5002",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation",
+        "JwtSettings__IssuerKeyPath": "/Users/yiran/Developer/RockMoss/src/Auth/rsa-public-key.pem",
+        "Domain": "eadaefd7-5496-4c9a-848b-79284b3da4f4"
       }
     }
   }

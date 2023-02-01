@@ -28,7 +28,7 @@ namespace Blog.Admin.Controllers.Mvc
 
             var domainId = HttpContext.GetDomainIdFromHttpContextItems();
             if (string.IsNullOrEmpty(domainId)) return RedirectToAction("Index", "Domain");
-            var domain = await _blogService.GetDomain(domainId);
+            var domain = await _blogService.GetDomainAsync(domainId);
 
             var vm = new CreatePostViewModel();
             vm.DomainId = domainId;

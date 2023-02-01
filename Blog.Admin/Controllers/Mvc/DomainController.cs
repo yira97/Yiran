@@ -77,7 +77,7 @@ public class DomainController : Controller
     public async Task<IActionResult> Edit(string id)
     {
         var userId = HttpContext.User.GetUserId();
-        var domain = await _blogService.GetDomain(id);
+        var domain = await _blogService.GetDomainAsync(id);
         var vm = new EditDomainViewModel();
         vm.Id = domain.Id;
         vm.Name = domain.Name;

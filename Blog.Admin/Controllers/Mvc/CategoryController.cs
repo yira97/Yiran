@@ -22,7 +22,7 @@ public class CategoryController : Controller
     {
         var domainId = HttpContext.GetDomainIdFromHttpContextItems();
         if (string.IsNullOrEmpty(domainId)) return RedirectToAction("Index", "Domain");
-        var domain = await _blogService.GetDomain(domainId);
+        var domain = await _blogService.GetDomainAsync(domainId);
 
         var vm = new CategoryViewModel();
         vm.Categories = domain.Categories.ToList();
@@ -63,7 +63,7 @@ public class CategoryController : Controller
         var domainId = HttpContext.GetDomainIdFromHttpContextItems();
         if (string.IsNullOrEmpty(domainId)) return RedirectToAction("Index", "Domain");
 
-        var domainDto = await _blogService.GetDomain(domainId);
+        var domainDto = await _blogService.GetDomainAsync(domainId);
         var category = domainDto.Categories.FirstOrDefault(c => c.Id == id);
         if (category == null) return NotFound();
 
