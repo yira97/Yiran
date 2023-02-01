@@ -2,9 +2,118 @@
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
+
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="bg-gray-100 pb-20">
+    <div class="h-10"></div>
+    <div class=" lg:w-[980px] w-[692px] mx-auto">
+        <h1 class="text-3xl font-bold mb-[24px]">Latest Posts</h1>
+
+        <div class="flex flex-wrap justify-between">
+            @* LARGE 1 *@
+            @{
+                var large = @Model.Posts.Any() ? @Model.Posts[0] : null;
+            }
+            <a asp-page="/Post/Index" asp-route-PostId="@large?.Id" class="block bg-white rounded-xl flex items-center overflow-hidden group cursor-pointer">
+                <picture class="basis-[453px] lg:basis-[643px] overflow-hidden bg-black">
+                    <img class="w-full aspect-[16/9] object-cover scale-100 group-hover:scale-105 ease-in duration-200 opacity-100 group-hover:opacity-80" src="@large?.Content.Cover?.GetInfo?.UrlXl"/>
+                </picture>
+                <div class="ml-10">
+                    <p class="text-xs font-medium text-gray-600">@Model.Categories.Find(c => c.Id == large?.Category)?.Name</p>
+                    <h3 class="text-3xl font-semibold mt-2">@large?.Title</h3>
+                    <p class="text-sm font-medium text-gray-500 mt-2">@large?.CreatedAt.ToString("D")</p>
+                </div>
+            </a>
+
+            @* MEDIUM 4 *@
+
+            @for (var mIndex = 1; mIndex <= 4; mIndex++)
+            {
+                var medium = @Model.Posts.Count() >= mIndex + 1 ? @Model.Posts[mIndex + 1] : null;
+                <a asp-page="/Post/Index" asp-route-PostId="@medium?.Id" class="block mt-[36px] w-[472px] rounded-xl overflow-hidden">
+                    <picture class="h-[264px]">
+                        @{
+                            var mCover = medium?.Content.Cover;
+                            if (mCover != null)
+                            {
+                                <img class="w-full h-[264px] object-cover scale-100 group-hover:scale-105 ease-in duration-200 opacity-100 group-hover:opacity-80" src="@mCover?.GetInfo?.UrlXl"/>
+                            }
+                            else
+                            {
+                                <div class="w-full h-[264px] flex items-center justify-center bg-gray-300">
+                                    <svg class="h-10 w-10" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+                                        <g>
+                                            <g>
+                                                <path d="m220 512h72v-512h-65z" fill="#ecc97e"/><path d="m224.817 159.658 67.183-1.158v-57.736l-66.37-.523z" fill="#d58b6d"/>
+                                            </g>
+                                            <g>
+                                                <path d="m178 35h205l1 94-212-2-44-20v-49z" fill="#e5e5e5"/><path d="m353.64 128.714 30.36.286-1-94h-27.38z" fill="#b5a3a3"/>
+                                            </g>
+                                        </g>
+                                    </svg>
+                                </div>
+                            }
+                        }
+                    </picture>
+                    @if (medium != null)
+                    {
+                        <div class="ml-10">
+                            <p class="text-xs font-medium text-gray-600">@Model.Categories.Find(c => c.Id == medium?.Category)?.Name</p>
+                            <h3 class="text-2xl font-semibold mt-2">@medium?.Title</h3>
+                            <p class="text-sm font-medium text-gray-500 mt-2">@medium?.CreatedAt.ToString("D")</p>
+                        </div>
+                    }
+                </a>
+            }
+
+            @* SMALL 6 *@
+            @for (var sIndex = 5; sIndex <= 10; sIndex++)
+            {
+                var small = @Model.Posts.Count() >= sIndex + 1 ? @Model.Posts[sIndex + 1] : null;
+                <a asp-page="/Post/Index" asp-route-PostId="@small?.Id" class="block mt-[36px] w-[303px] rounded-xl overflow-hidden">
+                    <picture class="h-[170px]">
+                        @{
+                            var mCover = small?.Content.Cover;
+                            if (mCover != null)
+                            {
+                                <img class="w-full h-[170px] object-cover scale-100 group-hover:scale-105 ease-in duration-200 opacity-100 group-hover:opacity-80" src="@mCover?.GetInfo?.UrlXl"/>
+                            }
+                            else
+                            {
+                                <div class="w-full h-[170px] flex items-center justify-center bg-gray-300">
+                                    <svg class="h-10 w-10" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+                                        <g>
+                                            <g>
+                                                <path d="m220 512h72v-512h-65z" fill="#ecc97e"/><path d="m224.817 159.658 67.183-1.158v-57.736l-66.37-.523z" fill="#d58b6d"/>
+                                            </g>
+                                            <g>
+                                                <path d="m178 35h205l1 94-212-2-44-20v-49z" fill="#e5e5e5"/><path d="m353.64 128.714 30.36.286-1-94h-27.38z" fill="#b5a3a3"/>
+                                            </g>
+                                        </g>
+                                    </svg>
+                                </div>
+                            }
+                        }
+                    </picture>
+                    @if (small != null)
+                    {
+                        <div class="ml-10">
+                            <p class="text-xs font-medium text-gray-600">@Model.Categories.Find(c => c.Id == small?.Category)?.Name</p>
+                            <h3 class="text-2xl font-semibold mt-2">@small?.Title</h3>
+                            <p class="text-sm font-medium text-gray-500 mt-2">@small?.CreatedAt.ToString("D")</p>
+                        </div>
+                    }
+                </a>
+            }
+
+        </div>
+    </div>
 </div>
+
+@* More from Domain *@
+<section class="py-20">
+    <div class="block flex justify-center">
+        <a asp-page="/Archive/Index" class="inline-flex items-center rounded-full border-2 border-black bg-white px-6 py-2 text-base font-medium text-black shadow-sm hover:bg-black hover:text-white transition ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">View Archive</a>
+    </div>
+</section>
