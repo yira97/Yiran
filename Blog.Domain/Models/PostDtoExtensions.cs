@@ -6,6 +6,7 @@ public static class PostDtoExtensions
 {
     public delegate Task<ImageGetInfoDto> ImageGetInfoSource(string resourceId);
 
+
     public static async Task<PostDto> WithResourceGetInfo(this PostDto src, ImageGetInfoSource imageGetInfoSource)
     {
         var contentCover = src.Content.Cover;

@@ -1,3 +1,5 @@
+using System.Collections.Specialized;
+using System.Globalization;
 using Blog.Domain.Models;
 using Blog.Domain.Services.Client;
 using Blog.Web.Services;
@@ -27,6 +29,8 @@ public class Index : PageModel
     public int YearCount { get; set; } = 5;
 
     public CursorBasedQueryResult<PostDto> Posts { get; set; } = new();
+
+    public SortedDictionary<DateTime, List<PostDto>> PostForDisplay { get; set; } = new();
     public List<DomainCategoryDto> Categories { get; set; } = new();
     public List<DomainTopicDto> Topics { get; set; } = new();
 
@@ -50,6 +54,25 @@ public class Index : PageModel
 
         Posts = await _blogService.ListPosts(pageSize, pageToken, orderBy, ascending, domainId, publicOnly, null,
             topicId);
+
+        Posts.Data.ForEach(p =>
+        {
+            var time = new DateTime(year: p.CreatedAt.Year, month: p.CreatedAt.Month, day: 1);
+            if (PostForDisplay.TryGetValue(time, out var postsInTime))
+            {
+                postsInTime.Add(p);
+            }
+            else
+            {
+                postsInTime = new List<PostDto>()
+                {
+                    p
+                };
+            }
+
+            PostForDisplay[time] = postsInTime;
+        });
+
         Categories = domainInfo.Categories.ToList();
         Topics = domainInfo.Topics.ToList();
 

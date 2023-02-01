@@ -66,7 +66,8 @@ public class PostRepository : IPostRepository
     }
 
 
-    public async Task<CursorBasedQueryResult<PostDto>> ListPosts(CursorBasedQuery order)
+    public async Task<CursorBasedQueryResult<PostDto>> ListPosts(CursorBasedQuery order,
+        ListPostFlag flag = ListPostFlag.Cover)
     {
         var query = _context.Posts.Where(p => p.DeletedAt == null);
 
@@ -147,6 +148,23 @@ public class PostRepository : IPostRepository
         _logger.LogInformation("Exec sql: {Sql}", query.ToQueryString());
 
         var queryResult = await query.ToListAsync();
+
+        queryResult.ForEach(r =>
+        {
+            var content = r.Content;
+
+            if (!flag.HasFlag(ListPostFlag.Cover) && content.Cover != null)
+            {
+                content.Cover = null;
+            }
+
+            if (!flag.HasFlag(ListPostFlag.ContentBlock) && content.Blocks.Count > 0)
+            {
+                content.Blocks = new List<PostContentBlock>();
+            }
+        });
+
+
         var returnList = queryResult.Take(order.PageSize).Select(e => e.PostDto()).ToList();
 
         var result = new CursorBasedQueryResult<PostDto>

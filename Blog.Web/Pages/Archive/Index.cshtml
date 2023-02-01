@@ -1,4 +1,6 @@
 @page
+@using Blog.Domain.Models
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model Blog.Web.Pages.Archive.Index
 
 @{
@@ -6,7 +8,7 @@
 }
 
 <div class="mt-4 bg-gray-100 w-screen">
-    <div class="flex gap-4 items-center lg:w-[960px] w-[692px]  mx-auto pt-8 pb-8 text-sm">
+    <div class="flex gap-4 items-center lg:w-[980px] w-[692px]  mx-auto pt-8 pb-8 text-sm">
         <div class="font-semibold text-gray-500">Filter</div>
 
         @* Domain Dropdown Selection *@
@@ -186,6 +188,27 @@
 
         <a asp-route-TopicIdFilter="" asp-route-YearFilter="" asp-route-MonthFilter="" class="text-blue-600 font-medium">Reset</a>
     </div>
+</div>
+
+
+<div class="lg:w-[980px] w-[692px] mx-auto mt-12">
+    @foreach (var (t, list) in Model.PostForDisplay.Reverse())
+    {
+        <div class="text-2xl font-bold mb-4">@t.ToString("y")</div>
+        @foreach (var p in list)
+        {
+            <a asp-page="/Post/Index" asp-route-PostId="@p.Id" class="border-t border-gray-900/20 block flex py-8 items-center">
+                <picture class="lg:w-[295px] w-[264px]">
+                    <img alt="cover" class="aspect-[1.8/1] object-cover rounded-xl" src="@p.Content.Cover?.GetInfo?.UrlSm"/>
+                </picture>
+                <div class="ml-10">
+                    <p class="text-xs font-medium text-gray-600">@Model.Categories.Find(c => c.Id == p.Category)?.Name</p>
+                    <h3 class="text-2xl font-semibold mt-2">@p.Title</h3>
+                    <p class="text-sm font-medium text-gray-500 mt-2">@p.CreatedAt.ToString("D")</p>
+                </div>
+            </a>
+        }
+    }
 </div>
 
 @section Scripts

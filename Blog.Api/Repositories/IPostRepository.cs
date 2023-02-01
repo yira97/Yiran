@@ -16,7 +16,7 @@ public interface IPostRepository
 
     Task<PostDto?> GetPostInfo(string postId);
 
-    Task<CursorBasedQueryResult<PostDto>> ListPosts(CursorBasedQuery order);
+    Task<CursorBasedQueryResult<PostDto>> ListPosts(CursorBasedQuery order, ListPostFlag flag = ListPostFlag.Cover);
     Task<IEnumerable<DomainDto>> ListAllDomains();
     DomainDto CreateDomain(DomainUpdateDto updateDto, string userId);
     Task<DomainDto?> GetDomainInfo(string domainId);
