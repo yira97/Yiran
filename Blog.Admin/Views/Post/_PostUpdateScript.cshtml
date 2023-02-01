@@ -1,0 +1,273 @@
+@using Newtonsoft.Json
+@using System.Text.Json
+@model PostUpdateScriptDto
+@{
+    var json = "";
+    var serializeOptions = new JsonSerializerOptions
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+    };
+    if (Model.InitialPostContentData != null)
+    {
+        json = System.Text.Json.JsonSerializer.Serialize(Model.InitialPostContentData, serializeOptions);
+    }
+}
+<script>
+const newBlock = () => {
+    return {
+        menuOpen: false,
+        uuid: uuidv4(),
+    };
+}
+
+const newImageContent = () => {
+    return {
+        uuid: uuidv4(),
+        status: 'no-image',
+        caption: null,
+        resourceId: null,
+        isUploading: false,
+        url: null,
+        fileName: null,
+        fileSize: null,
+    };
+}
+
+const setBlockType = (block, type) => {
+    switch (type) {
+    case 'images':
+        block.paragraph = null;
+        block.images = [newImageContent()];
+        break;
+    case 'paragraph':
+        block.paragraph = ''
+        block.images = null;
+        break;
+    }
+}
+
+const newParagraphBlock = () => {
+    const block = newBlock();
+    setBlockType(block, 'paragraph');
+    return block;
+}
+
+const newPostContentData = () => {
+    return {
+        cover: newImageContent(),
+        blocks: [
+           newParagraphBlock()
+        ],
+    };
+}
+
+const convertToLocalPostContentData = (loadedData) => {
+   var data = newPostContentData();
+   if (loadedData.cover) {
+     data.cover = newImageContent();
+     data.cover.status = 'confirmed'
+     data.cover.url = loadedData.cover.getInfo?.urlSm;
+     data.cover.caption = loadedData.cover.caption;
+     data.cover.resourceId = loadedData.cover.resourceId;
+   }
+   if (loadedData.blocks) {
+     data.blocks = loadedData.blocks.map(b => {
+       var block = newBlock();
+       if(b.paragraph != null) {
+         setBlockType(block,  'paragraph');
+         block.paragraph = b.paragraph;
+       } else if (b.images != null) {
+         setBlockType(block, 'images');
+         @* 装配图像块 *@
+         block.images = b.images.map(i => {
+           var image = newImageContent();
+           image.status = 'confirmed'
+           image.url = i.getInfo?.urlSm;
+           image.caption = i.caption;
+           image.resourceId = i.resourceId;
+           return image;
+         })
+       }
+       return block;
+     })
+   }
+   return data;
+}
+
+const putInfoPostCoverUrl = `@(Url.RouteUrl("UploadPostCover"))`
+const putInfoPostContentImageUrl = `@(Url.RouteUrl("UploadPostContentImage"))`
+
+let initialPostContentData = null;
+
+let initialPostContentDataString = null;
+@if (!string.IsNullOrEmpty(json))
+{
+    @Html.Raw($"initialPostContentDataString = `{json}`;")
+}
+if (initialPostContentDataString != null) {
+  const parsed = JSON.parse(initialPostContentDataString);
+  console.log("got json", parsed);
+  initialPostContentData = convertToLocalPostContentData(parsed);
+  console.log("initialized successfully", initialPostContentData);
+}
+
+const postContentJsonSelector = "#@nameof(PostCreateViewModel.PostContentJson)"
+const postUpdateFormSelector = "#post-update-form"
+
+const setBlockMenuClose = (block) => {
+    block.menuOpen = false;
+}
+
+const uploadImageAsync = async (url, file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+  
+    const resp = await fetch(url, {
+        method: "POST",
+        body: formData
+    })
+    
+    return await resp.json()
+}
+
+document.addEventListener('alpine:init', () => {
+  Alpine.data('postUpdate', () => ({
+    postContentData: initialPostContentData ?? newPostContentData(),
+    coverUploadInputId() {
+      return 'cover-upload-input-id';
+    },
+    contentImagesUploadInputId(indexOfBlock, indexOfImage) {
+      return 'content-images-upload-input-id-' + indexOfBlock + '-' + indexOfImage;
+    },
+    coverTextareaId() {
+      return 'cover-textarea-id'
+    },
+    contentImagesTextareaId(indexOfBlock, indexOfImage) {
+      return 'content-images-textarea-id-' + indexOfBlock + '-' + indexOfImage;
+    },
+    closeMenu(idx) {
+      const block = this.postContentData.blocks[idx]
+      if (block == null) return;
+      setBlockMenuClose(block);
+    },
+    async coverUploadChange(e) {
+      const cover = this.postContentData.cover;
+      cover.isUploading = true;    
+      
+      const file = e.target.files[0];
+      if (!file) return;
+      const info = await uploadImageAsync(putInfoPostCoverUrl, file)
+      
+      cover.status = 'not-confirmed';
+      cover.resourceId = info.resourceId;
+      cover.caption = '';
+      cover.isUploading = false;
+      cover.url = info.url;
+      cover.fileName = file.name;
+      cover.fileSize = file.size;
+    },
+    async contentImagesUploadChange(e, blockIndex, imageIndex) {
+      const b = this.postContentData.blocks[blockIndex];
+      const imgs = b.images;
+      const img = imgs[imageIndex];
+      
+      const file = e.target.files[0];
+      if (!file) return;
+      const info = await uploadImageAsync(putInfoPostContentImageUrl, file)
+
+      img.status = 'not-confirmed'
+      img.resourceId = info.resourceId;
+      img.caption = '';
+      img.isUploading = false;
+      img.url = info.url;
+      img.fileName = file.name;
+      img.fileSize = file.size;
+      
+      imgs.push(newImageContent());
+    },
+    deleteCover() {
+      this.postContentData.cover =  newImageContent()
+    },
+    deleteImage(indexOfBlock, indexOfImage) {
+      const b = this.postContentData.blocks[indexOfBlock];
+      const imgs = b.images;
+      imgs.splice(indexOfImage, 1);
+    },
+    addBlock(idx) {
+      this.postContentData.blocks.splice(idx, 0, newParagraphBlock());
+    },
+    addBlockAtEnd() {
+      this.postContentData.blocks.push(newParagraphBlock());
+    },
+    deleteBlock(idx) {
+      this.postContentData.blocks.splice(idx, 1);
+    },
+    turnIntoImagesBlock(idx) {
+      const b = this.postContentData.blocks[idx]
+      setBlockType(b, 'images');
+    },
+    turnIntoParagraphBlock(idx) {
+      const b = this.postContentData.blocks[idx]
+      setBlockType(b, 'paragraph');
+    },
+    dragStartHandler(event, index) {
+      event.dataTransfer.setData('text/plain', index);
+    },
+    dropHandler(event, index) {
+      const fromIndex = event.dataTransfer.getData('text/plain');
+      if (fromIndex === index) return;
+      const bs = this.postContentData.blocks;
+      const deleted = bs.splice(fromIndex, 1);
+      const padding = fromIndex < index ? -1 : 0;
+      bs.splice(index + padding,  0, deleted[0]);
+    },
+    dropOverHandler(event, index) {
+      event.preventDefault();
+      event.dataTransfer.dropEffect = 'move';
+    },
+    handleSubmit() {
+      @* 手动处理 cover 和 content *@
+      const form = document.querySelector(postUpdateFormSelector);
+      const postContentJson = document.querySelector(postContentJsonSelector)
+      
+      @* 用于提交的object *@
+      const postContent = {
+        cover: {
+          resourceId: this.postContentData.cover.resourceId,
+          caption: this.postContentData.cover.caption,
+        },
+        blocks: []
+      }
+      
+      @* 过滤并处理 *@
+      for (let i = 0; i <  this.postContentData.blocks.length; i++) {
+          const b = this.postContentData.blocks[i];
+          if (b.paragraph != null) {
+            if (b.paragraph.length === 0) continue;
+            postContent.blocks.push({paragraph: b.paragraph});
+            continue;
+          }
+          if (b.images != null) {
+            if (b.images.length === 0) continue;
+            const imgs = [];
+            for (let ii = 0; ii < b.images.length; ii++) {
+              const img = b.images[ii];
+              if (img.resourceId != null && img.resourceId.length > 0) {
+                imgs.push({
+                  resourceId: img.resourceId,
+                  caption: img.caption,
+                });
+              }
+            }
+            postContent.blocks.push({images: imgs});
+            continue;
+          }
+      }
+      
+      @* 提交表单 *@
+      postContentJson.value = JSON.stringify(postContent);
+      form.submit();
+    },
+  }))
+})
+</script>

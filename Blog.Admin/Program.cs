@@ -63,6 +63,7 @@ builder.Services.AddAuthentication(options =>
     })
     .AddCookie(options => { options.LoginPath = new PathString("/Account/Login"); });
 
+
 // The typed client is registered as transient with DI container
 builder.Services.AddHttpClient<BlogService>();
 builder.Services.AddHttpClient<S3HttpClient>();

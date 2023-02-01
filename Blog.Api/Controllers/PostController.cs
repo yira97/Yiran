@@ -102,6 +102,10 @@ public class PostController : ControllerBase
     {
         var post = await _unitOfWork.PostRepository.GetPostInfo(postId);
         if (post == null) return NotFound();
+        if (!post.isPublic && !HttpContext.User.IsAdmin())
+        {
+            return Unauthorized();
+        }
 
         post = await post.WithResourceGetInfo(async id =>
         {

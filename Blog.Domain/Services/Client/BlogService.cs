@@ -13,6 +13,9 @@ using Microsoft.Extensions.Configuration;
 
 namespace Blog.Domain.Services.Client;
 
+/// <summary>
+/// Http Client For Blog Service
+/// </summary>
 public class BlogService
 {
     private readonly HttpClient _httpClient;
@@ -154,10 +157,11 @@ public class BlogService
         return result!;
     }
 
-    public async Task<PostDto> GetPost(string postId)
+    public async Task<PostDto> GetPost(string postId, string? accessToken = null)
     {
         var request = new HttpRequestMessage(HttpMethod.Get, $"api/v1/Post/{postId}");
-
+        if (!string.IsNullOrEmpty(accessToken))
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         var resp = await _httpClient.SendAsync(request);
         resp.EnsureSuccessStatusCode();
         var result = await resp.Content.ReadFromJsonAsync<PostDto>();
@@ -172,7 +176,8 @@ public class BlogService
         string? domainId,
         bool? publicOnly,
         string? categoryId,
-        string? topicId
+        string? topicId,
+        string? accessToken = null
     )
     {
         var query = new Dictionary<string, string>();
@@ -187,6 +192,9 @@ public class BlogService
 
         var requestUri = QueryHelpers.AddQueryString("api/v1/Post", query!);
         var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
+
+        if (!string.IsNullOrEmpty(accessToken))
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
         var resp = await _httpClient.SendAsync(request);
         resp.EnsureSuccessStatusCode();

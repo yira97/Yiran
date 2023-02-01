@@ -24,13 +24,13 @@ namespace Blog.Admin.Controllers.Mvc
         public async Task<IActionResult> Create()
         {
             var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
-            if (string.IsNullOrEmpty(accessToken.AccessToken)) return RedirectToAction("Register", "Account");
+            if (string.IsNullOrEmpty(accessToken.AccessToken)) return RedirectToAction("Login", "Account");
 
             var domainId = HttpContext.GetDomainIdFromHttpContextItems();
             if (string.IsNullOrEmpty(domainId)) return RedirectToAction("Index", "Domain");
             var domain = await _blogService.GetDomainAsync(domainId);
 
-            var vm = new CreatePostViewModel();
+            var vm = new PostCreateViewModel();
             vm.DomainId = domainId;
             foreach (var category in domain.Categories)
             {
@@ -52,7 +52,7 @@ namespace Blog.Admin.Controllers.Mvc
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(CreatePostViewModel vm)
+        public async Task<IActionResult> Create(PostCreateViewModel vm)
         {
             var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
             if (string.IsNullOrEmpty(accessToken.AccessToken)) return RedirectToAction("Login", "Account");
@@ -75,7 +75,6 @@ namespace Blog.Admin.Controllers.Mvc
             string? topicId = null
         )
         {
-            var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
             var domainId = HttpContext.GetDomainIdFromHttpContextItems();
             if (string.IsNullOrEmpty(domainId)) return RedirectToAction("Index", "Domain");
 
@@ -102,11 +101,38 @@ namespace Blog.Admin.Controllers.Mvc
         [HttpGet]
         public async Task<IActionResult> Edit(string id)
         {
-            return View();
+            var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
+            if (string.IsNullOrEmpty(accessToken.AccessToken)) return RedirectToAction("Login", "Account");
+            var post = await _blogService.GetPost(id, accessToken.AccessToken);
+            var vm = new PostEditViewModel();
+            vm.Category = post.Category;
+            vm.Id = id;
+            vm.Language = post.Language;
+            vm.Slug = post.Slug;
+            vm.Title = post.Title;
+            vm.Topic = post.Topic;
+            vm.PostContent = post.Content;
+            vm.SubTitle = post.SubTitle;
+
+            var domainId = HttpContext.GetDomainIdFromHttpContextItems();
+            if (string.IsNullOrEmpty(domainId)) return RedirectToAction("Index", "Domain");
+            var domain = await _blogService.GetDomainAsync(domainId);
+
+            foreach (var category in domain.Categories)
+            {
+                vm.DomainCategories.Add(new SelectListItem(category.Name, category.Id));
+            }
+
+            foreach (var topic in domain.Topics)
+            {
+                vm.DomainTopics.Add(new SelectListItem(topic.Name, topic.Id));
+            }
+
+            return View(vm);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(EditPostViewModel vm)
+        public async Task<IActionResult> Edit(PostEditViewModel vm)
         {
             return View();
         }
