@@ -1,17 +1,6 @@
 @using Newtonsoft.Json
 @using System.Text.Json
 @model PostUpdateScriptDto
-@{
-    var json = "";
-    var serializeOptions = new JsonSerializerOptions
-    {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-    };
-    if (Model.InitialPostContentData != null)
-    {
-        json = System.Text.Json.JsonSerializer.Serialize(Model.InitialPostContentData, serializeOptions);
-    }
-}
 <script>
 const newBlock = () => {
     return {
@@ -96,20 +85,7 @@ const convertToLocalPostContentData = (loadedData) => {
 
 const putInfoPostCoverUrl = `@(Url.RouteUrl("UploadPostCover"))`
 const putInfoPostContentImageUrl = `@(Url.RouteUrl("UploadPostContentImage"))`
-
-let initialPostContentData = null;
-
-let initialPostContentDataString = null;
-@if (!string.IsNullOrEmpty(json))
-{
-    @Html.Raw($"initialPostContentDataString = `{json}`;")
-}
-if (initialPostContentDataString != null) {
-  const parsed = JSON.parse(initialPostContentDataString);
-  console.log("got json", parsed);
-  initialPostContentData = convertToLocalPostContentData(parsed);
-  console.log("initialized successfully", initialPostContentData);
-}
+const getPostContentUrl = `@(string.IsNullOrEmpty(Model.PostId) ? string.Empty : Url.RouteUrl("GetPostContent", new { id = Model.PostId }))`
 
 const postContentJsonSelector = "#@nameof(PostCreateViewModel.PostContentJson)"
 const postUpdateFormSelector = "#post-update-form"
@@ -130,9 +106,22 @@ const uploadImageAsync = async (url, file) => {
     return await resp.json()
 }
 
+
+
 document.addEventListener('alpine:init', () => {
+
+  
   Alpine.data('postUpdate', () => ({
-    postContentData: initialPostContentData ?? newPostContentData(),
+    async init() {
+        if (getPostContentUrl.length > 0) {
+            const resp = await fetch(getPostContentUrl, {
+                method: "GET",
+            });
+            const postContent = await resp.json()
+            this.postContentData = convertToLocalPostContentData(postContent);
+        }
+    },
+    postContentData: newPostContentData(),
     coverUploadInputId() {
       return 'cover-upload-input-id';
     },

@@ -8,85 +8,84 @@ using Evrane.Core.ObjectStorage.S3;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Blog.Admin.Controllers.Mvc.Api
+namespace Blog.Admin.Controllers.Api;
+
+[Route("api/[controller]")]
+[ApiController]
+public class StorageController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class StorageController : ControllerBase
+    private readonly BlogService _blogService;
+    private readonly S3HttpClient _s3HttpClient;
+
+    public StorageController(ILogger<StorageController> logger, BlogService blogService, S3HttpClient s3HttpClient)
     {
-        private readonly BlogService _blogService;
-        private readonly S3HttpClient _s3HttpClient;
+        _blogService = blogService;
+        _s3HttpClient = s3HttpClient;
+    }
 
-        public StorageController(ILogger<StorageController> logger, BlogService blogService, S3HttpClient s3HttpClient)
+    [HttpGet("{resourceId}", Name = "GetTempGetInfo")]
+    public async Task<ActionResult<GetInfo>> GetTempGetInfo(string resourceId)
+    {
+        var (tokenUpdated, accessTokenDto) =
+            await _blogService.EnsureAccessToken(CookieHelper.GetAccessTokenFromCookie(HttpContext));
+        if (tokenUpdated)
         {
-            _blogService = blogService;
-            _s3HttpClient = s3HttpClient;
+            CookieHelper.WriteAccessTokenToCookie(HttpContext, accessTokenDto);
         }
 
-        [HttpGet("{resourceId}", Name = "GetTempGetInfo")]
-        public async Task<ActionResult<GetInfo>> GetTempGetInfo(string resourceId)
+        var info = await _blogService.GetTempGetInfo(resourceId, accessTokenDto.AccessToken);
+
+        return info;
+    }
+
+
+    [HttpPost("upload/post-cover", Name = "UploadPostCover")]
+    public async Task<ActionResult<GetInfo>> UploadPostCover(IFormFile file)
+    {
+        var (tokenUpdated, accessTokenDto) =
+            await _blogService.EnsureAccessToken(CookieHelper.GetAccessTokenFromCookie(HttpContext));
+        if (tokenUpdated)
         {
-            var (tokenUpdated, accessTokenDto) =
-                await _blogService.EnsureAccessToken(CookieHelper.GetAccessTokenFromCookie(HttpContext));
-            if (tokenUpdated)
-            {
-                CookieHelper.WriteAccessTokenToCookie(HttpContext, accessTokenDto);
-            }
-
-            var info = await _blogService.GetTempGetInfo(resourceId, accessTokenDto.AccessToken);
-
-            return info;
+            CookieHelper.WriteAccessTokenToCookie(HttpContext, accessTokenDto);
         }
 
+        var info = await _blogService.GetPutInfo(new StaticResourceUpdateDto(
+                (int)StaticResourceAction.ADD_POST_COVER,
+                file.Length,
+                file.FileName
+            )
+            , accessTokenDto.AccessToken);
 
-        [HttpPost("upload/post-cover", Name = "UploadPostCover")]
-        public async Task<ActionResult<GetInfo>> UploadPostCover(IFormFile file)
+        await _s3HttpClient.PutSignedUrl(info.Url, file.OpenReadStream(), file.Length, file.ContentType);
+
+        var tempInfo = await _blogService.GetTempGetInfo(info.ResourceId, accessTokenDto.AccessToken);
+
+
+        return Ok(tempInfo);
+    }
+
+
+    [HttpPost("upload/post-content-image", Name = "UploadPostContentImage")]
+    public async Task<ActionResult<GetInfo>> UploadPostContentImage(IFormFile file)
+    {
+        var (tokenUpdated, accessTokenDto) =
+            await _blogService.EnsureAccessToken(CookieHelper.GetAccessTokenFromCookie(HttpContext));
+        if (tokenUpdated)
         {
-            var (tokenUpdated, accessTokenDto) =
-                await _blogService.EnsureAccessToken(CookieHelper.GetAccessTokenFromCookie(HttpContext));
-            if (tokenUpdated)
-            {
-                CookieHelper.WriteAccessTokenToCookie(HttpContext, accessTokenDto);
-            }
-
-            var info = await _blogService.GetPutInfo(new StaticResourceUpdateDto(
-                    (int)StaticResourceAction.ADD_POST_COVER,
-                    file.Length,
-                    file.FileName
-                )
-                , accessTokenDto.AccessToken);
-
-            await _s3HttpClient.PutSignedUrl(info.Url, file.OpenReadStream(), file.Length, file.ContentType);
-
-            var tempInfo = await _blogService.GetTempGetInfo(info.ResourceId, accessTokenDto.AccessToken);
-
-
-            return Ok(tempInfo);
+            CookieHelper.WriteAccessTokenToCookie(HttpContext, accessTokenDto);
         }
 
+        var info = await _blogService.GetPutInfo(new StaticResourceUpdateDto(
+                (int)StaticResourceAction.ADD_POST_CONTENT_IMAGE,
+                file.Length,
+                file.FileName
+            )
+            , accessTokenDto.AccessToken);
 
-        [HttpPost("upload/post-content-image", Name = "UploadPostContentImage")]
-        public async Task<ActionResult<GetInfo>> UploadPostContentImage(IFormFile file)
-        {
-            var (tokenUpdated, accessTokenDto) =
-                await _blogService.EnsureAccessToken(CookieHelper.GetAccessTokenFromCookie(HttpContext));
-            if (tokenUpdated)
-            {
-                CookieHelper.WriteAccessTokenToCookie(HttpContext, accessTokenDto);
-            }
+        await _s3HttpClient.PutSignedUrl(info.Url, file.OpenReadStream(), file.Length, file.ContentType);
 
-            var info = await _blogService.GetPutInfo(new StaticResourceUpdateDto(
-                    (int)StaticResourceAction.ADD_POST_CONTENT_IMAGE,
-                    file.Length,
-                    file.FileName
-                )
-                , accessTokenDto.AccessToken);
+        var tempInfo = await _blogService.GetTempGetInfo(info.ResourceId, accessTokenDto.AccessToken);
 
-            await _s3HttpClient.PutSignedUrl(info.Url, file.OpenReadStream(), file.Length, file.ContentType);
-
-            var tempInfo = await _blogService.GetTempGetInfo(info.ResourceId, accessTokenDto.AccessToken);
-
-            return Ok(tempInfo);
-        }
+        return Ok(tempInfo);
     }
 }

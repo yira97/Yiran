@@ -15,7 +15,6 @@ public class PostEditViewModel
     [Required] public string Language { get; set; } = "zh";
     [Required] public bool IsPublic { get; set; } = true;
     [Required] public string PostContentJson { get; set; } = string.Empty;
-    public PostContentDto? PostContent { get; set; }
 
     public List<SelectListItem> DomainCategories { get; set; } = new();
     public List<SelectListItem> DomainTopics { get; set; } = new();

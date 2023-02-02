@@ -3,8 +3,8 @@
 
 @{
     Layout = "_Layout1";
-    var modelForScript = new PostUpdateScriptDto();
-    modelForScript.InitialPostContentData = Model.PostContent;
+    var modelForScriptDto = new PostUpdateScriptDto();
+    modelForScriptDto.PostId = Model.Id;
 }
 
 <div class="px-4 sm:px-6 lg:px-8 mt-4 mb-4">
@@ -232,5 +232,5 @@
 @section Scripts {
     <partial name="_FormatBytesScript"/>
     <partial name="_UuidScript"/>
-    <partial name="_PostUpdateScript" model="modelForScript"/>
+    <partial name="_PostUpdateScript" model="modelForScriptDto"/>
 }

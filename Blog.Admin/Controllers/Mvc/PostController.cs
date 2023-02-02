@@ -111,7 +111,6 @@ namespace Blog.Admin.Controllers.Mvc
             vm.Slug = post.Slug;
             vm.Title = post.Title;
             vm.Topic = post.Topic;
-            vm.PostContent = post.Content;
             vm.SubTitle = post.SubTitle;
 
             var domainId = HttpContext.GetDomainIdFromHttpContextItems();
