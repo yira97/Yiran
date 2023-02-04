@@ -22,3 +22,5 @@ riderModule.iml
 
 .DS_Store
 *.swp
+.vs
+.vscode

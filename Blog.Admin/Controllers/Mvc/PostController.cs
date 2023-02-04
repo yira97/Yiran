@@ -127,6 +127,12 @@ namespace Blog.Admin.Controllers.Mvc
                 vm.DomainTopics.Add(new SelectListItem(topic.Name, topic.Id));
             }
 
+            ViewData["Levels"] = new BreadcrumbsDto(Links: new[]
+{
+                new NavigationDto("Post", Url.Action("Index", "Post", new { domainId })!, false),
+                new NavigationDto($"Edit Post ({post.Title})", Url.Action("Edit", "Post", new { domainId, id })!, true)
+            });
+
             return View(vm);
         }
 

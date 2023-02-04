@@ -8,6 +8,7 @@
         <UserSecretsId>Yiran-Blog.Api</UserSecretsId>
     </PropertyGroup>
 
+    <PropertyGroup Condition=" '$(RunConfiguration)' == 'http' " />
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.1" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.1" />
