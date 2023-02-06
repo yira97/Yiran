@@ -1,5 +1,9 @@
 ﻿@page
+@using Blog.Web.Services
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model IndexModel
+@inject IStringLocalizer<IndexModel> Localizer
+
 @{
     ViewData["Title"] = "Home page";
 
@@ -8,16 +12,16 @@
 <div class="bg-gray-100 pb-20">
     <div class="h-10"></div>
     <div class=" lg:w-[980px] w-[692px] mx-auto">
-        <h1 class="text-4xl font-semibold mb-[24px]">Latest Posts</h1>
+        <h1 class="text-4xl font-semibold mb-[24px]">@Localizer["最新文章"]</h1>
 
         <div class="flex flex-wrap justify-between">
             @* LARGE 1 *@
             @{
                 var large = @Model.Posts.Any() ? @Model.Posts[0] : null;
             }
-            <a asp-page="/Post/Index" asp-route-PostId="@large?.Id" class="block bg-white rounded-xl flex items-center overflow-hidden group cursor-pointer">
+            <a asp-route-culture="@HttpContext.Request.RouteValues["culture"]" asp-page="/Post/Index" asp-route-PostId="@large?.Id" class="block bg-white rounded-xl flex items-center overflow-hidden group cursor-pointer">
                 <picture class="basis-[453px] lg:basis-[643px] overflow-hidden bg-black">
-                    <img class="w-full aspect-[16/9] object-cover scale-100 group-hover:scale-105 ease-in duration-200 opacity-100 group-hover:opacity-80" src="@large?.Content.Cover?.GetInfo?.UrlXl"/>
+                    <img alt="post-cover" class="w-full aspect-[16/9] object-cover scale-100 group-hover:scale-105 ease-in duration-200 opacity-100 group-hover:opacity-80" src="@large?.Content.Cover?.GetInfo?.UrlXl"/>
                 </picture>
                 <div class="ml-10">
                     <p class="text-xs font-medium text-gray-600">@Model.Categories.Find(c => c.Id == large?.Category)?.Name</p>
@@ -31,13 +35,13 @@
             @for (var mIndex = 1; mIndex <= 4; mIndex++)
             {
                 var medium = @Model.Posts.Count() >= mIndex + 1 ? @Model.Posts[mIndex] : null;
-                <a asp-page="/Post/Index" asp-route-PostId="@medium?.Id" class="block mt-[36px] w-[472px] rounded-xl overflow-hidden group">
+                <a asp-route-culture="@HttpContext.Request.RouteValues["culture"]" asp-page="/Post/Index" asp-route-PostId="@medium?.Id" class="block mt-[36px] w-[472px] rounded-xl overflow-hidden group">
                     <picture class="h-[264px] block overflow-hidden bg-black">
                         @{
                             var mCover = medium?.Content.Cover;
                             if (mCover != null)
                             {
-                                <img class="w-full bg-black h-[264px] object-cover scale-100 group-hover:scale-105 ease-in duration-200 opacity-100 group-hover:opacity-80" src="@mCover?.GetInfo?.UrlXl"/>
+                                <img alt="cover" class="w-full bg-black h-[264px] object-cover scale-100 group-hover:scale-105 ease-in duration-200 opacity-100 group-hover:opacity-80" src="@mCover?.GetInfo?.UrlXl"/>
                             }
                             else
                             {
@@ -71,7 +75,7 @@
             @for (var sIndex = 5; sIndex <= 10; sIndex++)
             {
                 var small = @Model.Posts.Count() >= sIndex + 1 ? @Model.Posts[sIndex + 1] : null;
-                <a asp-page="/Post/Index" asp-route-PostId="@small?.Id" class="block mt-[36px] w-[303px] rounded-xl overflow-hidden">
+                <a asp-route-culture="@HttpContext.Request.RouteValues["culture"]" asp-page="/Post/Index" asp-route-PostId="@small?.Id" class="block mt-[36px] w-[303px] rounded-xl overflow-hidden">
                     <picture class="h-[170px]">
                         @{
                             var mCover = small?.Content.Cover;
@@ -114,6 +118,6 @@
 @* More from Domain *@
 <section class="py-20">
     <div class="block flex justify-center">
-        <a asp-page="/Archive/Index" class="inline-flex items-center rounded-full border-2 border-black bg-white px-6 py-2 text-base font-medium text-black shadow-sm hover:bg-black hover:text-white transition ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">View Archive</a>
+        <a asp-route-culture="@HttpContext.Request.RouteValues["culture"]" asp-page="/Archive/Index" class="inline-flex items-center rounded-full border-2 border-black bg-white px-6 py-2 text-base font-medium text-black shadow-sm hover:bg-black hover:text-white transition ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">@Localizer["阅读历史文章"]</a>
     </div>
 </section>

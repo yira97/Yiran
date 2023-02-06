@@ -1,5 +1,4 @@
 @page
-@using Blog.Domain.Models
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @model Blog.Web.Pages.Archive.Index
 
@@ -197,7 +196,7 @@
         <div class="text-2xl font-bold mb-4">@t.ToString("y")</div>
         @foreach (var p in list)
         {
-            <a asp-page="/Post/Index" asp-route-PostId="@p.Id" class="border-t border-gray-900/20 block flex py-8 items-center">
+            <a asp-route-culture="@HttpContext.Request.RouteValues["culture"]" asp-page="/Post/Index" asp-route-PostId="@p.Id" class="border-t border-gray-900/20 block flex py-8 items-center">
                 <picture class="lg:w-[295px] w-[264px]">
                     <img alt="cover" class="aspect-[1.8/1] object-cover rounded-xl" src="@p.Content.Cover?.GetInfo?.UrlSm"/>
                 </picture>
