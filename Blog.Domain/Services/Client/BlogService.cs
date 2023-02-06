@@ -105,6 +105,19 @@ public class BlogService
         return result!;
     }
 
+    public async Task<PostDto> EditPost(string postId, PostUpdateDto updateDto, string accessToken)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Put, $"api/v1/Post/{postId}");
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+        request.Content =
+            new StringContent(JsonSerializer.Serialize(updateDto), Encoding.UTF8, "application/json");
+
+        var resp = await _httpClient.SendAsync(request);
+        resp.EnsureSuccessStatusCode();
+        var result = await resp.Content.ReadFromJsonAsync<PostDto>();
+        return result!;
+    }
+
     public async Task<DomainDto> CreateDomain(DomainUpdateDto updateDto, string accessToken)
     {
         var request = new HttpRequestMessage(HttpMethod.Post, "api/v1/Domain");

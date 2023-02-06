@@ -8,7 +8,7 @@
 <div class="bg-gray-100 pb-20">
     <div class="h-10"></div>
     <div class=" lg:w-[980px] w-[692px] mx-auto">
-        <h1 class="text-3xl font-bold mb-[24px]">Latest Posts</h1>
+        <h1 class="text-4xl font-semibold mb-[24px]">Latest Posts</h1>
 
         <div class="flex flex-wrap justify-between">
             @* LARGE 1 *@
@@ -30,14 +30,14 @@
 
             @for (var mIndex = 1; mIndex <= 4; mIndex++)
             {
-                var medium = @Model.Posts.Count() >= mIndex + 1 ? @Model.Posts[mIndex + 1] : null;
-                <a asp-page="/Post/Index" asp-route-PostId="@medium?.Id" class="block mt-[36px] w-[472px] rounded-xl overflow-hidden">
-                    <picture class="h-[264px]">
+                var medium = @Model.Posts.Count() >= mIndex + 1 ? @Model.Posts[mIndex] : null;
+                <a asp-page="/Post/Index" asp-route-PostId="@medium?.Id" class="block mt-[36px] w-[472px] rounded-xl overflow-hidden group">
+                    <picture class="h-[264px] block overflow-hidden bg-black">
                         @{
                             var mCover = medium?.Content.Cover;
                             if (mCover != null)
                             {
-                                <img class="w-full h-[264px] object-cover scale-100 group-hover:scale-105 ease-in duration-200 opacity-100 group-hover:opacity-80" src="@mCover?.GetInfo?.UrlXl"/>
+                                <img class="w-full bg-black h-[264px] object-cover scale-100 group-hover:scale-105 ease-in duration-200 opacity-100 group-hover:opacity-80" src="@mCover?.GetInfo?.UrlXl"/>
                             }
                             else
                             {
@@ -56,14 +56,14 @@
                             }
                         }
                     </picture>
-                    @if (medium != null)
-                    {
-                        <div class="ml-10">
+                    <div class="p-[32px] bg-white h-full">
+                        @if (medium != null)
+                        {
                             <p class="text-xs font-medium text-gray-600">@Model.Categories.Find(c => c.Id == medium?.Category)?.Name</p>
                             <h3 class="text-2xl font-semibold mt-2">@medium?.Title</h3>
                             <p class="text-sm font-medium text-gray-500 mt-2">@medium?.CreatedAt.ToString("D")</p>
-                        </div>
-                    }
+                        }
+                    </div>
                 </a>
             }
 

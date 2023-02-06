@@ -40,8 +40,8 @@ public class TopicController : Controller
 
         ViewData["Levels"] = new BreadcrumbsDto(Links: new[]
         {
-            new NavigationDto("Topic", Url.Action("Index", "Topic", new { domainId })!, false),
-            new NavigationDto($"Add Topic", Url.Action("AddTopic", "Topic", new { domainId })!, true)
+            new NavigationDto("Topic", Url.Action("Index", "Topic", new { domainId })!),
+            new NavigationDto($"Add Topic", Url.Action("AddTopic", "Topic", new { domainId })!)
         });
         return View(vm);
     }
@@ -74,8 +74,8 @@ public class TopicController : Controller
 
         ViewData["Levels"] = new BreadcrumbsDto(Links: new[]
         {
-            new NavigationDto("Topic", Url.Action("Index", "Topic", new { domainId })!, false),
-            new NavigationDto($"Edit Topic ({topic.Name})", Url.Action("EditTopic", "Topic", new { domainId })!, true)
+            new NavigationDto("Topic", Url.Action("Index", "Topic", new { domainId })!),
+            new NavigationDto($"Edit Topic ({topic.Name})", Url.Action("EditTopic", "Topic", new { domainId })!)
         });
         return View(vm);
     }

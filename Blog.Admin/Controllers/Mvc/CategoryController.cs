@@ -40,8 +40,8 @@ public class CategoryController : Controller
 
         ViewData["Levels"] = new BreadcrumbsDto(Links: new[]
         {
-            new NavigationDto("Category", Url.Action("Index", "Category", new { domainId })!, false),
-            new NavigationDto($"Add Category", Url.Action("AddCategory", "Category", new { domainId })!, true)
+            new NavigationDto("Category", Url.Action("Index", "Category", new { domainId })!),
+            new NavigationDto($"Add Category", Url.Action("AddCategory", "Category", new { domainId })!)
         });
         return View(vm);
     }
@@ -74,9 +74,9 @@ public class CategoryController : Controller
 
         ViewData["Levels"] = new BreadcrumbsDto(Links: new[]
         {
-            new NavigationDto("Category", Url.Action("Index", "Category", new { domainId })!, false),
+            new NavigationDto("Category", Url.Action("Index", "Category", new { domainId })!),
             new NavigationDto($"Edit Category ({category.Name})",
-                Url.Action("EditCategory", "Category", new { domainId })!, true)
+                Url.Action("EditCategory", "Category", new { domainId })!)
         });
         return View(vm);
     }

@@ -1,6 +1,7 @@
 @using Newtonsoft.Json
 @using System.Text.Json
 @model PostUpdateScriptDto
+
 <script>
 const newBlock = () => {
     return {
@@ -87,7 +88,7 @@ const putInfoPostCoverUrl = `@(Url.RouteUrl("UploadPostCover"))`
 const putInfoPostContentImageUrl = `@(Url.RouteUrl("UploadPostContentImage"))`
 const getPostContentUrl = `@(string.IsNullOrEmpty(Model.PostId) ? string.Empty : Url.RouteUrl("GetPostContent", new { id = Model.PostId }))`
 
-const postContentJsonSelector = "#@nameof(PostCreateViewModel.PostContentJson)"
+const postContentJsonSelector = "#postContentJsonInputContainer input"
 const postUpdateFormSelector = "#post-update-form"
 
 const setBlockMenuClose = (block) => {
@@ -97,12 +98,12 @@ const setBlockMenuClose = (block) => {
 const uploadImageAsync = async (url, file) => {
     const formData = new FormData();
     formData.append("file", file);
-  
+
     const resp = await fetch(url, {
         method: "POST",
         body: formData
     })
-    
+
     return await resp.json()
 }
 
@@ -110,7 +111,7 @@ const uploadImageAsync = async (url, file) => {
 
 document.addEventListener('alpine:init', () => {
 
-  
+
   Alpine.data('postUpdate', () => ({
     async init() {
         if (getPostContentUrl.length > 0) {
@@ -141,13 +142,13 @@ document.addEventListener('alpine:init', () => {
     },
     async coverUploadChange(e) {
       const cover = this.postContentData.cover;
-      cover.isUploading = true;    
-      
+      cover.isUploading = true;
+
       const file = e.target.files[0];
       if (!file) return;
       const info = await uploadImageAsync(putInfoPostCoverUrl, file)
-      
-      cover.status = 'not-confirmed';
+
+      cover.status = 'unconfirmed';
       cover.resourceId = info.resourceId;
       cover.caption = '';
       cover.isUploading = false;
@@ -159,28 +160,33 @@ document.addEventListener('alpine:init', () => {
       const b = this.postContentData.blocks[blockIndex];
       const imgs = b.images;
       const img = imgs[imageIndex];
-      
+
       const file = e.target.files[0];
       if (!file) return;
       const info = await uploadImageAsync(putInfoPostContentImageUrl, file)
 
-      img.status = 'not-confirmed'
+      img.status = 'unconfirmed'
       img.resourceId = info.resourceId;
       img.caption = '';
       img.isUploading = false;
       img.url = info.url;
       img.fileName = file.name;
       img.fileSize = file.size;
-      
+
       imgs.push(newImageContent());
     },
     deleteCover() {
       this.postContentData.cover =  newImageContent()
     },
     deleteImage(indexOfBlock, indexOfImage) {
-      const b = this.postContentData.blocks[indexOfBlock];
-      const imgs = b.images;
-      imgs.splice(indexOfImage, 1);
+        const b = this.postContentData.blocks[indexOfBlock];
+        const imgs = b.images;
+
+        if (imgs.length == 1) {
+            imgs.splice(indexOfImage, 1, newImageContent());
+        } else {
+            imgs.splice(indexOfImage, 1);
+        }
     },
     addBlock(idx) {
       this.postContentData.blocks.splice(idx, 0, newParagraphBlock());
@@ -218,7 +224,7 @@ document.addEventListener('alpine:init', () => {
       @* 手动处理 cover 和 content *@
       const form = document.querySelector(postUpdateFormSelector);
       const postContentJson = document.querySelector(postContentJsonSelector)
-      
+
       @* 用于提交的object *@
       const postContent = {
         cover: {
@@ -227,7 +233,7 @@ document.addEventListener('alpine:init', () => {
         },
         blocks: []
       }
-      
+
       @* 过滤并处理 *@
       for (let i = 0; i <  this.postContentData.blocks.length; i++) {
           const b = this.postContentData.blocks[i];
@@ -252,7 +258,7 @@ document.addEventListener('alpine:init', () => {
             continue;
           }
       }
-      
+
       @* 提交表单 *@
       postContentJson.value = JSON.stringify(postContent);
       form.submit();

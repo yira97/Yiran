@@ -1,5 +1,6 @@
 namespace Blog.Domain.Models;
 
+// TODO: 把 domainID 从 PostUpdateDto中拿出
 public record PostUpdateDto
 (
     string Title,

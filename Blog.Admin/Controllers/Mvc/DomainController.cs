@@ -36,8 +36,8 @@ public class DomainController : Controller
         var vm = new CreateDomainViewModel();
         ViewData["Levels"] = new BreadcrumbsDto(Links: new[]
         {
-            new NavigationDto("Domain", Url.Action("Index", "Domain")!, false),
-            new NavigationDto("Create Domain", Url.Action("Create", "Domain")!, true)
+            new NavigationDto("Domain", Url.Action("Index", "Domain")!),
+            new NavigationDto("Create Domain", Url.Action("Create", "Domain")!)
         });
         return View(vm);
     }
@@ -84,8 +84,8 @@ public class DomainController : Controller
 
         ViewData["Levels"] = new BreadcrumbsDto(Links: new[]
         {
-            new NavigationDto("Domain", Url.Action("Index", "Domain")!, false),
-            new NavigationDto($"Edit Domain ({domain.Name})", Url.Action("Edit", "Domain")!, true)
+            new NavigationDto("Domain", Url.Action("Index", "Domain")!),
+            new NavigationDto($"Edit Domain ({domain.Name})", Url.Action("Edit", "Domain")!)
         });
         _logger.LogInformation($"user {userId} edited domain {domain.Id}");
         return View(vm);

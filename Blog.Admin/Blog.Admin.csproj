@@ -63,6 +63,7 @@
 
     <ItemGroup>
         <Folder Include="wwwroot\lib" />
+        <Folder Include="Enums\" />
     </ItemGroup>
 
     <ItemGroup>
@@ -75,4 +76,7 @@
       <ProjectReference Include="..\Blog.Domain\Blog.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="Enums\" />
+    </ItemGroup>
 </Project>

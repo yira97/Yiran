@@ -880,6 +880,10 @@ select {
   height: 1rem;
 }
 
+.h-full {
+  height: 100%;
+}
+
 .max-h-60 {
   max-height: 15rem;
 }
@@ -1120,6 +1124,10 @@ select {
 .object-cover {
   -o-object-fit: cover;
      object-fit: cover;
+}
+
+.p-\[32px\] {
+  padding: 32px;
 }
 
 .py-20 {
@@ -1495,6 +1503,10 @@ select {
 
 .group:hover .group-hover\:opacity-80 {
   opacity: 0.8;
+}
+
+.group:hover .group-hover\:opacity-40 {
+  opacity: 0.4;
 }
 
 @media (min-width: 640px) {

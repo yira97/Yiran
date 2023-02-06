@@ -29,12 +29,14 @@ public static class StaticResourceEntityExtensions
     {
         var srcElements = new List<CategoryResource>();
 
+        // 封面
         if (src.Content.Cover?.ResourceId is { Length: > 0 } cover)
         {
             _ = srcElements.Append(new CategoryResource(ResourceId: cover,
                 Category: (int)StaticResourceCategory.POST_COVER));
         }
 
+        // 内容
         foreach (var b in src.Content.Blocks)
         {
             if (b.Images != null)
