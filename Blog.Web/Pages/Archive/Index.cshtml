@@ -1,6 +1,7 @@
 @page
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @model Blog.Web.Pages.Archive.Index
+@inject IStringLocalizer<Index> Localizer
 
 @{
     string DropDownClass(bool active) => active ? "bg-gray-200" : "";
@@ -8,7 +9,7 @@
 
 <div class="mt-4 bg-gray-100 w-screen">
     <div class="flex gap-4 items-center lg:w-[980px] w-[692px]  mx-auto pt-8 pb-8 text-sm">
-        <div class="font-semibold text-gray-500">Filter</div>
+        <div class="font-semibold text-gray-500">@Localizer["筛选"]</div>
 
         @* Domain Dropdown Selection *@
         <div class="w-72 font-medium">
@@ -185,7 +186,7 @@
         </div>
 
 
-        <a asp-route-TopicIdFilter="" asp-route-YearFilter="" asp-route-MonthFilter="" class="text-blue-600 font-medium">Reset</a>
+        <a asp-route-TopicIdFilter="" asp-route-YearFilter="" asp-route-MonthFilter="" class="text-blue-600 font-medium">@Localizer["重置"]</a>
     </div>
 </div>
 
@@ -198,7 +199,7 @@
         {
             <a asp-route-culture="@HttpContext.Request.RouteValues["culture"]" asp-page="/Post/Index" asp-route-PostId="@p.Id" class="border-t border-gray-900/20 block flex py-8 items-center">
                 <picture class="lg:w-[295px] w-[264px]">
-                    <img alt="cover" class="aspect-[1.8/1] object-cover rounded-xl" src="@p.Content.Cover?.GetInfo?.UrlSm"/>
+                    <img alt="cover" class="w-full aspect-[1.8/1] object-cover rounded-xl " src="@p.Content.Cover?.GetInfo?.UrlSm"/>
                 </picture>
                 <div class="ml-10">
                     <p class="text-xs font-medium text-gray-600">@Model.Categories.Find(c => c.Id == p.Category)?.Name</p>

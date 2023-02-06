@@ -5,6 +5,7 @@ using Blog.Domain.Services.Client;
 using Blog.Web.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Localization;
 
 namespace Blog.Web.Pages.Archive;
 
@@ -12,6 +13,7 @@ public class Index : PageModel
 {
     private readonly IDomainService _domainService;
     private readonly BlogService _blogService;
+    private readonly IStringLocalizer<Index> _localizer;
 
     [BindProperty(SupportsGet = true)] public string? TopicIdFilter { get; set; }
     [BindProperty(SupportsGet = true)] public int? YearFilter { get; set; }
@@ -34,10 +36,15 @@ public class Index : PageModel
     public List<DomainCategoryDto> Categories { get; set; } = new();
     public List<DomainTopicDto> Topics { get; set; } = new();
 
-    public Index(IDomainService domainService, BlogService blogService)
+    public Index(IDomainService domainService, BlogService blogService, IStringLocalizer<Index> localizer)
     {
         _domainService = domainService;
         _blogService = blogService;
+        _localizer = localizer;
+
+        DefaultTopicSelectionDisplay = _localizer["所有话题"];
+        DefaultYearSelectionDisplay = _localizer["全部年份"];
+        DefaultMonthSelectionDisplay = _localizer["全部月份"];
     }
 
     public async Task OnGet()
