@@ -1,7 +1,8 @@
 ﻿@using Blog.Admin.Helper
 @using Blog.Admin.Middlewares
+@using Blog.Admin.Services
 @using Blog.Admin.ViewComponents
-@using Microsoft.AspNetCore.Mvc.TagHelpers
+@inject CommonLocalizationService CommonLocalization
 @{
     var activeNav = ViewData[ViewHelper.ViewData.ActiveNav] != null ? (string)ViewData[ViewHelper.ViewData.ActiveNav]! : RouteHelper.Controller.Home;
     var domainId = Context.GetDomainIdFromHttpContextItems();
@@ -10,7 +11,7 @@
     string NavClass(string nav) => activeNav == nav ? "bg-gray-100 text-gray-900" : "text-gray-600 hover:text-gray-900 hover:bg-gray-50";
     // Current: "bg-gray-200 text-gray-900", Default: "text-gray-700 hover:text-gray-900 hover:bg-gray-50"
     string NavClassDesktop(string nav) => activeNav == nav ? "bg-gray-200 text-gray-900" : "text-gray-700 hover:text-gray-900 hover:bg-gray-50";
-    var navItems = new List<string> { RouteHelper.Controller.Home, RouteHelper.Controller.Post, RouteHelper.Controller.Topic, RouteHelper.Controller.Category, RouteHelper.Controller.Contact, RouteHelper.Controller.Settings };
+    var navItems = new List<string> { CommonLocalization.Get("主页"), CommonLocalization.Get("文章"), CommonLocalization.Get("话题"), CommonLocalization.Get("类别"), CommonLocalization.Get("联系方式"), CommonLocalization.Get("设置") };
     var navLinks = new List<string>
     {
         Url.Action("Index", RouteHelper.Controller.Home, new { domainId = domainId })!,
@@ -118,7 +119,7 @@
 
             <!-- Sidebar Search -->
             <div class="mt-5 px-3">
-                <label for="search" class="sr-only">Search</label>
+                <label for="search" class="sr-only">@CommonLocalization.Get("搜索")</label>
                 <div class="relative mt-1 rounded-md shadow-sm">
                     <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3" aria-hidden="true">
                         <svg class="mr-3 h-4 w-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">

@@ -1,6 +1,8 @@
-@using Blog.Admin.Middlewares
-@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model PostViewModel
+@using Blog.Admin.Middlewares
+@using Blog.Admin.Services
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@inject CommonLocalizationService CommonLocalization
 @{
     ViewBag.Title = "title";
     Layout = "_Layout1";
@@ -11,10 +13,10 @@
 <!-- Page title & actions -->
 <div class="border-b border-gray-200 px-4 py-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8">
     <div class="min-w-0 flex-1">
-        <h1 class="text-lg font-medium leading-6 text-gray-900 sm:truncate">Post</h1>
+        <h1 class="text-lg font-medium leading-6 text-gray-900 sm:truncate">@CommonLocalization.Get("文章")</h1>
     </div>
     <div class="mt-4 flex sm:mt-0 sm:ml-4">
-        <a asp-action="Create" asp-controller="Post" asp-route-domainId="@domainId" type="button" class="order-0 inline-flex items-center rounded-md border border-transparent bg-purple-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 sm:order-1 sm:ml-3">Create</a>
+        <a asp-action="Create" asp-controller="Post" asp-route-domainId="@domainId" type="button" class="order-0 inline-flex items-center rounded-md border border-transparent bg-purple-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 sm:order-1 sm:ml-3">@CommonLocalization.Get("创建")</a>
     </div>
 </div>
 
@@ -23,8 +25,8 @@
     <table class="min-w-full divide-y divide-gray-300">
         <thead class="bg-gray-50">
         <tr>
-            <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Title</th>
-            <th scope="col" class="hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 lg:table-cell">Public</th>
+            <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">@CommonLocalization.Get("标题")</th>
+            <th scope="col" class="hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 lg:table-cell">@CommonLocalization.Get("公开")</th>
             <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
                 <span class="sr-only">Action</span>
             </th>
@@ -38,18 +40,18 @@
                 <td class="w-full max-w-0 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:w-auto sm:max-w-none sm:pl-6">
                     @post.Title
                     <dl class="font-normal lg:hidden">
-                        <dt class="sr-only">Public</dt>
+                        <dt class="sr-only">@CommonLocalization.Get("公开")</dt>
                         <dd class="mt-1 truncate text-gray-700">@post.isPublic</dd>
                     </dl>
                 </td>
                 <td class="hidden px-3 py-4 text-sm text-gray-500 lg:table-cell">@post.isPublic</td>
                 <td class="py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                    <a asp-action="Edit" asp-route-id="@post.Id" asp-route-domainId="@Context.GetDomainIdFromHttpContextItems()" class="text-indigo-600 hover:text-indigo-900">Edit</a>
+                    <a asp-action="Edit" asp-route-id="@post.Id" asp-route-domainId="@Context.GetDomainIdFromHttpContextItems()" class="text-indigo-600 hover:text-indigo-900">@CommonLocalization.Get("编辑")</a>
                     <form id="delete-post-form-@post.Id" method="POST" asp-action="Delete" asp-controller="Post">
                         <input type="hidden" name="@nameof(DeletePostDto.PostId)" value="@post.Id"/>
                         <input type="hidden" name="@nameof(DeletePostDto.DomainId)" value="@domainId"/>
                     </form>
-                    <button x-on:click="popUpDanger('Delete post confirm', 'are you sure you want to delete the post of @post.Title (@post.Id)?', 'Cancel', 'Delete', '#delete-post-form-@post.Id')" class="text-indigo-600 hover:text-indigo-900">Delete</button>
+                    <button x-on:click="popUpDanger('Delete post confirm', 'are you sure you want to delete the post of @post.Title (@post.Id)?', 'Cancel', 'Delete', '#delete-post-form-@post.Id')" class="text-indigo-600 hover:text-indigo-900">@CommonLocalization.Get("删除")</button>
                 </td>
             </tr>
         }

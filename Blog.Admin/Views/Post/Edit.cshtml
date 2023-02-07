@@ -1,3 +1,4 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model Blog.Admin.Models.PostEditViewModel
 
 @{
@@ -30,7 +31,7 @@
 
 @* 副标题 *@
 <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
-    <label asp-for="PostEditFormData.SubTitle" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">Sub Title</label>
+    <label asp-for="PostEditFormData.SubTitle" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"></label>
     <div class="mt-1 sm:col-span-2 sm:mt-0">
         <textarea id="sub-title" asp-for="PostEditFormData.SubTitle" rows="3" class="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
     </div>
@@ -50,7 +51,7 @@
 
 @* 封面开始 *@
 <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
-    <label class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">Cover photo</label>
+    <label class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">@CommonLocalization.Get("封面图片")</label>
     <div class="mt-1 sm:col-span-2 sm:mt-0 overflow-hidden">
         @* 没有图片，显示上传按钮 *@
         <div x-show="postContentData?.cover?.resourceId == null" class="cover-file-upload-area flex max-w-lg justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6">
@@ -74,9 +75,9 @@
                 <img alt="cover" x-bind:src="postContentData?.cover?.url" class="h-28 w-28 p-2 col-span-1 p-2 border border-gray-200 rounded-md object-contain bg-gray-200"/>
                 <textarea x-model="postContentData.cover.caption" rows="4" x-bind:id="coverTextareaId()" class="block col-span-2 h-28 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
                 <div class="flex flex-col gap-4 col-span-1 justify-between h-28">
-                    <button x-on:click="deleteCover()" type="button" class="h-8 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium leading-4 text-red-500 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 t">Delete</button>
+                    <button x-on:click="deleteCover()" type="button" class="h-8 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium leading-4 text-red-500 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 t">@CommonLocalization.Get("删除")</button>
                     <div class="text-xs font-medium">
-                        <div class="text-gray-400">Status</div>
+                        <div class="text-gray-400">@CommonLocalization.Get("状态")</div>
                         <div class="text-gray-800" x-text="postContentData.cover?.status?.toUpperCase()"></div>
                         <template x-if="postContentData.cover?.fileSize != null">
                             <div class="text-gray-500">
@@ -170,14 +171,14 @@
                      class="absolute right-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
                     <div class="py-1" role="none">
                         <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
-                        <a href="#" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-1">Duplicate</a>
+                        <a href="#" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-1">@CommonLocalization.Get("创建副本")</a>
                     </div>
                     <div class="py-1" role="none">
                         <button x-on:click="turnIntoImagesBlock(index)" type="button" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-2">Turn into images</button>
                         <button x-on:click="turnIntoParagraphBlock(index)" type="button" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-3">Turn into paragraph</button>
                     </div>
                     <div class="py-1" role="none">
-                        <button type="button" x-on:click="deleteBlock(index)" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-6">Delete</button>
+                        <button type="button" x-on:click="deleteBlock(index)" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-6">@CommonLocalization.Get("删除")</button>
                     </div>
                 </div>
             </div>
@@ -201,7 +202,7 @@
                                 <div class="flex flex-col gap-4 col-span-1 justify-between h-28">
                                     <button x-on:click="deleteImage(index, imageIndex)" type="button" class="h-8 inline-flex items-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium leading-4 text-red-500 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Delete</button>
                                     <div class="text-xs font-medium">
-                                        <div class="text-gray-400">Status</div>
+                                        <div class="text-gray-400">@CommonLocalization.Get("状态")</div>
                                         <div class="text-gray-800" x-text="image.status?.toUpperCase()"></div>
                                         <template x-if="image?.fileSize != null">
                                             <div class="text-gray-500">

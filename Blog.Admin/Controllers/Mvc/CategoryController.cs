@@ -50,7 +50,8 @@ public class CategoryController : Controller
     public async Task<IActionResult> AddCategory(AddCategoryViewModel vm)
     {
         var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
-        if (string.IsNullOrEmpty(accessToken.AccessToken)) return RedirectToAction("Register", "Account");
+        if (string.IsNullOrEmpty(accessToken.AccessToken))
+            return RedirectToAction("Index", "SignIn", new { Area = "Account" });
 
         var res = await _blogService.AddCategory(vm.DomainId, new DomainCategoryUpdateDto(Name: vm.Name),
             accessToken.AccessToken!);
@@ -102,7 +103,8 @@ public class CategoryController : Controller
     public async Task<IActionResult> DeleteCategory(DeleteCategoryDto deleteCategoryDto)
     {
         var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
-        if (string.IsNullOrEmpty(accessToken.RefreshToken)) return RedirectToAction("Register", "Account");
+        if (string.IsNullOrEmpty(accessToken.RefreshToken))
+            return RedirectToAction("Index", "SignIn", new { Area = "Account" });
 
         await _blogService.DeleteCategory(deleteCategoryDto.DomainId, deleteCategoryDto.CategoryId,
             accessToken.AccessToken!);

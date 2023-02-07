@@ -1,18 +1,33 @@
+using System.Globalization;
 using System.Security.Cryptography;
 using Blog.Admin.Middlewares;
+using Blog.Admin.Services;
 using Blog.Domain.Services.Client;
 using Evrane.Core.ObjectStorage.S3;
 using Evrane.Core.Security;
 using Evrane.Core.Settings;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews()
+    .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
+    .AddDataAnnotationsLocalization();
 
+builder.Services.AddLocalization(opt => { opt.ResourcesPath = "Resources"; });
+
+builder.Services.AddHttpClient<BlogService>();
+builder.Services.AddHttpClient<S3HttpClient>();
+builder.Services.AddSingleton<AccessTokenInfoMiddleware>();
+builder.Services.AddSingleton<DomainInfoMiddleware>();
+builder.Services.AddSingleton<CultureInfoMiddleware>();
+builder.Services.AddSingleton<CommonLocalizationService>();
 builder.Services.AddSingleton<IJwtService, JwtService>();
 
 builder.Services.AddAuthentication(options =>
@@ -61,14 +76,20 @@ builder.Services.AddAuthentication(options =>
             }
         };
     })
-    .AddCookie(options => { options.LoginPath = new PathString("/Account/Login"); });
+    .AddCookie(options => { options.LoginPath = new PathString("/Account/SignIn/Index"); });
 
-
-// The typed client is registered as transient with DI container
-builder.Services.AddHttpClient<BlogService>();
-builder.Services.AddHttpClient<S3HttpClient>();
-builder.Services.AddSingleton<AccessTokenInfoMiddleware>();
-builder.Services.AddSingleton<DomainInfoMiddleware>();
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    var supportedCultures = new[]
+    {
+        new CultureInfo("en"),
+        new CultureInfo("ja"),
+        new CultureInfo("zh"),
+    };
+    options.DefaultRequestCulture = new RequestCulture("en");
+    options.SupportedCultures = supportedCultures;
+    options.SupportedUICultures = supportedCultures;
+});
 
 var app = builder.Build();
 
@@ -84,11 +105,19 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+var options = app.Services.GetService<IOptions<RequestLocalizationOptions>>();
+app.UseRequestLocalization(options!.Value);
+
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseMiddleware<AccessTokenInfoMiddleware>();
-app.UseMiddleware<DomainInfoMiddleware>();
+app.UseMiddleware<CultureInfoMiddleware>();
+app.UseAccessTokenInfoMiddleware();
+app.UseDomainInfoMiddleware();
+
+app.MapControllerRoute(
+    name: "areaDefault",
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
 app.MapControllerRoute(
     name: "default",

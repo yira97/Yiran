@@ -1,13 +1,17 @@
 using Blog.Admin.Helper;
 using Blog.Admin.Models;
+using Blog.Admin.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Admin.ViewComponents;
 
 public class UserAccountDropDownViewComponent : ViewComponent
 {
-    public UserAccountDropDownViewComponent()
+    private readonly CommonLocalizationService _commonLocalizationService;
+
+    public UserAccountDropDownViewComponent(CommonLocalizationService commonLocalizationService)
     {
+        _commonLocalizationService = commonLocalizationService;
     }
 
     public async Task<IViewComponentResult> InvokeAsync(
@@ -17,13 +21,18 @@ public class UserAccountDropDownViewComponent : ViewComponent
 
         var vm = new UserAccountDropDownViewModel
         {
-            DisplayName = userInfo.DisplayName ?? "NO_DISPLAY_NAME",
-            Email = "NO_EMAIL",
+            DisplayName = userInfo.DisplayName ?? _commonLocalizationService.Get("昵称未设置"),
+            Email = _commonLocalizationService.Get("邮箱未设置"),
             UserNavigation = new List<NavigationDto>
             {
-                new NavigationDto(Name: "Home", Href: Url.Action("Index", "Home")!),
-                new NavigationDto(Name: "Domain", Href: Url.Action("Index", "Domain")!),
-                new NavigationDto(Name: "Logout", Href: Url.Action("Logout", "Account")!),
+                new NavigationDto(Name: _commonLocalizationService.Get("内容管理"),
+                    Href: Url.Action("Index", "Home", new { Area = "" })!),
+                new NavigationDto(Name: _commonLocalizationService.Get("域管理"),
+                    Href: Url.Action("Index", "Domain", new { Area = "" })!),
+                new NavigationDto(Name: _commonLocalizationService.Get("用户设置"),
+                    Href: Url.Action("Index", "Settings", new { Area = "Account" })!),
+                new NavigationDto(Name: _commonLocalizationService.Get("注销"),
+                    Href: Url.Action("Index", "LogOut", new { Area = "Account" })!),
             }
         };
 

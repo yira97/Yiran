@@ -1,3 +1,4 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model Blog.Admin.Models.PostCreateViewModel
 
 @{
@@ -74,7 +75,7 @@
                 <img alt="cover" x-bind:src="postContentData?.cover?.url" class="h-28 w-28 p-2 col-span-1 p-2 border border-gray-200 rounded-md object-contain bg-gray-200"/>
                 <textarea x-model="postContentData.cover.caption" rows="4" x-bind:id="coverTextareaId()" class="block col-span-2 h-28 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
                 <div class="flex flex-col gap-4 col-span-1 justify-between h-28">
-                    <button x-on:click="deleteCover()" type="button" class="h-8 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium leading-4 text-red-500 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 t">Delete</button>
+                    <button x-on:click="deleteCover()" type="button" class="h-8 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium leading-4 text-red-500 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 t">@CommonLocalization.Get("删除")</button>
                     <div class="text-xs font-medium">
                         <div class="text-gray-400">Status</div>
                         <div class="text-gray-800" x-text="postContentData.cover?.status?.toUpperCase()"></div>
@@ -199,7 +200,7 @@
                                 <img alt="cover" x-bind:src="image.url" class="h-28 w-28 p-2 col-span-1 p-2 border border-gray-200 rounded-md object-contain bg-gray-200" src=""/>
                                 <textarea x-model="image.caption" rows="4" x-bind:id="contentImagesTextareaId(index, imageIndex)" class="block col-span-2 h-28 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
                                 <div class="flex flex-col gap-4 col-span-1 justify-between h-28">
-                                    <button x-on:click="deleteImage(index, imageIndex)" type="button" class="h-8 inline-flex items-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium leading-4 text-red-500 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Delete</button>
+                                    <button x-on:click="deleteImage(index, imageIndex)" type="button" class="h-8 inline-flex items-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium leading-4 text-red-500 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">@CommonLocalization.Get("删除")</button>
                                     <div class="text-xs font-medium">
                                         <div class="text-gray-400">Status</div>
                                         <div class="text-gray-800" x-text="image.status?.toUpperCase()"></div>
@@ -245,8 +246,8 @@
 </div>
 <div class="pt-5">
     <div class="flex justify-end">
-        <button type="button" onclick="history.back()" class="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Back</button>
-        <button type="submit" x-on:click="handleSubmit()" class="ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Create</button>
+        <button type="button" onclick="history.back()" class="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">@CommonLocalization.Get("返回")</button>
+        <button type="submit" x-on:click="handleSubmit()" class="ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">@CommonLocalization.Get("提交")</button>
     </div>
 </div>
 <div id="postContentJsonInputContainer">

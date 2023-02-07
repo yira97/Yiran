@@ -50,7 +50,8 @@ public class TopicController : Controller
     public async Task<IActionResult> AddTopic(AddTopicViewModel vm)
     {
         var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
-        if (string.IsNullOrEmpty(accessToken.AccessToken)) return RedirectToAction("Register", "Account");
+        if (string.IsNullOrEmpty(accessToken.AccessToken))
+            return RedirectToAction("Index", "SignIn", new { Area = "Account" });
 
         var res = await _blogService.AddTopic(vm.DomainId, new DomainTopicUpdateDto(Name: vm.Name),
             accessToken.AccessToken);
@@ -84,7 +85,8 @@ public class TopicController : Controller
     public async Task<IActionResult> EditTopic(EditTopicViewModel vm)
     {
         var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
-        if (string.IsNullOrEmpty(accessToken.AccessToken)) return RedirectToAction("Register", "Account");
+        if (string.IsNullOrEmpty(accessToken.AccessToken))
+            return RedirectToAction("Index", "SignIn", new { Area = "Account" });
 
         var res = await _blogService.EditTopic(vm.DomainId, vm.TopicId, new DomainTopicUpdateDto(Name: vm.Name),
             accessToken.AccessToken!);
@@ -100,7 +102,8 @@ public class TopicController : Controller
     public async Task<IActionResult> DeleteTopic(DeleteTopicDto deleteTopicDto)
     {
         var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
-        if (string.IsNullOrEmpty(accessToken.RefreshToken)) return RedirectToAction("Register", "Account");
+        if (string.IsNullOrEmpty(accessToken.RefreshToken))
+            return RedirectToAction("Index", "SignIn", new { Area = "Account" });
 
 
         await _blogService.DeleteTopic(deleteTopicDto.DomainId, deleteTopicDto.TopicId,

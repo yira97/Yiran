@@ -1,5 +1,7 @@
+using System.Globalization;
 using Blog.Admin.Models;
 using Blog.Domain.Models;
+using Microsoft.AspNetCore.Localization;
 
 namespace Blog.Admin.Helper;
 
@@ -10,7 +12,6 @@ public static class CookieHelper
     private const string UserEmailKey = "User-Email";
     private const string UserDisplayNameKey = "User-DisplayName";
     private const string DefaultDomainKey = "Default-Domain";
-    private const string LanguageKey = "Language";
 
     public static AccessTokenDto GetAccessTokenFromCookie(HttpContext httpContext)
     {
@@ -35,18 +36,6 @@ public static class CookieHelper
         }
     }
 
-    public static string GetLanguageFromCookie(HttpContext httpContext, string defaultValue = "zh")
-    {
-        var language = httpContext.Request.Cookies[LanguageKey];
-        return string.IsNullOrEmpty(language) ? defaultValue : language;
-    }
-
-    public static void WriteLanguageToCookie(HttpContext httpContext, string language)
-    {
-        httpContext.Response.Cookies.Append(LanguageKey, language,
-            new CookieOptions());
-    }
-
     public static void ClearLoginInfo(HttpContext httpContext)
     {
         httpContext.Response.Cookies.Delete(UserEmailKey);
@@ -59,6 +48,15 @@ public static class CookieHelper
     {
         var domain = httpContext.Request.Cookies[DefaultDomainKey];
         return domain;
+    }
+
+    public static void WriteCultureToCookie(HttpContext httpContext, CultureInfo culture)
+    {
+        httpContext.Response.Cookies.Append
+        (
+            CookieRequestCultureProvider.DefaultCookieName,
+            CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture))
+        );
     }
 
     public static void WriteDefaultDomainToCookie(HttpContext httpContext, string domainId)

@@ -55,7 +55,8 @@ namespace Blog.Admin.Controllers.Mvc
         public async Task<IActionResult> Create()
         {
             var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
-            if (string.IsNullOrEmpty(accessToken.AccessToken)) return RedirectToAction("Login", "Account");
+            if (string.IsNullOrEmpty(accessToken.AccessToken))
+                return RedirectToAction("Index", "SignIn", new { Area = "Account" });
 
             var domainId = HttpContext.GetDomainIdFromHttpContextItems();
             if (string.IsNullOrEmpty(domainId)) return RedirectToAction("Index", "Domain");
@@ -94,7 +95,8 @@ namespace Blog.Admin.Controllers.Mvc
             var input = vm.PostCreateFormData;
 
             var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
-            if (string.IsNullOrEmpty(accessToken.AccessToken)) return RedirectToAction("Login", "Account");
+            if (string.IsNullOrEmpty(accessToken.AccessToken))
+                return RedirectToAction("Index", "SignIn", new { Area = "Account" });
 
             var options = new JsonSerializerOptions
             {
@@ -122,7 +124,8 @@ namespace Blog.Admin.Controllers.Mvc
         public async Task<IActionResult> Edit(string id)
         {
             var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
-            if (string.IsNullOrEmpty(accessToken.AccessToken)) return RedirectToAction("Login", "Account");
+            if (string.IsNullOrEmpty(accessToken.AccessToken))
+                return RedirectToAction("Index", "SignIn", new { Area = "Account" });
 
             var domainId = HttpContext.GetDomainIdFromHttpContextItems();
             if (string.IsNullOrEmpty(domainId)) return RedirectToAction("Index", "Domain");
@@ -177,7 +180,8 @@ namespace Blog.Admin.Controllers.Mvc
             var input = vm.PostEditFormData;
 
             var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
-            if (string.IsNullOrEmpty(accessToken.AccessToken)) return RedirectToAction("Login", "Account");
+            if (string.IsNullOrEmpty(accessToken.AccessToken))
+                return RedirectToAction("Index", "SignIn", new { Area = "Account" });
 
             var options = new JsonSerializerOptions
             {
@@ -204,7 +208,8 @@ namespace Blog.Admin.Controllers.Mvc
         public async Task<IActionResult> Delete(DeletePostDto deletePostDto)
         {
             var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
-            if (string.IsNullOrEmpty(accessToken.RefreshToken)) return RedirectToAction("Register", "Account");
+            if (string.IsNullOrEmpty(accessToken.RefreshToken))
+                return RedirectToAction("Index", "SignIn", new { Area = "Account" });
 
             await _blogService.DeletePost(deletePostDto.PostId,
                 accessToken.AccessToken!);

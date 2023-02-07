@@ -8,16 +8,15 @@ using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddMvc().AddViewLocalization();
-
 // Add services to the container.
 builder.Services
-    .AddRazorPages(options => { options.Conventions.Add(new CultureTemplatePageRouteModelConvention()); });
+    .AddRazorPages(options => { options.Conventions.Add(new CultureTemplatePageRouteModelConvention()); })
+    .AddViewLocalization();
+;
 
 builder.Services.AddSingleton<IJwtService, JwtService>();
 builder.Services.AddSingleton<IDomainService, DomainService>();
 builder.Services.AddSingleton<CommonLocalizationService>();
-
 
 builder.Services.AddHttpClient<BlogService>();
 
