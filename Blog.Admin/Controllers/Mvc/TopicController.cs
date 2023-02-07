@@ -1,6 +1,7 @@
 using Blog.Admin.Helper;
 using Blog.Admin.Middlewares;
 using Blog.Admin.Models;
+using Blog.Admin.Services;
 using Blog.Domain.Models;
 using Blog.Domain.Services.Client;
 using Microsoft.AspNetCore.Mvc;
@@ -10,10 +11,12 @@ namespace Blog.Admin.Controllers.Mvc;
 public class TopicController : Controller
 {
     private readonly BlogService _blogService;
+    private readonly CommonLocalizationService _commonLocalizationService;
 
-    public TopicController(BlogService blogService)
+    public TopicController(BlogService blogService, CommonLocalizationService commonLocalizationService)
     {
         _blogService = blogService;
+        _commonLocalizationService = commonLocalizationService;
     }
 
     // GET
@@ -40,8 +43,9 @@ public class TopicController : Controller
 
         ViewData["Levels"] = new BreadcrumbsDto(Links: new[]
         {
-            new NavigationDto("Topic", Url.Action("Index", "Topic", new { domainId })!),
-            new NavigationDto($"Add Topic", Url.Action("AddTopic", "Topic", new { domainId })!)
+            new NavigationDto(_commonLocalizationService.Get("话题"), Url.Action("Index", "Topic", new { domainId })!),
+            new NavigationDto(_commonLocalizationService.Get("新增话题"),
+                Url.Action("AddTopic", "Topic", new { domainId })!)
         });
         return View(vm);
     }
@@ -75,8 +79,9 @@ public class TopicController : Controller
 
         ViewData["Levels"] = new BreadcrumbsDto(Links: new[]
         {
-            new NavigationDto("Topic", Url.Action("Index", "Topic", new { domainId })!),
-            new NavigationDto($"Edit Topic ({topic.Name})", Url.Action("EditTopic", "Topic", new { domainId })!)
+            new NavigationDto(_commonLocalizationService.Get("话题"), Url.Action("Index", "Topic", new { domainId })!),
+            new NavigationDto($"{_commonLocalizationService.Get("编辑话题")} ({topic.Name})",
+                Url.Action("EditTopic", "Topic", new { domainId })!)
         });
         return View(vm);
     }

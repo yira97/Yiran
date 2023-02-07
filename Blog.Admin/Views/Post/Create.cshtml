@@ -31,7 +31,7 @@
 
 @* 副标题 *@
 <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
-    <label asp-for="PostCreateFormData.SubTitle" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">Sub Title</label>
+    <label asp-for="PostCreateFormData.SubTitle" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"></label>
     <div class="mt-1 sm:col-span-2 sm:mt-0">
         <textarea id="sub-title" asp-for="PostCreateFormData.SubTitle" rows="3" class="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
     </div>
@@ -51,7 +51,7 @@
 
 @* 封面开始 *@
 <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
-    <label class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">Cover photo</label>
+    <label class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">@CommonLocalization.Get("封面图片")</label>
     <div class="mt-1 sm:col-span-2 sm:mt-0 overflow-hidden">
         @* 没有图片，显示上传按钮 *@
         <div x-show="postContentData?.cover?.resourceId == null" class="cover-file-upload-area flex max-w-lg justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6">
@@ -95,7 +95,7 @@
 
 @* Topic *@
 <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
-    <label asp-for="PostCreateFormData.Topic" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">Topic</label>
+    <label asp-for="PostCreateFormData.Topic" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"></label>
     <div class="mt-1 sm:col-span-2 sm:mt-0">
         <select asp-for="PostCreateFormData.Topic" asp-items="Model.DomainTopics" class="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
         </select>
@@ -104,7 +104,7 @@
 
 @* category *@
 <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
-    <label asp-for="PostCreateFormData.Category" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">Category</label>
+    <label asp-for="PostCreateFormData.Category" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"></label>
     <div class="mt-1 sm:col-span-2 sm:mt-0">
         <select asp-for="PostCreateFormData.Category" asp-items="Model.DomainCategories" class="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
         </select>
@@ -113,12 +113,9 @@
 
 @* 语言 *@
 <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
-    <label asp-for="PostCreateFormData.Language" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">Language</label>
+    <label asp-for="PostCreateFormData.Language" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"></label>
     <div class="mt-1 sm:col-span-2 sm:mt-0">
-        <select asp-for="PostCreateFormData.Language" autocomplete="country-name" class="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-            <option value="zh">中文</option>
-            <option value="en">English</option>
-            <option value="ja">日本語</option>
+        <select asp-for="PostCreateFormData.Language" asp-items="Model.SupportLanguages" autocomplete="country-name" class="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
         </select>
     </div>
 </div>

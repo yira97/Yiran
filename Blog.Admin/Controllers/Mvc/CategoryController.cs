@@ -1,6 +1,7 @@
 using Blog.Admin.Helper;
 using Blog.Admin.Middlewares;
 using Blog.Admin.Models;
+using Blog.Admin.Services;
 using Blog.Domain.Models;
 using Blog.Domain.Services.Client;
 using Microsoft.AspNetCore.Authorization;
@@ -11,10 +12,12 @@ namespace Blog.Admin.Controllers.Mvc;
 public class CategoryController : Controller
 {
     private readonly BlogService _blogService;
+    private readonly CommonLocalizationService _commonLocalizationService;
 
-    public CategoryController(BlogService blogService)
+    public CategoryController(BlogService blogService, CommonLocalizationService commonLocalizationService)
     {
         _blogService = blogService;
+        _commonLocalizationService = commonLocalizationService;
     }
 
     // GET
@@ -40,8 +43,9 @@ public class CategoryController : Controller
 
         ViewData["Levels"] = new BreadcrumbsDto(Links: new[]
         {
-            new NavigationDto("Category", Url.Action("Index", "Category", new { domainId })!),
-            new NavigationDto($"Add Category", Url.Action("AddCategory", "Category", new { domainId })!)
+            new NavigationDto(_commonLocalizationService.Get("类别"), Url.Action("Index", "Category", new { domainId })!),
+            new NavigationDto(_commonLocalizationService.Get("新增类别"),
+                Url.Action("AddCategory", "Category", new { domainId })!)
         });
         return View(vm);
     }
@@ -75,8 +79,8 @@ public class CategoryController : Controller
 
         ViewData["Levels"] = new BreadcrumbsDto(Links: new[]
         {
-            new NavigationDto("Category", Url.Action("Index", "Category", new { domainId })!),
-            new NavigationDto($"Edit Category ({category.Name})",
+            new NavigationDto(_commonLocalizationService.Get("类别"), Url.Action("Index", "Category", new { domainId })!),
+            new NavigationDto($"{_commonLocalizationService.Get("编辑类别")} ({category.Name})",
                 Url.Action("EditCategory", "Category", new { domainId })!)
         });
         return View(vm);

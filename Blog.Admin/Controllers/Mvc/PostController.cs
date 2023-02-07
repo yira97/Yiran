@@ -2,10 +2,12 @@ using System.Text.Json;
 using Blog.Admin.Helper;
 using Blog.Admin.Middlewares;
 using Blog.Admin.Models;
+using Blog.Admin.Services;
 using Blog.Domain.Models;
 using Blog.Domain.Services.Client;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Options;
 
 namespace Blog.Admin.Controllers.Mvc
 {
@@ -13,11 +15,17 @@ namespace Blog.Admin.Controllers.Mvc
     {
         private readonly ILogger<PostController> _logger;
         private readonly BlogService _blogService;
+        private readonly CommonLocalizationService _commonLocalizationService;
+        private readonly IOptions<RequestLocalizationOptions> _localizationOptions;
 
-        public PostController(ILogger<PostController> logger, BlogService blogService)
+        public PostController(ILogger<PostController> logger, BlogService blogService,
+            CommonLocalizationService commonLocalizationService,
+            IOptions<RequestLocalizationOptions> localizationOptions)
         {
             _logger = logger;
             _blogService = blogService;
+            _commonLocalizationService = commonLocalizationService;
+            _localizationOptions = localizationOptions;
         }
 
         public async Task<IActionResult> Index(
@@ -76,14 +84,18 @@ namespace Blog.Admin.Controllers.Mvc
                 vm.DomainTopics.Add(new SelectListItem(topic.Name, topic.Id));
             }
 
+            vm.SupportLanguages = _localizationOptions.Value.SupportedCultures!.Select(culture => new SelectListItem(
+                text: culture.DisplayName, value: culture.Name));
+
             // input data
             vm.PostCreateFormData.DomainId = domainId;
 
             // breadcumbs
             ViewData["Levels"] = new BreadcrumbsDto(Links: new[]
             {
-                new NavigationDto("Post", Url.Action("Index", "Post", new { domainId })!),
-                new NavigationDto($"Create Post", Url.Action("Create", "Post", new { domainId })!)
+                new NavigationDto(_commonLocalizationService.Get("文章"), Url.Action("Index", "Post", new { domainId })!),
+                new NavigationDto(_commonLocalizationService.Get("创建文章"),
+                    Url.Action("Create", "Post", new { domainId })!)
             });
 
             return View(vm);
@@ -154,6 +166,9 @@ namespace Blog.Admin.Controllers.Mvc
                 vm.DomainTopics.Add(new SelectListItem(topic.Name, topic.Id));
             }
 
+            vm.SupportLanguages = _localizationOptions.Value.SupportedCultures!.Select(culture => new SelectListItem(
+                text: culture.DisplayName, value: culture.Name));
+
             // input model
             vm.PostEditFormData.Title = post.Title;
             vm.PostEditFormData.SubTitle = post.SubTitle;
@@ -167,8 +182,9 @@ namespace Blog.Admin.Controllers.Mvc
             // breadcumbs
             ViewData["Levels"] = new BreadcrumbsDto(Links: new[]
             {
-                new NavigationDto("Post", Url.Action("Index", "Post", new { domainId })!),
-                new NavigationDto($"Edit Post ({post.Title})", Url.Action("Edit", "Post", new { domainId, id })!)
+                new NavigationDto(_commonLocalizationService.Get("文章"), Url.Action("Index", "Post", new { domainId })!),
+                new NavigationDto($"{_commonLocalizationService.Get("编辑文章")} ({post.Title})",
+                    Url.Action("Edit", "Post", new { domainId, id })!)
             });
 
             return View(vm);

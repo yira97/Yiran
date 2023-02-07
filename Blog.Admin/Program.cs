@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Security.Cryptography;
+using Blog.Admin;
 using Blog.Admin.Middlewares;
 using Blog.Admin.Services;
 using Blog.Domain.Services.Client;
@@ -18,7 +19,11 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews()
     .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
-    .AddDataAnnotationsLocalization();
+    .AddDataAnnotationsLocalization(options =>
+    {
+        options.DataAnnotationLocalizerProvider = (type, factory) =>
+            factory.Create(typeof(CommonResources));
+    });
 
 builder.Services.AddLocalization(opt => { opt.ResourcesPath = "Resources"; });
 

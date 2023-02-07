@@ -284,5 +284,41 @@ namespace Blog.Admin.Resources {
                 return ResourceManager.GetString("新增域", resourceCulture);
             }
         }
+        
+        internal static string 编辑类别 {
+            get {
+                return ResourceManager.GetString("编辑类别", resourceCulture);
+            }
+        }
+        
+        internal static string 新增类别 {
+            get {
+                return ResourceManager.GetString("新增类别", resourceCulture);
+            }
+        }
+        
+        internal static string 新增话题 {
+            get {
+                return ResourceManager.GetString("新增话题", resourceCulture);
+            }
+        }
+        
+        internal static string 编辑话题 {
+            get {
+                return ResourceManager.GetString("编辑话题", resourceCulture);
+            }
+        }
+        
+        internal static string 创建文章 {
+            get {
+                return ResourceManager.GetString("创建文章", resourceCulture);
+            }
+        }
+        
+        internal static string 编辑文章 {
+            get {
+                return ResourceManager.GetString("编辑文章", resourceCulture);
+            }
+        }
     }
 }

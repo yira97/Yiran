@@ -146,4 +146,22 @@
     <data name="忘记密码？" xml:space="preserve">
         <value>Forgot your password?</value>
     </data>
+    <data name="编辑类别" xml:space="preserve">
+        <value>Edit Category</value>
+    </data>
+    <data name="新增类别" xml:space="preserve">
+        <value>Add Category</value>
+    </data>
+    <data name="新增话题" xml:space="preserve">
+        <value>Add Topic</value>
+    </data>
+    <data name="编辑话题" xml:space="preserve">
+        <value>Edit Topic</value>
+    </data>
+    <data name="创建文章" xml:space="preserve">
+        <value>Create Post</value>
+    </data>
+    <data name="编辑文章" xml:space="preserve">
+        <value>Edit Post</value>
+    </data>
 </root>

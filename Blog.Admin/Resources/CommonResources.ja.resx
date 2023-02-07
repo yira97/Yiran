@@ -138,4 +138,22 @@
     <data name="忘记密码？" xml:space="preserve">
         <value>パスワードをお忘れの方</value>
     </data>
+    <data name="编辑类别" xml:space="preserve">
+        <value>カテゴリー編集</value>
+    </data>
+    <data name="新增类别" xml:space="preserve">
+        <value>カテゴリー追加</value>
+    </data>
+    <data name="新增话题" xml:space="preserve">
+        <value>トピック追加</value>
+    </data>
+    <data name="编辑话题" xml:space="preserve">
+        <value>トピック編集</value>
+    </data>
+    <data name="创建文章" xml:space="preserve">
+        <value>文章を作る</value>
+    </data>
+    <data name="编辑文章" xml:space="preserve">
+        <value>文章編集</value>
+    </data>
 </root>
