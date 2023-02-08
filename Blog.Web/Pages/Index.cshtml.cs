@@ -12,6 +12,8 @@ public class IndexModel : PageModel
     private readonly BlogService _blogService;
     private readonly IDomainService _domainService;
 
+    [BindProperty(SupportsGet = true)] public string? TopicId { get; set; }
+
     public List<PostDto> Posts { get; set; } = new();
     public List<DomainCategoryDto> Categories { get; set; } = new();
     public List<DomainTopicDto> Topics { get; set; } = new();
@@ -42,11 +44,12 @@ public class IndexModel : PageModel
             domainId: domainInfo.Id,
             publicOnly: publicOnly,
             categoryId: null,
-            topicId: null
+            topicId: TopicId
         );
         Posts.AddRange(result.Data);
 
         Categories = domainInfo.Categories.ToList();
         Topics = domainInfo.Topics.ToList();
+        ViewData["CurrentTopic"] = TopicId;
     }
 }

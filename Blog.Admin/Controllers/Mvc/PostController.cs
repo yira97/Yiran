@@ -129,7 +129,8 @@ namespace Blog.Admin.Controllers.Mvc
             );
             var post = await _blogService.CreatePost(updateDto, accessToken.AccessToken);
 
-            return RedirectToAction("Index", "Post", new { id = post.Id });
+            return RedirectToAction("CreateResult",
+                new { DomainId = vm.DomainId, status = "succeed", postId = post.Id, postTitle = post.Title });
         }
 
         [HttpGet]
@@ -215,9 +216,50 @@ namespace Blog.Admin.Controllers.Mvc
                 IsPublic: input.IsPublic,
                 Content: postContent!
             );
-            _ = await _blogService.EditPost(id, updateDto, accessToken.AccessToken);
+            var updated = await _blogService.EditPost(id, updateDto, accessToken.AccessToken);
 
-            return View();
+            return RedirectToAction("EditResult",
+                new { DomainId = vm.DomainId, status = "succeed", postId = id, postTitle = updated.Title });
+        }
+
+        [HttpGet]
+        public IActionResult EditResult(string status, string postId, string postTitle)
+        {
+            var domainId = HttpContext.GetDomainIdFromHttpContextItems();
+
+            var vm = new ActionResultViewModel();
+            if (status == "succeed")
+            {
+                vm.Title = "Complete";
+                vm.Message = $"You have updated post ({postTitle}) successfully";
+                vm.ResultType = Enums.ActionResultType.Succeed;
+                vm.Buttons = new List<ActionButtonInfoDto>()
+                {
+                    new ActionButtonInfoDto(
+                        Name: "Back",
+                        Href: Url.Action("Index", new { domainId })!,
+                        Type: Enums.ActionButtonType.Common),
+                    new ActionButtonInfoDto(
+                        Name: "View",
+                        Href: Url.Action("Edit", new { domainId, id = postId })!,
+                        Type: Enums.ActionButtonType.Primary),
+                };
+            }
+            else
+            {
+                vm.Title = "Error";
+                vm.Message = $"Unknown Error";
+                vm.ResultType = Enums.ActionResultType.Error;
+                vm.Buttons = new List<ActionButtonInfoDto>()
+                {
+                    new ActionButtonInfoDto(
+                        Name: "Back",
+                        Href: Url.Action("Index", new { domainId })!,
+                        Type: Enums.ActionButtonType.Common),
+                };
+            }
+
+            return View("ActionResult", vm);
         }
 
         [HttpPost]
@@ -242,7 +284,7 @@ namespace Blog.Admin.Controllers.Mvc
             if (status == "succeed")
             {
                 vm.Title = "Complete";
-                vm.Message = $"You have create post ({postTitle}) succssfully";
+                vm.Message = $"You have created post ({postTitle}) successfully";
                 vm.ResultType = Enums.ActionResultType.Succeed;
                 vm.Buttons = new List<ActionButtonInfoDto>()
                 {

@@ -7,11 +7,22 @@
     <link rel="stylesheet" href="~/css/tailwindcss.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
 </head>
-<body class="bg-white">
+<body
+    x-data="{
+        showTopDropDown: false,
+        toggleTopDropDown() {
+            window.scrollTo({ top: 0});
+            this.showTopDropDown = !this.showTopDropDown;
+        },
+        closeTopDropDown() {
+            this.showTopDropDown = false;
+        }
+    }"
+    class="bg-white">
 
-@await Component.InvokeAsync("Nav")
+@await Component.InvokeAsync("Nav", ViewData["CurrentTopic"])
 
-<main role="main" class="pb-3">
+<main role="main" class="pb-3 relative z-0">
     @RenderBody()
 </main>
 

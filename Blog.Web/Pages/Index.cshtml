@@ -1,5 +1,4 @@
 ﻿@page
-@using Blog.Web.Services
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @model IndexModel
 @inject IStringLocalizer<IndexModel> Localizer
@@ -9,10 +8,18 @@
 
 }
 
-<div class="bg-gray-100 pb-20">
+<div class="bg-gray-100 pb-20 z-1">
     <div class="h-10"></div>
     <div class=" lg:w-[980px] w-[692px] mx-auto">
-        <h1 class="text-4xl font-semibold mb-[24px]">@Localizer["最新文章"]</h1>
+        @if (Model.TopicId == null)
+        {
+            <h1 class="text-4xl font-semibold mb-[24px]">@Localizer["最新文章"]</h1>
+        }
+        else
+        {
+            <p class="text-xs font-semibold text-gray-500">@Localizer["最新文章"].ToString().ToUpper()</p>
+            <p class="text-3xl font-bold mb-[24px] mt-1">@Model.Topics.FirstOrDefault(t => t.Id == Model.TopicId).Name</p>
+        }
 
         <div class="flex flex-wrap justify-between">
             @* LARGE 1 *@

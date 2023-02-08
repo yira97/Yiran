@@ -1,4 +1,5 @@
 using Blog.Web.Services;
+using Blog.Web.ViewModels.ViewComponents;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Web.ViewComponents;
@@ -12,9 +13,11 @@ public class NavViewComponent : ViewComponent
         _domainService = domainService;
     }
 
-    public async Task<IViewComponentResult> InvokeAsync()
+    public async Task<IViewComponentResult> InvokeAsync(string currentTopic)
     {
-        var domainInfo = await _domainService.GetInfo();
-        return View(domainInfo);
+        var vm = new NavViewModel();
+        vm.DomainInfo = await _domainService.GetInfo();
+        vm.CurrentTopic = currentTopic;
+        return View(vm);
     }
 }

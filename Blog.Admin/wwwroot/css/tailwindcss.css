@@ -785,6 +785,11 @@ select {
   margin-right: 0.75rem;
 }
 
+.my-3 {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
 .mt-4 {
   margin-top: 1rem;
 }
@@ -1152,6 +1157,26 @@ select {
 
 .gap-4 {
   gap: 1rem;
+}
+
+.gap-10 {
+  gap: 2.5rem;
+}
+
+.gap-1 {
+  gap: 0.25rem;
+}
+
+.gap-5 {
+  gap: 1.25rem;
+}
+
+.gap-2 {
+  gap: 0.5rem;
+}
+
+.gap-3 {
+  gap: 0.75rem;
 }
 
 .space-y-8 > :not([hidden]) ~ :not([hidden]) {
@@ -1915,6 +1940,16 @@ select {
   background-color: rgb(229 231 235 / var(--tw-bg-opacity));
 }
 
+.hover\:bg-indigo-500:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(99 102 241 / var(--tw-bg-opacity));
+}
+
+.hover\:bg-red-500:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(239 68 68 / var(--tw-bg-opacity));
+}
+
 .hover\:text-indigo-900:hover {
   --tw-text-opacity: 1;
   color: rgb(49 46 129 / var(--tw-text-opacity));
@@ -1966,6 +2001,16 @@ select {
 .focus\:border-purple-500:focus {
   --tw-border-opacity: 1;
   border-color: rgb(168 85 247 / var(--tw-border-opacity));
+}
+
+.focus\:bg-indigo-500:focus {
+  --tw-bg-opacity: 1;
+  background-color: rgb(99 102 241 / var(--tw-bg-opacity));
+}
+
+.focus\:bg-red-500:focus {
+  --tw-bg-opacity: 1;
+  background-color: rgb(239 68 68 / var(--tw-bg-opacity));
 }
 
 .focus\:text-gray-900:focus {
