@@ -1,0 +1,14 @@
+@page
+@model Blog.Web.Pages.Locale.Index
+
+<div class="lg:w-[980px] w-[692px] mx-auto mt-10">
+    <h1 class="text-xl font-medium">This site in other language</h1>
+    <div class="border-t border-gray-300 w-full mt-3"></div>
+
+    @foreach (var lan in Model.SupportLanguages)
+    {
+        <div class="text-blue-500 my-5">
+            <a class="hover:underline" asp-page="/Index" asp-route-culture="@lan.Name">@lan.NativeName (@lan.EnglishName)</a>
+        </div>
+    }
+</div>

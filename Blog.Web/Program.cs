@@ -1,5 +1,6 @@
 using System.Globalization;
 using Blog.Domain.Services.Client;
+using Blog.Web.Conventions;
 using Blog.Web.Services;
 using Evrane.Core.Security;
 using Microsoft.AspNetCore.Localization;
@@ -22,6 +23,10 @@ builder.Services.AddHttpClient<BlogService>();
 
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 
+builder.Services.Configure<RouteOptions>(options =>
+{
+    options.ConstraintMap.Add("culture", typeof(CultureConstraint));
+});
 builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
     var supportedCultures = new[]

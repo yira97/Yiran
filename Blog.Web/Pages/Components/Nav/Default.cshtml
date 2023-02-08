@@ -4,7 +4,7 @@
 @inject CommonLocalizationService CommonLocalization
 
 <nav class="sticky top-0 z-10 bg-white backdrop-filter backdrop-blur-lg bg-opacity-30">
-    <div class="max-w-5xl mx-auto px-4">
+    <div class="max-w-[980px] mx-auto">
         <div class="flex items-center justify-between h-12">
             <a asp-route-culture="@Context.Request.RouteValues["culture"]" asp-page="/Index" class="block text-xl text-gray-900 font-medium">@Model.Name</a>
             <div class="flex gap-8 text-gray-900 text-xs">

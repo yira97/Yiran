@@ -18,7 +18,8 @@ public class CultureTemplatePageRouteModelConvention : IPageRouteModelConvention
                 {
                     Order = -1,
                     Template =
-                        AttributeRouteModel.CombineTemplates("{culture?}", selector.AttributeRouteModel.Template),
+                        AttributeRouteModel.CombineTemplates("{culture:culture?}",
+                            selector.AttributeRouteModel.Template),
                 }
             });
         }
