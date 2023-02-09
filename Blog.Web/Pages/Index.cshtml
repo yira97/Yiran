@@ -24,18 +24,44 @@
         <div class="flex flex-wrap justify-between">
             @* LARGE 1 *@
             @{
-                var large = @Model.Posts.Any() ? @Model.Posts[0] : null;
             }
-            <a asp-route-culture="@HttpContext.Request.RouteValues["culture"]" asp-page="/Post/Index" asp-route-PostId="@large?.Id" class="block bg-white rounded-xl flex items-center overflow-hidden group cursor-pointer">
-                <picture class="basis-[453px] lg:basis-[643px] overflow-hidden bg-black">
-                    <img alt="post-cover" class="w-full aspect-[16/9] object-cover scale-100 group-hover:scale-105 ease-in duration-200 opacity-100 group-hover:opacity-80" src="@large?.Content.Cover?.GetInfo?.UrlXl"/>
-                </picture>
-                <div class="ml-10">
-                    <p class="text-xs font-medium text-gray-600">@Model.Categories.Find(c => c.Id == large?.Category)?.Name</p>
-                    <h3 class="text-3xl font-semibold mt-2">@large?.Title</h3>
-                    <p class="text-sm font-medium text-gray-500 mt-2">@large?.CreatedAt.ToString("D")</p>
+            @if (@Model.Posts.Any())
+            {
+                var large = @Model.Posts.First();
+                <a asp-route-culture="@HttpContext.Request.RouteValues["culture"]" asp-page="/Post/Index" asp-route-PostId="@large?.Id" class="block bg-white rounded-xl flex overflow-hidden group cursor-pointer">
+                    <picture class="basis-[453px] lg:basis-[643px] overflow-hidden bg-black w-full shrink-0">
+                        <img alt="post-cover" class="w-full aspect-[16/9] object-cover scale-100 group-hover:scale-105 ease-in duration-200 opacity-100 group-hover:opacity-80" src="@large?.Content.Cover?.GetInfo?.UrlXl"/>
+                    </picture>
+                    <div class="p-[32px] flex flex-col justify-between grow">
+                        <div>
+                            <p class="text-xs font-medium text-gray-600">@Model.Categories.Find(c => c.Id == large?.Category)?.Name</p>
+                            <h3 class="text-3xl font-semibold mt-2">@large?.Title</h3>
+                        </div>
+                        <p class="text-sm font-medium text-gray-500 mt-2">@large?.CreatedAt.ToString("D")</p>
+                    </div>
+                </a>
+            }
+            else
+            {
+                <div class="basis-full bg-white rounded-xl flex items-center overflow-hidden">
+                    <picture class="basis-[453px] lg:basis-[643px] overflow-hidden bg-black">
+                        @* <img alt="post-cover" class="w-full aspect-[16/9] object-cover scale-100 group-hover:scale-105 ease-in duration-200 opacity-100 group-hover:opacity-80" src="@large?.Content.Cover?.GetInfo?.UrlXl"/> *@
+                        <div class="w-full h-[264px] flex items-center justify-center bg-gray-300">
+                            <svg class="h-10 w-10" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+                                <g>
+                                    <g>
+                                        <path d="m220 512h72v-512h-65z" fill="#ecc97e"/><path d="m224.817 159.658 67.183-1.158v-57.736l-66.37-.523z" fill="#d58b6d"/>
+                                    </g>
+                                    <g>
+                                        <path d="m178 35h205l1 94-212-2-44-20v-49z" fill="#e5e5e5"/><path d="m353.64 128.714 30.36.286-1-94h-27.38z" fill="#b5a3a3"/>
+                                    </g>
+                                </g>
+                            </svg>
+                        </div>
+                    </picture>
                 </div>
-            </a>
+            }
+
 
             @* MEDIUM 4 *@
 
