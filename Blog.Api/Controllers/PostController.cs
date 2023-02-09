@@ -190,6 +190,7 @@ public class PostController : ControllerBase
     {
         var userId = HttpContext.User.GetUserId();
         _ = await _unitOfWork.PostRepository.DeletePost(postId, userId);
+        await _unitOfWork.CompleteAsync();
         return Ok();
     }
 }

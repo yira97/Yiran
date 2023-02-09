@@ -12,4 +12,6 @@ public class IndexViewModel
     }
 
     public Input FormInput { get; set; } = new Input();
+
+    public bool AcceptRegister { get; set; } = false;
 }

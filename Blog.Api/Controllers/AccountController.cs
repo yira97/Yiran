@@ -42,4 +42,12 @@ public class AccountController : ControllerBase
         var token = await _userService.RefreshAccessToken(accessTokenDto.AccessToken, accessTokenDto.RefreshToken);
         return Ok(token);
     }
+
+    [AllowAnonymous]
+    [HttpGet("exist-admin")]
+    public async Task<ActionResult<BoolResultDto>> ExistAdmin()
+    {
+        var exist = await _userService.ExistAdmin();
+        return Ok(new BoolResultDto(exist));
+    }
 }

@@ -104,7 +104,7 @@ public class UserService : IUserService
         return role!;
     }
 
-    private async Task<bool> ExistAdmin()
+    public async Task<bool> ExistAdmin()
     {
         var adminRole = await GetOrCreateRole(Role.Admin.ToString());
 
@@ -112,7 +112,7 @@ public class UserService : IUserService
         return user != null;
     }
 
-    private async Task CreateAdmin(ApplicationUserEntity user)
+    private async Task AddAdminRole(ApplicationUserEntity user)
     {
         await _userManager.AddToRoleAsync(user, Role.Admin.ToString());
     }
@@ -135,7 +135,7 @@ public class UserService : IUserService
 
         if (!await ExistAdmin())
         {
-            await CreateAdmin(user!);
+            await AddAdminRole(user!);
         }
 
         await AutoRefreshToken(user!);

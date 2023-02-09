@@ -16,9 +16,11 @@ public class SignInController : Controller
         _blogService = blogService;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
+        var exist = await _blogService.ExistAdmin();
         var vm = new IndexViewModel();
+        vm.AcceptRegister = !exist;
         return View(vm);
     }
 

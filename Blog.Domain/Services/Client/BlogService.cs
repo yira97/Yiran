@@ -312,4 +312,13 @@ public class BlogService
         var resp = await _httpClient.SendAsync(request);
         resp.EnsureSuccessStatusCode();
     }
+
+    public async Task<bool> ExistAdmin()
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, $"api/v1/Account/exist-admin");
+        var resp = await _httpClient.SendAsync(request);
+        resp.EnsureSuccessStatusCode();
+        var result = await resp.Content.ReadFromJsonAsync<BoolResultDto>();
+        return result!.Result;
+    }
 }
