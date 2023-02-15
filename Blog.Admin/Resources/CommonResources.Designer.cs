@@ -398,5 +398,17 @@ namespace Blog.Admin.Resources {
                 return ResourceManager.GetString("创建翻译", resourceCulture);
             }
         }
+        
+        internal static string 邮箱 {
+            get {
+                return ResourceManager.GetString("邮箱", resourceCulture);
+            }
+        }
+        
+        internal static string 密码 {
+            get {
+                return ResourceManager.GetString("密码", resourceCulture);
+            }
+        }
     }
 }

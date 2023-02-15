@@ -206,4 +206,10 @@
     <data name="开始为网站地图创建一个翻译版。" xml:space="preserve">
         <value>Get started by creating a new Translation.</value>
     </data>
+    <data name="邮箱" xml:space="preserve">
+        <value>Email</value>
+    </data>
+    <data name="密码" xml:space="preserve">
+        <value>Password</value>
+    </data>
 </root>

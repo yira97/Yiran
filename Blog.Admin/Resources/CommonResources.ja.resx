@@ -198,4 +198,10 @@
     <data name="开始为网站地图创建一个翻译版。" xml:space="preserve">
         <value>サイトマップ翻訳版の作成を開始する。</value>
     </data>
+    <data name="邮箱" xml:space="preserve">
+        <value>メール</value>
+    </data>
+    <data name="密码" xml:space="preserve">
+        <value>パスワード</value>
+    </data>
 </root>

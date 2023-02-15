@@ -6,9 +6,12 @@ public class IndexViewModel
 {
     public class Input
     {
-        [EmailAddress] public string Email { get; set; } = string.Empty;
+        [Display(Name = "邮箱")] [EmailAddress] public string Email { get; set; } = string.Empty;
 
-        [Required] [MinLength(6)] public string Password { get; set; } = string.Empty;
+        [Display(Name = "密码")]
+        [Required]
+        [MinLength(6)]
+        public string Password { get; set; } = string.Empty;
     }
 
     public Input FormInput { get; set; } = new Input();

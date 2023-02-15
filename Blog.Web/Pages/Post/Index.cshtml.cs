@@ -26,7 +26,7 @@ public class Index : PageModel
 
     public async Task OnGet()
     {
-        var domainInfo = await _domainService.GetInfo();
+        var domainInfo = await _domainService.GetDomainInfo();
         Post = await _blogService.GetPost(PostId);
         TopicInfo = domainInfo.Topics.First(t => t.Id == Post.Topic);
         CategoryInfo = domainInfo.Categories.First(c => c.Id == Post.Category);

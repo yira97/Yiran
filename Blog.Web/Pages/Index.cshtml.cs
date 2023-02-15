@@ -27,7 +27,7 @@ public class IndexModel : PageModel
 
     public async Task OnGet()
     {
-        var domainInfo = await _domainService.GetInfo();
+        var domainInfo = await _domainService.GetDomainInfo();
 
         const int pageSize = 10;
         var pageToken = string.Empty;

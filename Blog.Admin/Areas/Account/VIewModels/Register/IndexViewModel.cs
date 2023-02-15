@@ -9,11 +9,13 @@ public class IndexViewModel
     {
         [Required(ErrorMessage = "Please enter email")]
         [EmailAddress]
+        [Display(Name = "邮箱")]
         public string Email { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Please enter email")]
         [MinLength(6, ErrorMessage = "Minimum length is 6")]
         [PasswordPropertyText]
+        [Display(Name = "密码")]
         public string Password { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Please enter password")]

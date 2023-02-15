@@ -16,7 +16,7 @@ public class NavViewComponent : ViewComponent
     public async Task<IViewComponentResult> InvokeAsync(string currentTopic)
     {
         var vm = new NavViewModel();
-        vm.DomainInfo = await _domainService.GetInfo();
+        vm.DomainInfo = await _domainService.GetDomainInfo();
         vm.CurrentTopic = currentTopic;
         return View(vm);
     }

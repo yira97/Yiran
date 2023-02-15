@@ -1,0 +1,30 @@
+@model Blog.Web.ViewModels.ViewComponents.SiteMapDisplayViewModel
+
+@if (Model.SiteMap.Sections.Count() == 1)
+{
+    <nav class="flex justify-center items-center">
+        @foreach (var link in Model.SiteMap.Sections[0].Links)
+        {
+            <a href="@link.Href" class="text-sm leading-6 text-gray-600 hover:text-gray-900">@link.Name</a>
+        }
+    </nav>
+}
+else
+{
+    <nav class="flex justify-start">
+        @foreach (var section in Model.SiteMap.Sections)
+        {
+            <div class="basis-1/4">
+                <h3 class="text-sm font-semibold leading-6 text-gray-900">@(section.Name)</h3>
+                <ul role="list" class="mt-6 space-y-4">
+                    @foreach (var link in section.Links)
+                    {
+                        <li>
+                            <a href="@link.Href" class="text-sm leading-6 text-gray-600 hover:text-gray-900">@link.Name</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
+    </nav>
+}
