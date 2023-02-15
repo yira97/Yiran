@@ -10,5 +10,7 @@ public interface IUnitOfWork
 
     IAccountRepository AccountRepository { get; }
 
+    IDomainRepository DomainRepository { get; }
+
     Task<bool> CompleteAsync();
 }

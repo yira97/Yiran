@@ -55,7 +55,7 @@ namespace Blog.Admin.Controllers.Mvc
             var vm = new PostViewModel();
             vm.QueryResult = result;
 
-            ViewData[ViewHelper.ViewData.ActiveNav] = RouteHelper.Controller.Post;
+            ViewData[ViewHelper.ViewData.ActiveNav] = "文章";
 
             return View(vm);
         }

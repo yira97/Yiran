@@ -29,7 +29,7 @@ public class CategoryController : Controller
 
         var vm = new CategoryViewModel();
         vm.Categories = domain.Categories.ToList();
-        ViewData[ViewHelper.ViewData.ActiveNav] = RouteHelper.Controller.Category;
+        ViewData[ViewHelper.ViewData.ActiveNav] = "类别";
         return View(vm);
     }
 

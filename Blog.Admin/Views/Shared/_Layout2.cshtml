@@ -1,4 +1,6 @@
 @using Blog.Admin.ViewComponents
+@using Blog.Domain.Models
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @{
     var levels = ViewData["Levels"] != null ? (BreadcrumbsDto)ViewData["Levels"]! : new BreadcrumbsDto(Links: new List<NavigationDto>());
 }

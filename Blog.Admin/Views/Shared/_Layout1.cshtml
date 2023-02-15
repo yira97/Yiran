@@ -2,24 +2,34 @@
 @using Blog.Admin.Middlewares
 @using Blog.Admin.Services
 @using Blog.Admin.ViewComponents
+@using Blog.Admin.ViewModels
+@using Blog.Domain.Models
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @inject CommonLocalizationService CommonLocalization
 @{
-    var activeNav = ViewData[ViewHelper.ViewData.ActiveNav] != null ? (string)ViewData[ViewHelper.ViewData.ActiveNav]! : RouteHelper.Controller.Home;
+    var activeNav = ViewData[ViewHelper.ViewData.ActiveNav] != null ? (string)ViewData[ViewHelper.ViewData.ActiveNav]! : "主页";
     var domainId = Context.GetDomainIdFromHttpContextItems();
     var levels = ViewData["Levels"] != null ? (BreadcrumbsDto)ViewData["Levels"]! : new BreadcrumbsDto(Links: new List<NavigationDto>());
+    // Current: "text-gray-500", Default: "text-gray-400 group-hover:text-gray-500"
     string NavIconClass(string nav) => activeNav == nav ? "text-gray-500" : "text-gray-400 group-hover:text-gray-500";
     string NavClass(string nav) => activeNav == nav ? "bg-gray-100 text-gray-900" : "text-gray-600 hover:text-gray-900 hover:bg-gray-50";
     // Current: "bg-gray-200 text-gray-900", Default: "text-gray-700 hover:text-gray-900 hover:bg-gray-50"
     string NavClassDesktop(string nav) => activeNav == nav ? "bg-gray-200 text-gray-900" : "text-gray-700 hover:text-gray-900 hover:bg-gray-50";
-    var navItems = new List<string> { CommonLocalization.Get("主页"), CommonLocalization.Get("文章"), CommonLocalization.Get("话题"), CommonLocalization.Get("类别"), CommonLocalization.Get("联系方式"), CommonLocalization.Get("设置") };
+    var navItems = new List<string>
+    {
+        "主页",
+        "文章",
+        "话题",
+        "类别",
+        "设置",
+    };
     var navLinks = new List<string>
     {
-        Url.Action("Index", RouteHelper.Controller.Home, new { domainId = domainId })!,
-        Url.Action("Index", RouteHelper.Controller.Post, new { domainId = domainId })!,
-        Url.Action("Index", RouteHelper.Controller.Topic, new { domainId = domainId })!,
-        Url.Action("Index", RouteHelper.Controller.Category, new { domainId = domainId })!,
-        Url.Action("Index", RouteHelper.Controller.Contact, new { domainId = domainId })!,
-        Url.Action("Index", RouteHelper.Controller.Settings, new { domainId = domainId })!,
+        Url.Action("Index", "Home", new { domainId = domainId })!,
+        Url.Action("Index", "Post", new { domainId = domainId })!,
+        Url.Action("Index", "Topic", new { domainId = domainId })!,
+        Url.Action("Index", "Category", new { domainId = domainId })!,
+        Url.Action("Index", "Settings", new { domainId = domainId })!,
     };
 }
 <!DOCTYPE html>
@@ -145,15 +155,15 @@
                     {
                         var navItem = navItems[i];
                         var navLink = navLinks[i];
-                        <!-- Current: "bg-gray-200 text-gray-900", Default: "text-gray-700 hover:text-gray-900 hover:bg-gray-50" -->
+                        var vm = new SectionIconViewModel
+                        {
+                            ExtraClass = NavIconClass(navItem),
+                            Name = navItem,
+                        };
                         <a href="@navLink" class="@NavClassDesktop(navItem) group flex items-center px-2 py-2 text-sm font-medium rounded-md" aria-current="page">
-                            <!--
-                            Current: "text-gray-500", Default: "text-gray-400 group-hover:text-gray-500"
-                            -->
-                            <svg class="@NavIconClass(navItem) mr-3 flex-shrink-0 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/>
-                            </svg>
-                            @navItem
+                            <partial name="_SectionIcon" model="vm"/>
+                            <div class="w-3"></div>
+                            @CommonLocalization.Get(navItem)
                         </a>
                     }
                 </div>

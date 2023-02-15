@@ -29,6 +29,8 @@ public class UnitOfWork : IUnitOfWork
 
     public IAccountRepository AccountRepository => new AccountRepository(_context, _accountRepositoryLogger);
 
+    public IDomainRepository DomainRepository => new DomainRepository(_context);
+
     public async Task<bool> CompleteAsync()
     {
         return await _context.SaveChangesAsync() > 0;

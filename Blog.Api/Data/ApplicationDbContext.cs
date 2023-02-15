@@ -23,6 +23,12 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUserEntity, App
 
     public DbSet<StaticResourceEntity> StaticResources => Set<StaticResourceEntity>();
 
+    public DbSet<SiteMapEntity> DomainSiteMaps => Set<SiteMapEntity>();
+
+    public DbSet<TextContentEntity> TextContents => Set<TextContentEntity>();
+
+    public DbSet<TextContentTranslationEntity> TextContentTranslations => Set<TextContentTranslationEntity>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         // call super first
@@ -31,6 +37,10 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUserEntity, App
         // Npgsql
         modelBuilder.Entity<PostEntity>()
             .Property(b => b.Content)
+            .HasColumnType("jsonb");
+
+        modelBuilder.Entity<DomainEntity>()
+            .Property(d => d.SocialLinks)
             .HasColumnType("jsonb");
 
         modelBuilder.Entity<DomainCategoryEntity>()
@@ -42,5 +52,10 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUserEntity, App
             .HasOne(dc => dc.Domain)
             .WithMany(d => d.Topics)
             .HasForeignKey(dc => dc.DomainId);
+
+        modelBuilder.Entity<DomainEntity>()
+            .HasOne(d => d.SiteMap)
+            .WithOne(sm => sm.Domain)
+            .HasForeignKey<DomainEntity>(d => d.SiteMapId);
     }
 }

@@ -2,6 +2,7 @@ using System.Globalization;
 using Blog.Admin.Areas.Account.VIewModels.Settings;
 using Blog.Admin.Helper;
 using Blog.Admin.Models;
+using Blog.Domain.Models;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;

@@ -29,7 +29,7 @@ public class TopicController : Controller
 
         var vm = new TopicViewModel();
         vm.Topics = domain.Topics.ToList();
-        ViewData[ViewHelper.ViewData.ActiveNav] = RouteHelper.Controller.Topic;
+        ViewData[ViewHelper.ViewData.ActiveNav] = "话题";
         return View(vm);
     }
 

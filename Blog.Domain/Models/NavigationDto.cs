@@ -1,4 +1,4 @@
-namespace Blog.Admin.Models;
+namespace Blog.Domain.Models;
 
 public record NavigationDto(
     string Name,

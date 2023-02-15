@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Api.Controllers;
 
-[Authorize]
+[Authorize(Policy = Policy.RequireAdmin)]
 [ApiController]
 [Route("api/v1/[controller]")]
 public class DomainController : ControllerBase
@@ -56,7 +56,6 @@ public class DomainController : ControllerBase
     /// </summary>
     /// <param name="updateDto"></param>
     /// <returns></returns>
-    [Authorize(Policy = Policy.RequireAdmin)]
     [HttpPost]
     public async Task<ActionResult<DomainDto>> Create(DomainUpdateDto updateDto)
     {
@@ -73,7 +72,6 @@ public class DomainController : ControllerBase
     /// <param name="domainId"></param>
     /// <param name="updateDto"></param>
     /// <returns></returns>
-    [Authorize(Policy = Policy.RequireAdmin)]
     [HttpPut("{domainId}")]
     public async Task<ActionResult<DomainDto>> Update(string domainId, DomainUpdateDto updateDto)
     {
@@ -89,7 +87,6 @@ public class DomainController : ControllerBase
     /// </summary>
     /// <param name="domainId"></param>
     /// <returns></returns>
-    [Authorize(Policy = Policy.RequireAdmin)]
     [HttpDelete("{domainId}")]
     public async Task<ActionResult> Delete(string domainId)
     {
@@ -100,7 +97,6 @@ public class DomainController : ControllerBase
         return Ok();
     }
 
-    [Authorize(Policy = Policy.RequireAdmin)]
     [HttpPost("{domainId}/categories")]
     public async Task<ActionResult<DomainCategoryDto>> AddCategory(string domainId, DomainCategoryUpdateDto updateDto)
     {
@@ -112,7 +108,6 @@ public class DomainController : ControllerBase
         return Ok(category);
     }
 
-    [Authorize(Policy = Policy.RequireAdmin)]
     [HttpPost("{domainId}/topics")]
     public async Task<ActionResult<DomainCategoryDto>> AddTopic(string domainId, DomainTopicUpdateDto updateDto)
     {
@@ -124,7 +119,6 @@ public class DomainController : ControllerBase
         return Ok(topic);
     }
 
-    [Authorize(Policy = Policy.RequireAdmin)]
     [HttpPut("{domainId}/categories/{categoryId}")]
     public async Task<ActionResult<DomainCategoryDto>> UpdateCategory(string domainId, string categoryId,
         DomainCategoryUpdateDto updateDto)
@@ -137,7 +131,6 @@ public class DomainController : ControllerBase
         return Ok(category);
     }
 
-    [Authorize(Policy = Policy.RequireAdmin)]
     [HttpPut("{domainId}/topics/{topicId}")]
     public async Task<ActionResult<DomainTopicDto>> UpdateTopic(string domainId, string topicId,
         DomainTopicUpdateDto updateDto)
@@ -150,7 +143,6 @@ public class DomainController : ControllerBase
         return Ok(category);
     }
 
-    [Authorize(Policy = Policy.RequireAdmin)]
     [HttpDelete("{domainId}/categories/{categoryId}")]
     public async Task<ActionResult> DeleteCategory(string categoryId, string domainId)
     {
@@ -160,7 +152,6 @@ public class DomainController : ControllerBase
         return Ok();
     }
 
-    [Authorize(Policy = Policy.RequireAdmin)]
     [HttpDelete("{domainId}/topics/{topicId}")]
     public async Task<ActionResult> DeleteTopic(string topicId, string domainId)
     {
@@ -168,5 +159,58 @@ public class DomainController : ControllerBase
         _ = await _unitOfWork.PostRepository.DeleteDomainTopicImmediately(topicId, userId);
 
         return Ok();
+    }
+
+    [HttpPut("{domainId}/site-map")]
+    public async Task<ActionResult> UpdateSiteMap(string domainId, SiteMapDto siteMap)
+    {
+        var userId = HttpContext.User.GetUserId();
+        _ = await _unitOfWork.DomainRepository.UpdateSiteMap(domainId, siteMap, userId);
+        await _unitOfWork.CompleteAsync();
+        return Ok();
+    }
+
+    [HttpPut("{domainId}/site-map/translation/{language}")]
+    public async Task<ActionResult> UpdateSiteMapTranslation(string domainId, string language, SiteMapDto siteMap)
+    {
+        var userId = HttpContext.User.GetUserId();
+        _ = await _unitOfWork.DomainRepository.UpdateSiteMapTranslation(domainId, siteMap, userId);
+        await _unitOfWork.CompleteAsync();
+        return Ok();
+    }
+
+    [HttpPut("{domainId}/social-links")]
+    public async Task<ActionResult> UpdateSocialLinks(string domainId, SocialLinksDto socialLinks)
+    {
+        var userId = HttpContext.User.GetUserId();
+        _ = await _unitOfWork.DomainRepository.UpdateSocialLinks(domainId, socialLinks, userId);
+        await _unitOfWork.CompleteAsync();
+        return Ok();
+    }
+
+    [AllowAnonymous]
+    [HttpGet("{domainId}/social-links")]
+    public async Task<ActionResult<SocialLinksDto>> GetSocialLinks(string domainId)
+    {
+        var socialLinks = await _unitOfWork.DomainRepository.GetSocialLinks(domainId);
+        return Ok(socialLinks);
+    }
+
+    [AllowAnonymous]
+    [HttpGet("{domainId}/site-map/{language?}")]
+    public async Task<ActionResult<SiteMapDto>> GetSiteMap(string domainId, string? language)
+    {
+        SiteMapDto? siteMap;
+        if (language == null)
+        {
+            siteMap = await _unitOfWork.DomainRepository.GetSiteMap(domainId);
+        }
+        else
+        {
+            siteMap = await _unitOfWork.DomainRepository.GetSiteMap(domainId, language);
+        }
+
+        if (siteMap == null) return NotFound();
+        return Ok(siteMap);
     }
 }

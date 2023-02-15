@@ -107,11 +107,7 @@ const uploadImageAsync = async (url, file) => {
     return await resp.json()
 }
 
-
-
 document.addEventListener('alpine:init', () => {
-
-
   Alpine.data('postUpdate', () => ({
     async init() {
         if (getPostContentUrl.length > 0) {

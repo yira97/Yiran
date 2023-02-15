@@ -36,7 +36,6 @@ public class StaticResourceController : ControllerBase
         return info with { ResourceId = r.Id };
     }
 
-    [AllowAnonymous]
     [HttpPost]
     public async Task<ActionResult<PutInfo>> GetPutInfo(StaticResourceUpdateDto resourceDto)
     {

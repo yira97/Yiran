@@ -1,3 +1,5 @@
+using Blog.Domain.Models;
+
 namespace Blog.Admin.Models;
 
 public record BreadcrumbsDto(

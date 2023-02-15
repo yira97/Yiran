@@ -7,7 +7,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation",
         "JwtSettings__IssuerKeyPath": "/Users/yiran/Developer/RockMoss/src/Auth/rsa-public-key.pem",
-        "Domain": "eadaefd7-5496-4c9a-848b-79284b3da4f4"
+        "Domain": "f36072db-78b2-4098-b123-fe67a084f185"
       }
     }
   }

@@ -1,0 +1,331 @@
+@using Blog.Domain.Enums
+@model Blog.Admin.ViewModels.SettingsIndexViewModel
+@{
+    ViewBag.Title = "title";
+    Layout = "_SettingsLayout";
+}
+
+@* 原始文本 BEGIN *@
+<div x-data="siteMapUpdate" class="py-6">
+    <h1 class="text-2xl font-medium">Default</h1>
+    <div x-show="siteMapContentData == null" class="text-center mt-8">
+        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+        </svg>
+        <h3 class="mt-2 text-sm font-medium text-gray-900">No SiteMap</h3>
+        <p class="mt-1 text-sm text-gray-500">Get started by creating a new SiteMap.</p>
+        <div class="mt-6">
+            <button x-on:click="initSiteMapContentData()" type="button" class="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                <!-- Heroicon name: mini/plus -->
+                <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z"/>
+                </svg>
+                New SiteMap
+            </button>
+        </div>
+    </div>
+    <template x-if="siteMapContentData != null">
+        <div class="mt-2">
+            <div>
+                <select x-model="siteMapContentData.language" id="language" class="mt-1 block w-full rounded-md border-gray-300 py-1 pl-2 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm">
+                    @foreach (var lan in Language.Languages)
+                    {
+                        <option value="@lan">@lan</option>
+                    }
+                </select>
+            </div>
+            <template x-for="(section, indexOfSection) in siteMapContentData.sections" x-bind:key="section.uuid">
+                <div class="mt-2">
+                    @* single section *@
+                    <div>
+                        @* section header *@
+                        <div class="flex gap-4 items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"/>
+                            </svg>
+                            <input class="border py-1 px-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Section Name" x-model="section.name"/>
+                        </div>
+
+                        @* section content *@
+                        <div class="pl-10 mt-2">
+                            <template x-for="link in section.links" x-bind:key="link.uuid">
+                                <div class="flex gap-2 items-center mt-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 shrink-0">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"/>
+                                    </svg>
+                                    <input class="border py-1 px-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Name" x-model="link.name"/>
+                                    <input class="border py-1 px-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Url" x-model="link.href"/>
+                                </div>
+                            </template>
+                            <button type="button" x-on:click="addLinkInSection(indexOfSection)" class="mt-2 inline-flex items-center rounded-md border border-gray-200 bg-gray-100 px-2 py-1 text-sm font-medium leading-4 text-gray-500 shadow-sm hover:bg-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 w-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="-ml-0.5 mr-2 h-4 w-4">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+                                </svg>
+
+                                Add Link
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </template>
+            <button type="button" x-on:click="addSection()" class="mt-2 inline-flex items-center rounded-md border border-gray-200 bg-gray-100 px-2 py-1 px-2 text-sm font-medium leading-4 text-gray-500 shadow-sm hover:bg-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 w-full">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="-ml-0.5 mr-2 h-4 w-4">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 16.875h3.375m0 0h3.375m-3.375 0V13.5m0 3.375v3.375M6 10.5h2.25a2.25 2.25 0 002.25-2.25V6a2.25 2.25 0 00-2.25-2.25H6A2.25 2.25 0 003.75 6v2.25A2.25 2.25 0 006 10.5zm0 9.75h2.25A2.25 2.25 0 0010.5 18v-2.25a2.25 2.25 0 00-2.25-2.25H6a2.25 2.25 0 00-2.25 2.25V18A2.25 2.25 0 006 20.25zm9.75-9.75H18a2.25 2.25 0 002.25-2.25V6A2.25 2.25 0 0018 3.75h-2.25A2.25 2.25 0 0013.5 6v2.25a2.25 2.25 0 002.25 2.25z"/>
+                </svg>
+                Add Section
+            </button>
+        </div>
+        <div class="pt-5">
+            <div class="flex justify-end">
+                <form asp-action="UpdateSiteMap" id="SiteMapUpdateFormInput_Form">
+                    <input type="hidden" asp-for="SiteMapUpdateFormInput.DomainId"/>
+                    <input type="hidden" asp-for="SiteMapUpdateFormInput.SiteMapDataJson" id="SiteMapUpdateFormInput_SiteMapDataJson"/>
+                    <button type="submit" x-on:click="handleSubmit()" class="ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Submit</button>
+                </form>
+            </div>
+        </div>
+    </template>
+</div>
+@* 原始文本 END *@
+
+<div class="border-t w-full"></div>
+
+
+@* 翻译文本 BEGIN *@
+<div x-data="siteMapTranslationUpdate" class="py-6">
+    <h1 class="text-2xl font-medium">Localization</h1>
+    @* 翻译语言选择 *@
+    <div class="mt-2">
+        <select x-model="language" x-on:change="fetchTranslation($event.target.value)" id="languageTranslation" class="mt-1 block w-full rounded-md border-gray-300 py-1 pl-2 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm">
+            <option disabled selected value=""> -- select an language -- </option>
+            @foreach (var lan in Language.Languages)
+            {
+                <option value="@lan">@lan</option>
+            }
+        </select>
+    </div>
+
+    @* 翻译语言选择时显示 *@
+    <template x-if="language != null && language.length > 0">
+        <div>
+            @* 翻译语言对应内容不存在时显示 *@
+            <div x-show="siteMapContentData == null" class="text-center mt-8">
+                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                    <path vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+                </svg>
+                <h3 class="mt-2 text-sm font-medium text-gray-900" x-text="'No Translation for ' + language"></h3>
+                <p class="mt-1 text-sm text-gray-500">Get started by creating a new Translation.</p>
+                <div class="mt-6">
+                    <button x-on:click="initSiteMapContentData()" type="button" class="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                        <!-- Heroicon name: mini/plus -->
+                        <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z"/>
+                        </svg>
+                        New Translation
+                    </button>
+                </div>
+            </div>
+
+            @* 翻译语言对应内容存在时显示 *@
+            <template x-if="siteMapContentData != null">
+                <div>
+                    <template x-for="(section, indexOfSection) in siteMapContentData.sections" x-bind:key="section.uuid">
+                        <div class="mt-2">
+                            @* single section *@
+                            <div>
+                                @* section header *@
+                                <div class="flex gap-4 items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"/>
+                                    </svg>
+                                    <input class="border py-1 px-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Section Name" x-model="section.name"/>
+                                </div>
+
+                                @* section content *@
+                                <div class="pl-10 mt-2">
+                                    <template x-for="link in section.links" x-bind:key="link.uuid">
+                                        <div class="flex gap-2 items-center mt-2">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 shrink-0">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"/>
+                                            </svg>
+                                            <input class="border py-1 px-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Name" x-model="link.name"/>
+                                            <input class="border py-1 px-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Url" x-model="link.href"/>
+                                        </div>
+                                    </template>
+                                    <button type="button" x-on:click="addLinkInSection(indexOfSection)" class="mt-2 inline-flex items-center rounded-md border border-gray-200 bg-gray-100 px-2 py-1 text-sm font-medium leading-4 text-gray-500 shadow-sm hover:bg-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 w-full">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="-ml-0.5 mr-2 h-4 w-4">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+                                        </svg>
+
+                                        Add Link
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    <button type="button" x-on:click="addSection()" class="mt-2 inline-flex items-center rounded-md border border-gray-200 bg-gray-100 px-2 py-1 px-2 text-sm font-medium leading-4 text-gray-500 shadow-sm hover:bg-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 w-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="-ml-0.5 mr-2 h-4 w-4">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 16.875h3.375m0 0h3.375m-3.375 0V13.5m0 3.375v3.375M6 10.5h2.25a2.25 2.25 0 002.25-2.25V6a2.25 2.25 0 00-2.25-2.25H6A2.25 2.25 0 003.75 6v2.25A2.25 2.25 0 006 10.5zm0 9.75h2.25A2.25 2.25 0 0010.5 18v-2.25a2.25 2.25 0 00-2.25-2.25H6a2.25 2.25 0 00-2.25 2.25V18A2.25 2.25 0 006 20.25zm9.75-9.75H18a2.25 2.25 0 002.25-2.25V6A2.25 2.25 0 0018 3.75h-2.25A2.25 2.25 0 0013.5 6v2.25a2.25 2.25 0 002.25 2.25z"/>
+                        </svg>
+                        Add Section
+                    </button>
+                    <div class="mt-5">
+                        <div class="flex justify-end">
+                            <form asp-action="UpdateSiteMapTranslation" id="SiteMapTranslationUpdateFormInput_Form">
+                                <input type="hidden" asp-for="SiteMapTranslationUpdateFormInput.DomainId"/>
+                                <input type="hidden" asp-for="SiteMapTranslationUpdateFormInput.SiteMapDataJson" id="SiteMapTranslationUpdateFormInput_SiteMapDataJson"/>
+                                <button type="submit" x-on:click="handleSubmit()" class="ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Submit</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </template>
+</div>
+@* 翻译文本 END *@
+
+@section Scripts
+{
+    <partial name="_UuidScript"/>
+    <script>
+        const getSiteMapContentUrl = `@(Url.RouteUrl("GetSiteMapContent", new { id = Model.DomainId }))`
+        const getSiteMapTranslationContentUrl = `@(Url.RouteUrl("GetSiteMapTranslationContent", new { id = Model.DomainId, language = "__JS_REPLACE_LANGUAGE__" }))`
+        
+        const newSiteMapContentData = (lan) => {
+          return {
+            language: lan,
+            sections: [],
+          };
+        }
+        
+        const newSection = () => {
+          return {
+            uuid: uuidv4(),
+            name: "",
+            links: [],
+          };
+        }
+        
+        const newLink = () => {
+          return {
+            uuid: uuidv4(),
+            name: "",
+            href: "",
+          };
+        }
+        
+        const convertToLocalSiteMapContentData = (loadedData) => {
+          const data = newSiteMapContentData();
+          if (loadedData.language != null) {
+            data.language = loadedData.language;
+          }
+          if (loadedData.sections != null && loadedData.sections.length > 0) {
+            data.sections = loadedData.sections.map( loadedDataSection => {
+              const section = newSection();
+              section.name = loadedDataSection.name;
+              section.links = loadedDataSection.links.map(loadedDataSectionLink => {
+                const link = newLink();
+                link.name = loadedDataSectionLink.name;
+                link.href = loadedDataSectionLink.href;
+                return link;
+              });
+              return section;
+            });
+          }
+          return data;
+        }
+        
+        document.addEventListener('alpine:init', () => {
+          Alpine.data('siteMapUpdate', () => ({
+            async init() {
+                const resp = await fetch(getSiteMapContentUrl, {
+                    method: "GET",
+                });
+                if (resp.status === 404) return;
+                const siteMapContent = await resp.json()
+                this.siteMapContentData = convertToLocalSiteMapContentData(siteMapContent);
+            },
+            siteMapContentData : null,
+            initSiteMapContentData() {
+              const link = newLink();
+              
+              const section = newSection()
+              section.links.push(link);
+              
+              this.siteMapContentData = newSiteMapContentData();
+              this.siteMapContentData.sections.push(section);
+            },
+            addLinkInSection(indexOfSection) {
+              const sections = this.siteMapContentData?.sections;
+              if (sections == null || sections.length <= indexOfSection) return;
+              const section = sections[indexOfSection];
+              section.links.push(newLink());
+            },
+            addSection() {
+                const sections = this.siteMapContentData?.sections;
+                if (sections == null) return;
+                const link = newLink();
+                const section = newSection();
+                section.links.push(link);
+                sections.push(section);
+            },
+            handleSubmit() {
+                const form = document.querySelector("#SiteMapUpdateFormInput_Form");
+                const siteMapContentJson = document.querySelector("#SiteMapUpdateFormInput_SiteMapDataJson");
+                siteMapContentJson.value = JSON.stringify(this.siteMapContentData);
+                form.submit();
+            }
+            }));
+          
+          Alpine.data('siteMapTranslationUpdate', () => ({
+              async fetchTranslation(lan) {
+                  this.siteMapContentData = null;
+                  console.log(`lan=${lan}`)    
+                  if (!lan) return;
+                  const url = getSiteMapTranslationContentUrl.replace("__JS_REPLACE_LANGUAGE__", lan)
+                  console.log(url) 
+                  const resp = await fetch(url, {
+                      method: "GET",
+                  });
+                  if (resp.status === 404) return;
+                  const siteMapContent = await resp.json()
+                  console.log(siteMapContent) 
+                  console.log(`3 lan=${lan}`) 
+                  this.siteMapContentData = convertToLocalSiteMapContentData(siteMapContent);
+              },
+              language: ``,
+              siteMapContentData : null,
+              initSiteMapContentData() {
+                const link = newLink();
+                
+                const section = newSection()
+                section.links.push(link);
+                
+                this.siteMapContentData = newSiteMapContentData(this.language);
+                this.siteMapContentData.sections.push(section);
+              },
+              addLinkInSection(indexOfSection) {
+                const sections = this.siteMapContentData?.sections;
+                if (sections == null || sections.length <= indexOfSection) return;
+                const section = sections[indexOfSection];
+                section.links.push(newLink());
+              },
+              addSection() {
+                  const sections = this.siteMapContentData?.sections;
+                  if (sections == null) return;
+                  const link = newLink();
+                  const section = newSection();
+                  section.links.push(link);
+                  sections.push(section);
+              },
+              handleSubmit() {
+                  const form = document.querySelector("#SiteMapTranslationUpdateFormInput_Form");
+                  const siteMapContentJson = document.querySelector("#SiteMapTranslationUpdateFormInput_SiteMapDataJson");
+                  siteMapContentJson.value = JSON.stringify(this.siteMapContentData);
+                  form.submit();
+              }
+              }));
+            }); 
+    </script>
+}

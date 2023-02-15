@@ -1,3 +1,4 @@
+using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
@@ -320,5 +321,70 @@ public class BlogService
         resp.EnsureSuccessStatusCode();
         var result = await resp.Content.ReadFromJsonAsync<BoolResultDto>();
         return result!.Result;
+    }
+
+    public async Task<SiteMapDto?> GetSiteMap(string domainId, string? language = null)
+    {
+        var url = $"api/v1/Domain/{domainId}/site-map";
+        if (language != null)
+        {
+            url += $"/{language}";
+        }
+
+        var request = new HttpRequestMessage(HttpMethod.Get, url);
+        var resp = await _httpClient.SendAsync(request);
+        if (resp.StatusCode == HttpStatusCode.NotFound)
+        {
+            return null;
+        }
+
+        var result = await resp.Content.ReadFromJsonAsync<SiteMapDto>();
+        return result!;
+    }
+
+    public async Task<SocialLinksDto> GetSocialLinks(string domainId)
+    {
+        var url = $"api/v1/Domain/{domainId}/social-links";
+        var request = new HttpRequestMessage(HttpMethod.Get, url);
+        var resp = await _httpClient.SendAsync(request);
+        resp.EnsureSuccessStatusCode();
+        var result = await resp.Content.ReadFromJsonAsync<SocialLinksDto>();
+        return result!;
+    }
+
+    public async Task UpdateSocialLinks(string domainId, SocialLinksDto socialLinks, string accessToken)
+    {
+        var url = $"api/v1/Domain/{domainId}/social-links";
+        var request = new HttpRequestMessage(HttpMethod.Put, url);
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+        request.Content =
+            new StringContent(JsonSerializer.Serialize(socialLinks), Encoding.UTF8, "application/json");
+
+        var resp = await _httpClient.SendAsync(request);
+        resp.EnsureSuccessStatusCode();
+    }
+
+    public async Task UpdateSiteMap(string domainId, SiteMapDto siteMap, string accessToken)
+    {
+        var url = $"api/v1/Domain/{domainId}/site-map";
+        var request = new HttpRequestMessage(HttpMethod.Put, url);
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+        request.Content =
+            new StringContent(JsonSerializer.Serialize(siteMap), Encoding.UTF8, "application/json");
+
+        var resp = await _httpClient.SendAsync(request);
+        resp.EnsureSuccessStatusCode();
+    }
+
+    public async Task UpdateSiteMapTranslation(string domainId, string language, SiteMapDto siteMap, string accessToken)
+    {
+        var url = $"api/v1/Domain/{domainId}/site-map/translation/{language}";
+        var request = new HttpRequestMessage(HttpMethod.Put, url);
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+        request.Content =
+            new StringContent(JsonSerializer.Serialize(siteMap), Encoding.UTF8, "application/json");
+
+        var resp = await _httpClient.SendAsync(request);
+        resp.EnsureSuccessStatusCode();
     }
 }

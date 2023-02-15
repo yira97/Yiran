@@ -192,6 +192,10 @@ public class PostRepository : IPostRepository
         return result;
     }
 
+    /// <summary>
+    /// 并不填充所有topic和category的字段
+    /// </summary>
+    /// <returns></returns>
     public async Task<IEnumerable<DomainDto>> ListAllDomains()
     {
         var query = _context.Domains.Where(d => d.DeletedAt == null).Take(20).AsQueryable();
@@ -203,9 +207,13 @@ public class PostRepository : IPostRepository
 
     public DomainDto CreateDomain(DomainUpdateDto updateDto, string userId)
     {
+        var domainSiteMap = new SiteMapEntity();
+        _context.Add(domainSiteMap);
+
         var model = new DomainEntity();
 
         model.Name = updateDto.Name;
+        model.SiteMapId = domainSiteMap.Id;
 
         model.UpdatedById = userId;
         model.CreatedById = userId;
