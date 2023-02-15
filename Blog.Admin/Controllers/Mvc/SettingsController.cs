@@ -64,6 +64,13 @@ public class SettingsController : Controller
         {
             vm.SocialLinksForm.DomainId = domainId;
             vm.SocialLinks = await _blogService.GetSocialLinks(domainId);
+            vm.SocialLinksForm.LinkedIn = vm.SocialLinks.LinkedIn ?? string.Empty;
+            vm.SocialLinksForm.Facebook = vm.SocialLinks.Facebook ?? string.Empty;
+            vm.SocialLinksForm.Twitter = vm.SocialLinks.Twitter ?? string.Empty;
+            vm.SocialLinksForm.BiliBili = vm.SocialLinks.BiliBili ?? string.Empty;
+            vm.SocialLinksForm.Github = vm.SocialLinks.Github ?? string.Empty;
+            vm.SocialLinksForm.Instagram = vm.SocialLinks.Instagram ?? string.Empty;
+            vm.SocialLinksForm.Youtube = vm.SocialLinks.Youtube ?? string.Empty;
         }
 
         if (tab == Config.TabSiteMap)

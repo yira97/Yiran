@@ -36,19 +36,19 @@ public class SettingsIndexViewModel
     {
         public string DomainId { get; set; } = string.Empty;
 
-        [Url] public string Facebook = string.Empty;
+        [Url] public string Facebook { get; set; } = string.Empty;
 
-        [Url] public string LinkedIn = string.Empty;
+        [Url] public string LinkedIn { get; set; } = string.Empty;
 
-        [Url] public string Instagram = string.Empty;
+        [Url] public string Instagram { get; set; } = string.Empty;
 
-        [Url] public string Twitter = string.Empty;
+        [Url] public string Twitter { get; set; } = string.Empty;
 
-        [Url] public string Github = string.Empty;
+        [Url] public string Github { get; set; } = string.Empty;
 
-        [Url] public string Youtube = string.Empty;
+        [Url] public string Youtube { get; set; } = string.Empty;
 
-        [Url] public string BiliBili = string.Empty;
+        [Url] public string BiliBili { get; set; } = string.Empty;
     }
 
     public SocialLinksInput SocialLinksForm { get; set; } = new SocialLinksInput();
