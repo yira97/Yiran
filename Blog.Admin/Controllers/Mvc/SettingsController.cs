@@ -30,7 +30,7 @@ public class SettingsController : Controller
             return tab switch
             {
                 TabGeneral => "一般",
-                TabSocialLinks => "社交网站链接",
+                TabSocialLinks => "社交账号链接",
                 TabSiteMap => "网站地图",
                 _ => throw new ArgumentOutOfRangeException(nameof(tab), tab, null)
             };

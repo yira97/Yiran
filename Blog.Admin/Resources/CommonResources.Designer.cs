@@ -320,5 +320,83 @@ namespace Blog.Admin.Resources {
                 return ResourceManager.GetString("编辑文章", resourceCulture);
             }
         }
+        
+        internal static string 一般 {
+            get {
+                return ResourceManager.GetString("一般", resourceCulture);
+            }
+        }
+        
+        internal static string 社交账号链接 {
+            get {
+                return ResourceManager.GetString("社交账号链接", resourceCulture);
+            }
+        }
+        
+        internal static string 网站地图 {
+            get {
+                return ResourceManager.GetString("网站地图", resourceCulture);
+            }
+        }
+        
+        internal static string 更新 {
+            get {
+                return ResourceManager.GetString("更新", resourceCulture);
+            }
+        }
+        
+        internal static string 翻译 {
+            get {
+                return ResourceManager.GetString("翻译", resourceCulture);
+            }
+        }
+        
+        internal static string 新增链接 {
+            get {
+                return ResourceManager.GetString("新增链接", resourceCulture);
+            }
+        }
+        
+        internal static string 新增区块 {
+            get {
+                return ResourceManager.GetString("新增区块", resourceCulture);
+            }
+        }
+        
+        internal static string ___选择语言___ {
+            get {
+                return ResourceManager.GetString("-- 选择语言 --", resourceCulture);
+            }
+        }
+        
+        internal static string 中文 {
+            get {
+                return ResourceManager.GetString("中文", resourceCulture);
+            }
+        }
+        
+        internal static string 英语 {
+            get {
+                return ResourceManager.GetString("英语", resourceCulture);
+            }
+        }
+        
+        internal static string 日语 {
+            get {
+                return ResourceManager.GetString("日语", resourceCulture);
+            }
+        }
+        
+        internal static string 创建网站地图 {
+            get {
+                return ResourceManager.GetString("创建网站地图", resourceCulture);
+            }
+        }
+        
+        internal static string 创建翻译 {
+            get {
+                return ResourceManager.GetString("创建翻译", resourceCulture);
+            }
+        }
     }
 }

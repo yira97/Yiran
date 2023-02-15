@@ -156,4 +156,46 @@
     <data name="编辑文章" xml:space="preserve">
         <value>文章編集</value>
     </data>
+    <data name="一般" xml:space="preserve">
+        <value>通常</value>
+    </data>
+    <data name="社交账号链接" xml:space="preserve">
+        <value>ソーシャルリンク</value>
+    </data>
+    <data name="网站地图" xml:space="preserve">
+        <value>サイトマップ</value>
+    </data>
+    <data name="更新" xml:space="preserve">
+        <value>更新</value>
+    </data>
+    <data name="翻译" xml:space="preserve">
+        <value>翻訳</value>
+    </data>
+    <data name="新增链接" xml:space="preserve">
+        <value>リンク追加</value>
+    </data>
+    <data name="新增区块" xml:space="preserve">
+        <value>セクション追加</value>
+    </data>
+    <data name="-- 选择语言 --" xml:space="preserve">
+        <value>-- 言語選択 --</value>
+    </data>
+    <data name="日语" xml:space="preserve">
+        <value>日本語</value>
+    </data>
+    <data name="英语" xml:space="preserve">
+        <value>英語</value>
+    </data>
+    <data name="中文" xml:space="preserve">
+        <value>日本語</value>
+    </data>
+    <data name="创建网站地图" xml:space="preserve">
+        <value>サイトマップ作成</value>
+    </data>
+    <data name="创建翻译" xml:space="preserve">
+        <value>訳文を作る</value>
+    </data>
+    <data name="开始为网站地图创建一个翻译版。" xml:space="preserve">
+        <value>サイトマップ翻訳版の作成を開始する。</value>
+    </data>
 </root>

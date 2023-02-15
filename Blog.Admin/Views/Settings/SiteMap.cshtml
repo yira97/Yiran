@@ -1,5 +1,6 @@
 @using Blog.Domain.Enums
 @model Blog.Admin.ViewModels.SettingsIndexViewModel
+@inject CommonLocalizationService CommonLocalization
 @{
     ViewBag.Title = "title";
     Layout = "_SettingsLayout";
@@ -7,8 +8,9 @@
 
 @* 原始文本 BEGIN *@
 <div x-data="siteMapUpdate" class="py-6">
-    <h1 class="text-2xl font-medium">Default</h1>
-    <div x-show="siteMapContentData == null" class="text-center mt-8">
+    <h1 class="text-2xl font-medium">@CommonLocalization.Get("默认")</h1>
+    @* 不存在网站地图时显示 *@
+    <div x-show="siteMapContentData == null" style="display: none;" class="text-center mt-8">
         <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
             <path vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
         </svg>
@@ -20,17 +22,18 @@
                 <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                     <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z"/>
                 </svg>
-                New SiteMap
+                @CommonLocalization.Get("创建网站地图")
             </button>
         </div>
     </div>
+    @* 存在网站地图时显示 *@
     <template x-if="siteMapContentData != null">
         <div class="mt-2">
             <div>
                 <select x-model="siteMapContentData.language" id="language" class="mt-1 block w-full rounded-md border-gray-300 py-1 pl-2 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm">
                     @foreach (var lan in Language.Languages)
                     {
-                        <option value="@lan">@lan</option>
+                        <option value="@lan">@CommonLocalization.Get(Language.Displayname(lan))</option>
                     }
                 </select>
             </div>
@@ -62,7 +65,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
                                 </svg>
 
-                                Add Link
+                                @CommonLocalization.Get("新增链接")
                             </button>
                         </div>
                     </div>
@@ -72,7 +75,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="-ml-0.5 mr-2 h-4 w-4">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 16.875h3.375m0 0h3.375m-3.375 0V13.5m0 3.375v3.375M6 10.5h2.25a2.25 2.25 0 002.25-2.25V6a2.25 2.25 0 00-2.25-2.25H6A2.25 2.25 0 003.75 6v2.25A2.25 2.25 0 006 10.5zm0 9.75h2.25A2.25 2.25 0 0010.5 18v-2.25a2.25 2.25 0 00-2.25-2.25H6a2.25 2.25 0 00-2.25 2.25V18A2.25 2.25 0 006 20.25zm9.75-9.75H18a2.25 2.25 0 002.25-2.25V6A2.25 2.25 0 0018 3.75h-2.25A2.25 2.25 0 0013.5 6v2.25a2.25 2.25 0 002.25 2.25z"/>
                 </svg>
-                Add Section
+                @CommonLocalization.Get("新增区块")
             </button>
         </div>
         <div class="pt-5">
@@ -93,14 +96,14 @@
 
 @* 翻译文本 BEGIN *@
 <div x-data="siteMapTranslationUpdate" class="py-6">
-    <h1 class="text-2xl font-medium">Localization</h1>
+    <h1 class="text-2xl font-medium">@CommonLocalization.Get("翻译")</h1>
     @* 翻译语言选择 *@
     <div class="mt-2">
         <select x-model="language" x-on:change="fetchTranslation($event.target.value)" id="languageTranslation" class="mt-1 block w-full rounded-md border-gray-300 py-1 pl-2 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm">
-            <option disabled selected value=""> -- select an language -- </option>
+            <option disabled selected value="">@CommonLocalization.Get("-- 选择语言 --")</option>
             @foreach (var lan in Language.Languages)
             {
-                <option value="@lan">@lan</option>
+                <option value="@lan">@CommonLocalization.Get(Language.Displayname(lan))</option>
             }
         </select>
     </div>
@@ -109,19 +112,19 @@
     <template x-if="language != null && language.length > 0">
         <div>
             @* 翻译语言对应内容不存在时显示 *@
-            <div x-show="siteMapContentData == null" class="text-center mt-8">
+            <div x-show="siteMapContentData == null" style="display: none;" class="text-center mt-8">
                 <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                     <path vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
                 </svg>
                 <h3 class="mt-2 text-sm font-medium text-gray-900" x-text="'No Translation for ' + language"></h3>
-                <p class="mt-1 text-sm text-gray-500">Get started by creating a new Translation.</p>
+                <p class="mt-1 text-sm text-gray-500">@CommonLocalization.Get("开始为网站地图创建一个翻译版。")</p>
                 <div class="mt-6">
                     <button x-on:click="initSiteMapContentData()" type="button" class="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                         <!-- Heroicon name: mini/plus -->
                         <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                             <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z"/>
                         </svg>
-                        New Translation
+                        @CommonLocalization.Get("创建翻译")
                     </button>
                 </div>
             </div>
@@ -157,7 +160,7 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
                                         </svg>
 
-                                        Add Link
+                                        @CommonLocalization.Get("新增链接")
                                     </button>
                                 </div>
                             </div>
@@ -167,14 +170,14 @@
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="-ml-0.5 mr-2 h-4 w-4">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 16.875h3.375m0 0h3.375m-3.375 0V13.5m0 3.375v3.375M6 10.5h2.25a2.25 2.25 0 002.25-2.25V6a2.25 2.25 0 00-2.25-2.25H6A2.25 2.25 0 003.75 6v2.25A2.25 2.25 0 006 10.5zm0 9.75h2.25A2.25 2.25 0 0010.5 18v-2.25a2.25 2.25 0 00-2.25-2.25H6a2.25 2.25 0 00-2.25 2.25V18A2.25 2.25 0 006 20.25zm9.75-9.75H18a2.25 2.25 0 002.25-2.25V6A2.25 2.25 0 0018 3.75h-2.25A2.25 2.25 0 0013.5 6v2.25a2.25 2.25 0 002.25 2.25z"/>
                         </svg>
-                        Add Section
+                        @CommonLocalization.Get("增加区块")
                     </button>
                     <div class="mt-5">
                         <div class="flex justify-end">
                             <form asp-action="UpdateSiteMapTranslation" id="SiteMapTranslationUpdateFormInput_Form">
                                 <input type="hidden" asp-for="SiteMapTranslationUpdateFormInput.DomainId"/>
                                 <input type="hidden" asp-for="SiteMapTranslationUpdateFormInput.SiteMapDataJson" id="SiteMapTranslationUpdateFormInput_SiteMapDataJson"/>
-                                <button type="submit" x-on:click="handleSubmit()" class="ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Submit</button>
+                                <button type="submit" x-on:click="handleSubmit()" class="ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">@CommonLocalization.Get("提交")</button>
                             </form>
                         </div>
                     </div>

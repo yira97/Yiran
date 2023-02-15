@@ -1,6 +1,8 @@
 @using Blog.Admin.Controllers.Mvc
 @using Blog.Admin.ViewModels
 @using System.Collections
+@using Blog.Domain.Enums
+@inject CommonLocalizationService CommonLocalization
 @{
     Layout = "_Layout1";
     var domainId = (string)ViewData[nameof(SettingsIndexViewModel.DomainId)];
@@ -67,7 +69,7 @@
                             {
                                 <li class="text-gray-900 relative cursor-default select-none rounded-md group @DropDownClass(t == activeTab)" id="listbox-option-tab-id-@t" role="option">
                                     <a asp-action="Index" asp-controller="Settings" asp-route-tab="@t" asp-route-domainId="@domainId" class="block py-2 pl-3 pr-9">
-                                        <span class="font-normal block truncate">@t</span>
+                                        <span class="font-normal block truncate">@CommonLocalization.Get(SettingsController.Config.TabDisplayName(t))</span>
                                     </a>
                                 </li>
                             }
@@ -78,10 +80,9 @@
                 <div class="hidden lg:block">
                     <div class="border-b border-gray-200">
                         <nav class="-mb-px flex space-x-8">
-                            <!-- Current: "@WideActiveTabClass", Default: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700" -->
                             @foreach (var t in SettingsController.Config.Tabs)
                             {
-                                <a asp-action="Index" asp-controller="Settings" asp-route-tab="@t" asp-route-domainId="@domainId" class="@WideActiveTabClass(t == activeTab) whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">@t</a>
+                                <a asp-action="Index" asp-controller="Settings" asp-route-tab="@t" asp-route-domainId="@domainId" class="@WideActiveTabClass(t == activeTab) whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">@CommonLocalization.Get(SettingsController.Config.TabDisplayName(t))</a>
                             }
                         </nav>
                     </div>
