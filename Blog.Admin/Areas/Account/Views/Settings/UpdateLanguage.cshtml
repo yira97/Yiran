@@ -9,10 +9,8 @@
             <div class="space-y-6 sm:space-y-5">
                 <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
                     <label asp-for="FormInput.Language" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"></label>
-
                     <select asp-for="FormInput.Language" asp-items="Model.Languages" class="mt-1 block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm">
                     </select>
-
                     <span asp-validation-for="FormInput.Language" class="mt-2 text-sm text-red-600" id="name-error"></span>
                 </div>
             </div>

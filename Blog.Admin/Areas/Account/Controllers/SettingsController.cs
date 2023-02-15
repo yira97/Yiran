@@ -37,6 +37,12 @@ public class SettingsController : Controller
     public IActionResult UpdateLanguage()
     {
         var vm = new UpdateLanguageViewModel();
+        var cultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();
+        if (cultureFeature != null)
+        {
+            vm.FormInput.Language = cultureFeature.RequestCulture.UICulture.Name;
+        }
+
         vm.Languages = _localizationOptions.Value.SupportedUICultures!.Select(culture => new SelectListItem(
             text: culture.DisplayName, value: culture.Name));
 
