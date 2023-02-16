@@ -387,4 +387,44 @@ public class BlogService
         var resp = await _httpClient.SendAsync(request);
         resp.EnsureSuccessStatusCode();
     }
+
+    public async Task<UserInfoDto> GetUserProfile(string userId, string accessToken)
+    {
+        var url = $"api/v1/Account/profile/{userId}";
+        var request = new HttpRequestMessage(HttpMethod.Get, url);
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+        var resp = await _httpClient.SendAsync(request);
+        resp.EnsureSuccessStatusCode();
+        var result = await resp.Content.ReadFromJsonAsync<UserInfoDto>();
+        return result!;
+    }
+
+    public async Task<UserInfoDto> GetUserProfile(string accessToken)
+    {
+        var url = $"api/v1/Account/profile";
+        var request = new HttpRequestMessage(HttpMethod.Get, url);
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+        var resp = await _httpClient.SendAsync(request);
+        resp.EnsureSuccessStatusCode();
+        var result = await resp.Content.ReadFromJsonAsync<UserInfoDto>();
+        return result!;
+    }
+
+    public async Task<UserInfoDto> UpdateUserNickName(string nickName, string accessToken)
+    {
+        var url = $"api/v1/Account/profile/nick-name";
+        var request = new HttpRequestMessage(HttpMethod.Patch, url);
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+        var updateDto = new UpdateUserNickNameDto
+        {
+            NickName = nickName,
+        };
+        request.Content =
+            new StringContent(JsonSerializer.Serialize(updateDto), Encoding.UTF8, "application/json");
+
+        var resp = await _httpClient.SendAsync(request);
+        resp.EnsureSuccessStatusCode();
+        var result = await resp.Content.ReadFromJsonAsync<UserInfoDto>();
+        return result!;
+    }
 }

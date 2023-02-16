@@ -173,4 +173,19 @@ public class UserService : IUserService
         await TryRefreshToken(user!);
         return await GenerateAccessToken(user!, userRoles);
     }
+
+    public async Task<UserInfoDto> GetUserInfo(string userId)
+    {
+        var userInfo = await _unitOfWork.AccountRepository.GetUserInfo(userId);
+        return userInfo;
+    }
+
+    public async Task<UserInfoDto> UpdateUserNickName(string userId, string newNickName)
+    {
+        await _unitOfWork.AccountRepository.SetNickName(userId, newNickName);
+        await _unitOfWork.CompleteAsync();
+        var userInfo = await _unitOfWork.AccountRepository.GetUserInfo(userId);
+
+        return userInfo;
+    }
 }

@@ -22,8 +22,10 @@ public class UserAccountDropDownViewComponent : ViewComponent
 
         var vm = new UserAccountDropDownViewModel
         {
-            DisplayName = userInfo.DisplayName ?? _commonLocalizationService.Get("未设置昵称"),
-            Email = userInfo.Email ?? _commonLocalizationService.Get("未设置邮箱"),
+            DisplayName = string.IsNullOrEmpty(userInfo.NickName)
+                ? _commonLocalizationService.Get("未设置昵称")
+                : userInfo.NickName,
+            Email = string.IsNullOrEmpty(userInfo.Email) ? _commonLocalizationService.Get("未设置邮箱") : userInfo.Email,
             UserNavigation = new List<NavigationDto>
             {
                 new NavigationDto(Name: _commonLocalizationService.Get("内容管理"),

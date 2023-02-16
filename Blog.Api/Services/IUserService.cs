@@ -8,4 +8,8 @@ public interface IUserService
     Task<AccessTokenDto> EmailPasswordLogin(EmailPasswordAuthDto authDto);
     Task<AccessTokenDto> RefreshAccessToken(string accessToken, string refreshToken);
     Task<bool> ExistAdmin();
+
+    Task<UserInfoDto> GetUserInfo(string userId);
+
+    Task<UserInfoDto> UpdateUserNickName(string userId, string newNickName);
 }

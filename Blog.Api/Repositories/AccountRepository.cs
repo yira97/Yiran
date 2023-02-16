@@ -1,6 +1,7 @@
 using Blog.Api.Data;
 using Blog.Api.Entities;
 using Blog.Domain.Enums;
+using Blog.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Blog.Api.Repositories;
@@ -14,6 +15,13 @@ public class AccountRepository : IAccountRepository
     {
         _context = context;
         _logger = logger;
+    }
+
+    public async Task<UserInfoDto> GetUserInfo(string userId)
+    {
+        var user = await _context.Users.FindAsync(userId);
+        if (user == null) throw new BadHttpRequestException("user not found");
+        return GetUserInfo(user);
     }
 
     public bool CheckRefreshToken(ApplicationUserEntity user, string refreshToken)
@@ -83,5 +91,13 @@ public class AccountRepository : IAccountRepository
         var user = await _context.Users.FindAsync(userId);
         if (user == null) throw new BadHttpRequestException("user not found");
         return GetNickName(user);
+    }
+
+    public UserInfoDto GetUserInfo(ApplicationUserEntity user)
+    {
+        var userInfo = new UserInfoDto();
+        userInfo.Email = user.Email ?? string.Empty;
+        userInfo.NickName = user.NickName ?? string.Empty;
+        return userInfo;
     }
 }

@@ -1,4 +1,5 @@
 using Blog.Api.Services;
+using Blog.Domain.Extensions;
 using Blog.Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -49,5 +50,28 @@ public class AccountController : ControllerBase
     {
         var exist = await _userService.ExistAdmin();
         return Ok(new BoolResultDto(exist));
+    }
+
+    [HttpGet("profile")]
+    public async Task<ActionResult<UserInfoDto>> GetUserInfo()
+    {
+        var userId = HttpContext.User.GetUserId();
+        var userInfo = await _userService.GetUserInfo(userId);
+        return Ok(userInfo);
+    }
+
+    [HttpGet("profile/{userId}")]
+    public async Task<ActionResult<UserInfoDto>> GetUserInfo(string userId)
+    {
+        var userInfo = await _userService.GetUserInfo(userId);
+        return Ok(userInfo);
+    }
+
+    [HttpPatch("profile/nick-name")]
+    public async Task<ActionResult<UserInfoDto>> UpdateNickName(UpdateUserNickNameDto updateDto)
+    {
+        var userId = HttpContext.User.GetUserId();
+        var userInfo = await _userService.UpdateUserNickName(userId, updateDto.NickName);
+        return Ok(userInfo);
     }
 }

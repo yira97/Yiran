@@ -1,4 +1,5 @@
 using Blog.Api.Entities;
+using Blog.Domain.Models;
 
 namespace Blog.Api.Repositories;
 
@@ -12,6 +13,10 @@ public interface IAccountRepository
     Task SetNickName(string userId, string nickName);
     string GetNickName(ApplicationUserEntity user);
     Task<string> GetNickName(string userId);
+
+    UserInfoDto GetUserInfo(ApplicationUserEntity user);
+
+    Task<UserInfoDto> GetUserInfo(string userId);
 
     bool CheckRefreshToken(ApplicationUserEntity user, string refreshToken);
 
