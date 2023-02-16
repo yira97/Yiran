@@ -9,7 +9,7 @@ public class MockIUnitOfWork
     public static Mock<IUnitOfWork> GetMock()
     {
         var mock = new Mock<IUnitOfWork>();
-        var postRepoMock = MockIPostRepository.GetMock();
+        var postRepoMock = MockIDomainRepository.GetMock();
         var staticResourceRepoMock = MockIStaticResourceRepository.GetMock();
 
         mock.Setup(m => m.PostRepository).Returns(() => postRepoMock.Object);

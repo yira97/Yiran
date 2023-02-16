@@ -29,7 +29,7 @@ public class DomainController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<DomainDto>>> List()
     {
-        var data = await _unitOfWork.PostRepository.ListAllDomains();
+        var data = await _unitOfWork.DomainRepository.ListAllDomains();
         return Ok(data);
     }
 
@@ -42,7 +42,7 @@ public class DomainController : ControllerBase
     [HttpGet("{domainId}")]
     public async Task<ActionResult<DomainDto>> Get(string domainId)
     {
-        var data = await _unitOfWork.PostRepository.GetDomainInfo(domainId);
+        var data = await _unitOfWork.DomainRepository.GetDomainInfo(domainId);
         if (data == null)
         {
             return NotFound();
@@ -60,7 +60,7 @@ public class DomainController : ControllerBase
     public async Task<ActionResult<DomainDto>> Create(DomainUpdateDto updateDto)
     {
         var userId = HttpContext.User.GetUserId();
-        var result = _unitOfWork.PostRepository.CreateDomain(updateDto, userId);
+        var result = _unitOfWork.DomainRepository.CreateDomain(updateDto, userId);
         await _unitOfWork.CompleteAsync();
 
         return CreatedAtAction(nameof(Get), new { domainId = result.Id }, result);
@@ -76,7 +76,7 @@ public class DomainController : ControllerBase
     public async Task<ActionResult<DomainDto>> Update(string domainId, DomainUpdateDto updateDto)
     {
         var userId = HttpContext.User.GetUserId();
-        var result = await _unitOfWork.PostRepository.UpdateDomain(domainId, updateDto, userId);
+        var result = await _unitOfWork.DomainRepository.UpdateDomain(domainId, updateDto, userId);
         await _unitOfWork.CompleteAsync();
 
         return Ok(result);
@@ -91,7 +91,7 @@ public class DomainController : ControllerBase
     public async Task<ActionResult> Delete(string domainId)
     {
         var userId = HttpContext.User.GetUserId();
-        _ = await _unitOfWork.PostRepository.DeleteDomain(domainId, userId);
+        _ = await _unitOfWork.DomainRepository.DeleteDomain(domainId, userId);
         await _unitOfWork.CompleteAsync();
 
         return Ok();
@@ -101,7 +101,7 @@ public class DomainController : ControllerBase
     public async Task<ActionResult<DomainCategoryDto>> AddCategory(string domainId, DomainCategoryUpdateDto updateDto)
     {
         var userId = HttpContext.User.GetUserId();
-        var category = await _unitOfWork.PostRepository.AddDomainCategory(domainId: domainId, updateDto: updateDto,
+        var category = await _unitOfWork.DomainRepository.AddDomainCategory(domainId: domainId, updateDto: updateDto,
             userId: userId);
         await _unitOfWork.CompleteAsync();
 
@@ -112,7 +112,7 @@ public class DomainController : ControllerBase
     public async Task<ActionResult<DomainCategoryDto>> AddTopic(string domainId, DomainTopicUpdateDto updateDto)
     {
         var userId = HttpContext.User.GetUserId();
-        var topic = await _unitOfWork.PostRepository.AddDomainTopic(domainId: domainId, updateDto: updateDto,
+        var topic = await _unitOfWork.DomainRepository.AddDomainTopic(domainId: domainId, updateDto: updateDto,
             userId: userId);
         await _unitOfWork.CompleteAsync();
 
@@ -124,7 +124,7 @@ public class DomainController : ControllerBase
         DomainCategoryUpdateDto updateDto)
     {
         var userId = HttpContext.User.GetUserId();
-        var category = await _unitOfWork.PostRepository.UpdateDomainCategory(domainCategoryId: categoryId,
+        var category = await _unitOfWork.DomainRepository.UpdateDomainCategory(domainCategoryId: categoryId,
             updateDto: updateDto, userId: userId);
         await _unitOfWork.CompleteAsync();
 
@@ -136,7 +136,7 @@ public class DomainController : ControllerBase
         DomainTopicUpdateDto updateDto)
     {
         var userId = HttpContext.User.GetUserId();
-        var category = await _unitOfWork.PostRepository.UpdateDomainTopic(domainTopicId: topicId,
+        var category = await _unitOfWork.DomainRepository.UpdateDomainTopic(domainTopicId: topicId,
             updateDto: updateDto, userId: userId);
         await _unitOfWork.CompleteAsync();
 
@@ -147,7 +147,7 @@ public class DomainController : ControllerBase
     public async Task<ActionResult> DeleteCategory(string categoryId, string domainId)
     {
         var userId = HttpContext.User.GetUserId();
-        _ = await _unitOfWork.PostRepository.DeleteDomainCategoryImmediately(categoryId, userId);
+        _ = await _unitOfWork.DomainRepository.DeleteDomainCategoryImmediately(categoryId, userId);
 
         return Ok();
     }
@@ -156,7 +156,7 @@ public class DomainController : ControllerBase
     public async Task<ActionResult> DeleteTopic(string topicId, string domainId)
     {
         var userId = HttpContext.User.GetUserId();
-        _ = await _unitOfWork.PostRepository.DeleteDomainTopicImmediately(topicId, userId);
+        _ = await _unitOfWork.DomainRepository.DeleteDomainTopicImmediately(topicId, userId);
 
         return Ok();
     }

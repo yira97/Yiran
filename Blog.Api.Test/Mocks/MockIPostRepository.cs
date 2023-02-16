@@ -5,7 +5,7 @@ using Moq;
 
 namespace Blog.Api.Test.Mocks;
 
-public class MockIPostRepository
+public class MockIDomainRepository
 {
     public static List<DomainEntity> Domains => new List<DomainEntity>()
     {
@@ -88,9 +88,9 @@ public class MockIPostRepository
         }
     };
 
-    public static Mock<IPostRepository> GetMock()
+    public static Mock<IDomainRepository> GetMock()
     {
-        var mock = new Mock<IPostRepository>();
+        var mock = new Mock<IDomainRepository>();
 
         mock.Setup(m => m.ListAllDomains()).Returns(() =>
         {

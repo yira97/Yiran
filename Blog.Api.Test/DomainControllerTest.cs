@@ -38,7 +38,7 @@ public class DomainControllerTest
         Assert.Equal(okResult.StatusCode, StatusCodes.Status200OK);
 
         var ds = Assert.IsAssignableFrom<IEnumerable<DomainDto>>(okResult.Value).ToList();
-        Assert.Equal(ds.Count, MockIPostRepository.Domains.Count);
+        Assert.Equal(ds.Count, MockIDomainRepository.Domains.Count);
     }
 
     [Fact]
@@ -57,7 +57,7 @@ public class DomainControllerTest
 
         var random = new Random();
 
-        var id = MockIPostRepository.Domains[random.Next(MockIPostRepository.Domains.Count)].Id;
+        var id = MockIDomainRepository.Domains[random.Next(MockIDomainRepository.Domains.Count)].Id;
 
         var result = await domainController.Get(id);
 

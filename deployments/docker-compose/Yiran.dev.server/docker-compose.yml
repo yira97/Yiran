@@ -1,0 +1,47 @@
+version: "3.9"
+services:
+  evrane-blog-api-redis:
+    image: "redis:6-alpine"
+    command: "redis-server --save 60 1 --loglevel warning --requirepass ${EVRANE_BLOG_API_REDIS_PASSWORD}"
+    ports:
+      - "36479:6379" # 调试用
+    volumes:
+      - "evrane-blog-api-redis-volume:/data"
+  evrane-blog-api-postgres:
+    image: "postgres:14-alpine"
+    ports:
+      - "35532:5432" # 调试用
+    environment:
+      POSTGRES_USER: "${EVRANE_BLOG_API_POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${EVRANE_BLOG_API_POSTGRES_PASSWORD}"
+      POSTGRES_DB: "${EVRANE_BLOG_API_POSTGRES_DB}"
+    volumes:
+      - "evrane-blog-api-postgres-volume:/var/lib/postgresql/data"
+  evrane-blog-api-server:
+    image: "evrane-blog-api-server:latest"
+    ports:
+      - "4010:80" # 调试用
+    environment:
+      JwtSettings__IssuerKeyPath: "${JWT_KEY_PATH}"
+      ConnectionSettings__Postgres__Address: "evrane-blog-api-postgres"
+      ConnectionSettings__Postgres__Port: "5432"
+      ConnectionSettings__Postgres__Username: "${EVRANE_BLOG_API_POSTGRES_USER}"
+      ConnectionSettings__Postgres__Password: "${EVRANE_BLOG_API_POSTGRES_PASSWORD}"
+      ConnectionSettings__Postgres__Database: "${EVRANE_BLOG_API_POSTGRES_DB}"
+      RsaSettings__PemFilePath__PrivateKeyFilePath: "${RSA_PRIVATE_KEY_PATH}"
+      RsaSettings__PemFilePath__PublicKeyFilePath: "${RSA_PUBLIC_KEY_PATH}"
+  evrane-blog-admin-server:
+    image: "evrane-blog-admin-server:latest"
+    ports:
+      - "5003:80"
+    environment:
+      "JwtSettings__IssuerKeyPath": "${JWT_KEY_PATH}"
+  evrane-blog-web-server:
+    image: "evrane-blog-admin-server:latest"
+    ports:
+      - "5003:80"
+    environment:
+      "JwtSettings__IssuerKeyPath": "${JWT_KEY_PATH}"
+volumes:
+  evrane-blog-api-postgres-volume:
+  evrane-blog-api-redis-volume:
