@@ -10,7 +10,7 @@ public static class CookieHelper
     private const string AccessTokenKey = "X-Access-Token";
     private const string RefreshTokenKey = "X-Refresh-Token";
     private const string UserEmailKey = "User-Email";
-    private const string UserDisplayNameKey = "User-DisplayName";
+    private const string UserNickNameKey = "User-NickName";
     private const string DefaultDomainKey = "Default-Domain";
 
     public static AccessTokenDto GetAccessTokenFromCookie(HttpContext httpContext)
@@ -39,7 +39,7 @@ public static class CookieHelper
     public static void ClearLoginInfo(HttpContext httpContext)
     {
         httpContext.Response.Cookies.Delete(UserEmailKey);
-        httpContext.Response.Cookies.Delete(UserDisplayNameKey);
+        httpContext.Response.Cookies.Delete(UserNickNameKey);
         httpContext.Response.Cookies.Delete(AccessTokenKey);
         httpContext.Response.Cookies.Delete(RefreshTokenKey);
     }
@@ -48,6 +48,11 @@ public static class CookieHelper
     {
         var domain = httpContext.Request.Cookies[DefaultDomainKey];
         return domain;
+    }
+
+    public static void WriteDefaultDomainToCookie(HttpContext httpContext, string domainId)
+    {
+        httpContext.Response.Cookies.Append(DefaultDomainKey, domainId);
     }
 
     public static void WriteCultureToCookie(HttpContext httpContext, CultureInfo culture)
@@ -59,20 +64,24 @@ public static class CookieHelper
         );
     }
 
-    public static void WriteDefaultDomainToCookie(HttpContext httpContext, string domainId)
-    {
-        httpContext.Response.Cookies.Append(DefaultDomainKey, domainId);
-    }
-
     public static UserInfoDto GetUserInfoFromCookie(HttpContext httpContext)
     {
         var email = httpContext.Request.Cookies[UserEmailKey];
-        var displayName = httpContext.Request.Cookies[UserDisplayNameKey];
+        var displayName = httpContext.Request.Cookies[UserNickNameKey];
 
         return new UserInfoDto
         {
             Email = email ?? string.Empty,
             NickName = displayName ?? string.Empty,
         };
+    }
+
+    public static void WriteUserInfoToCookie(HttpContext httpContext, UserInfoDto userInfoDto)
+    {
+        httpContext.Response.Cookies.Append(UserEmailKey, userInfoDto.Email,
+            new CookieOptions { HttpOnly = true, SameSite = SameSiteMode.Strict });
+
+        httpContext.Response.Cookies.Append(UserNickNameKey, userInfoDto.NickName,
+            new CookieOptions { HttpOnly = true, SameSite = SameSiteMode.Strict });
     }
 }

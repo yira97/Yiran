@@ -39,6 +39,10 @@ public class SignInController : Controller
 
         CookieHelper.WriteAccessTokenToCookie(HttpContext, result);
 
+        var userProfile = await _blogService.GetUserProfile(result.AccessToken!);
+
+        CookieHelper.WriteUserInfoToCookie(HttpContext, userProfile);
+
         return RedirectToAction("Index", "Home", new { Area = "" });
     }
 }

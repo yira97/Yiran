@@ -36,6 +36,11 @@ public class RegisterController : Controller
             await _blogService.EmailRegister(new EmailPasswordAuthDto(Email: input.Email, Password: input.Password));
 
         CookieHelper.WriteAccessTokenToCookie(HttpContext, result);
+
+        var userProfile = await _blogService.GetUserProfile(result.AccessToken!);
+
+        CookieHelper.WriteUserInfoToCookie(HttpContext, userProfile);
+
         return RedirectToAction("Index", "Home", new { Area = "" });
     }
 }

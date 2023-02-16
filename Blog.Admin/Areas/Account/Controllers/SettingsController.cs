@@ -1,8 +1,10 @@
 using System.Globalization;
 using Blog.Admin.Areas.Account.VIewModels.Settings;
 using Blog.Admin.Helper;
+using Blog.Admin.Middlewares;
 using Blog.Admin.Models;
 using Blog.Domain.Models;
+using Blog.Domain.Services.Client;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -14,10 +16,12 @@ namespace Blog.Admin.Areas.Account.Controllers;
 public class SettingsController : Controller
 {
     private readonly IOptions<RequestLocalizationOptions> _localizationOptions;
+    private readonly BlogService _blogService;
 
-    public SettingsController(IOptions<RequestLocalizationOptions> localizationOptions)
+    public SettingsController(IOptions<RequestLocalizationOptions> localizationOptions, BlogService blogService)
     {
         _localizationOptions = localizationOptions;
+        _blogService = blogService;
     }
 
     // GET
@@ -53,6 +57,74 @@ public class SettingsController : Controller
         });
 
         return View(vm);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> UpdateNickName()
+    {
+        var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
+        if (string.IsNullOrEmpty(accessToken.AccessToken))
+            return RedirectToAction("Index", "SignIn", new { Area = "Account" });
+
+        var vm = new UpdateNickNameViewModel();
+
+        var profile = await _blogService.GetUserProfile(accessToken.AccessToken);
+
+        vm.FormInput.NickName = profile.NickName;
+
+        ViewData["Levels"] = new BreadcrumbsDto(Links: new[]
+        {
+            new NavigationDto("Account Setting", Url.Action("Index", "Settings", new { Area = "Account" })!),
+            new NavigationDto("Update NickName", Url.Action("UpdateNickName", "Settings", new { Area = "Account" })!)
+        });
+
+        return View(vm);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> UpdateNickName(UpdateNickNameViewModel vm)
+    {
+        var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
+        if (string.IsNullOrEmpty(accessToken.AccessToken))
+            return RedirectToAction("Index", "SignIn", new { Area = "Account" });
+
+        var userInfo = await _blogService.UpdateUserNickName(vm.FormInput.NickName, accessToken.AccessToken);
+
+        return RedirectToAction("Index", "Settings", new { Area = "Account" });
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> UpdateEmail()
+    {
+        var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
+        if (string.IsNullOrEmpty(accessToken.AccessToken))
+            return RedirectToAction("Index", "SignIn", new { Area = "Account" });
+
+        var vm = new UpdateEmailViewModel();
+
+        var profile = await _blogService.GetUserProfile(accessToken.AccessToken);
+
+        vm.FormInput.Email = profile.Email;
+
+        ViewData["Levels"] = new BreadcrumbsDto(Links: new[]
+        {
+            new NavigationDto("Account Setting", Url.Action("Index", "Settings", new { Area = "Account" })!),
+            new NavigationDto("Update Email", Url.Action("UpdateEmail", "Settings", new { Area = "Account" })!)
+        });
+
+        return View(vm);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> UpdateEmail(UpdateEmailViewModel vm)
+    {
+        var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
+        if (string.IsNullOrEmpty(accessToken.AccessToken))
+            return RedirectToAction("Index", "SignIn", new { Area = "Account" });
+
+        // TODO: update email
+
+        return RedirectToAction("Index", "Settings", new { Area = "Account" });
     }
 
     [HttpPost]
