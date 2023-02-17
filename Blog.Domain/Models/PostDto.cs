@@ -13,6 +13,6 @@ public record PostDto
     DateTime CreatedAt,
     DateTime UpdatedAt,
     string Language,
-    bool isPublic,
+    bool IsPublic,
     PostContentDto Content
 );

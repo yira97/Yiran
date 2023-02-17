@@ -41,10 +41,10 @@
                     @post.Title
                     <dl class="font-normal lg:hidden">
                         <dt class="sr-only">@CommonLocalization.Get("公开")</dt>
-                        <dd class="mt-1 truncate text-gray-700">@post.isPublic</dd>
+                        <dd class="mt-1 truncate text-gray-700">@post.IsPublic</dd>
                     </dl>
                 </td>
-                <td class="hidden px-3 py-4 text-sm text-gray-500 lg:table-cell">@post.isPublic</td>
+                <td class="hidden px-3 py-4 text-sm text-gray-500 lg:table-cell">@post.IsPublic</td>
                 <td class="py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                     <a asp-action="Edit" asp-route-id="@post.Id" asp-route-domainId="@Context.GetDomainIdFromHttpContextItems()" class="text-indigo-600 hover:text-indigo-900">@CommonLocalization.Get("编辑")</a>
                     <form id="delete-post-form-@post.Id" method="POST" asp-action="Delete" asp-controller="Post">

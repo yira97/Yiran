@@ -12,8 +12,8 @@ public class PostCreateViewModel
         [Display(Name = "识别链接"), Required] public string Slug { get; set; } = string.Empty;
         [Display(Name = "话题"), Required] public string Topic { get; set; } = string.Empty;
         [Display(Name = "类别"), Required] public string Category { get; set; } = string.Empty;
-        [Display(Name = "语言"), Required] public string Language { get; set; } = "zh";
-        [Display(Name = "公开"), Required] public bool IsPublic { get; set; } = true;
+        [Display(Name = "语言"), Required] public string Language { get; set; } = Domain.Enums.Language.Chinese;
+        [Display(Name = "公开"), Required] public bool IsPublic { get; set; } = false;
         public string PostContentJson { get; set; } = string.Empty;
         public string DomainId { get; set; } = string.Empty;
     }

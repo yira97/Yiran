@@ -19,7 +19,7 @@ public static class PostEntityExtensions
             CreatedAt: src.CreatedAt,
             UpdatedAt: src.UpdatedAt,
             Language: src.Language,
-            isPublic: src.isPublic,
+            IsPublic: src.isPublic,
             Content: src.Content.PostContentDto()
         );
 

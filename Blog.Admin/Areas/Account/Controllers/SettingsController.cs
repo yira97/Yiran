@@ -134,4 +134,11 @@ public class SettingsController : Controller
         CookieHelper.WriteCultureToCookie(HttpContext, new CultureInfo(input.Language));
         return RedirectToAction("Index", "Settings", new { Area = "Account" });
     }
+
+    [HttpGet]
+    public IActionResult EditorAccounts()
+    {
+        // TODO: 
+        return RedirectToAction("Index", "Settings", new { Area = "Account" });
+    }
 }

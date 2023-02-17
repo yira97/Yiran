@@ -28,6 +28,7 @@ namespace Blog.Admin.Controllers.Mvc
             _localizationOptions = localizationOptions;
         }
 
+        [HttpGet]
         public async Task<IActionResult> Index(
             int pageSize = 20,
             string pageToken = "",
@@ -60,6 +61,7 @@ namespace Blog.Admin.Controllers.Mvc
             return View(vm);
         }
 
+        [HttpGet]
         public async Task<IActionResult> Create()
         {
             var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
@@ -155,7 +157,7 @@ namespace Blog.Admin.Controllers.Mvc
             vm.Topic = post.Topic;
             vm.Category = post.Category;
             vm.Language = post.Language;
-            vm.IsPublic = post.isPublic;
+            vm.IsPublic = post.IsPublic;
             vm.DomainId = domainId;
             foreach (var category in domain.Categories)
             {
@@ -177,7 +179,7 @@ namespace Blog.Admin.Controllers.Mvc
             vm.PostEditFormData.Topic = post.Topic;
             vm.PostEditFormData.Category = post.Category;
             vm.PostEditFormData.Language = post.Language;
-            vm.PostEditFormData.IsPublic = post.isPublic;
+            vm.PostEditFormData.IsPublic = post.IsPublic;
             vm.PostEditFormData.DomainId = domainId;
 
             // breadcumbs
