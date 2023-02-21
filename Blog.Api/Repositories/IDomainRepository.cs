@@ -8,6 +8,8 @@ public interface IDomainRepository
     DomainDto CreateDomain(DomainUpdateDto updateDto, string userId);
     Task<DomainDto?> GetDomainInfo(string domainId);
 
+    Task<DomainDto?> GetDomainInfoByName(string domainName);
+
     Task<DomainDto> UpdateDomain(string domainId, DomainUpdateDto updateDto, string userId);
     Task<bool> DeleteDomain(string domainId, string userId);
 

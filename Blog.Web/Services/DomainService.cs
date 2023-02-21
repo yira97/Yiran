@@ -5,8 +5,10 @@ namespace Blog.Web.Services;
 
 public class DomainService : IDomainService
 {
+    private const string SiteMapInfoDefault = "_default";
+
     private readonly BlogService _blogService;
-    private string DomainId { get; set; }
+    private string DomainName { get; set; }
     private TimeSpan RefreshSpan { get; set; } = TimeSpan.FromSeconds(1);
     private DomainDto? DomainInfo { get; set; }
     private DateTime DomainInfoRefreshedAt { get; set; } = DateTime.UtcNow;
@@ -19,13 +21,13 @@ public class DomainService : IDomainService
     public DomainService(BlogService blogService, IConfiguration configuration)
     {
         _blogService = blogService;
-        DomainId = configuration.GetSection("Domain").Get<string>()!;
+        DomainName = configuration.GetSection("Domain").Get<string>()!;
         SiteMapInfos = new Dictionary<string, SiteMapDto?>();
     }
 
     private async Task<DomainDto> UpdateDomainInfo()
     {
-        var info = await _blogService.GetDomainAsync(DomainId);
+        var info = await _blogService.GetDomainByNameAsync(DomainName);
         DomainInfo = info;
         return DomainInfo;
     }
@@ -39,7 +41,9 @@ public class DomainService : IDomainService
 
     private async Task<SocialLinksDto> UpdateSocialLinksInfo()
     {
-        var info = await _blogService.GetSocialLinks(DomainId);
+        var domainInfo = await GetDomainInfo();
+        var domainId = domainInfo.Id;
+        var info = await _blogService.GetSocialLinks(domainId);
         SocialLinksInfo = info;
         return SocialLinksInfo;
     }
@@ -54,21 +58,25 @@ public class DomainService : IDomainService
 
     private async Task UpdateSiteMapInfo(string language)
     {
-        var info = await _blogService.GetSiteMap(DomainId, language);
+        var domainInfo = await GetDomainInfo();
+        var domainId = domainInfo.Id;
+        var info = await _blogService.GetSiteMap(domainId, language);
         SiteMapInfos[language] = info;
         SiteMapInfos[language] = info;
     }
 
     private async Task UpdateDefaultSiteMapInfo()
     {
-        var info = await _blogService.GetSiteMap(DomainId);
-        SiteMapInfos["_default"] = info;
+        var domainInfo = await GetDomainInfo();
+        var domainId = domainInfo.Id;
+        var info = await _blogService.GetSiteMap(domainId);
+        SiteMapInfos[SiteMapInfoDefault] = info;
     }
 
     public async Task<SiteMapDto> GetSiteMapInfo(string language)
     {
         // 确保默认语言进行过查询
-        if (!SiteMapInfos.ContainsKey("_default") || SiteMapInfosRefreshedAt - DateTime.UtcNow > RefreshSpan)
+        if (!SiteMapInfos.ContainsKey(SiteMapInfoDefault) || SiteMapInfosRefreshedAt - DateTime.UtcNow > RefreshSpan)
         {
             await UpdateDefaultSiteMapInfo();
         }
@@ -79,6 +87,6 @@ public class DomainService : IDomainService
             await UpdateSiteMapInfo(language);
         }
 
-        return SiteMapInfos[language] ?? SiteMapInfos["_default"] ?? new SiteMapDto();
+        return SiteMapInfos[language] ?? SiteMapInfos[SiteMapInfoDefault] ?? new SiteMapDto();
     }
 }

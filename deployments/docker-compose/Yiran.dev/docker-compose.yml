@@ -4,13 +4,13 @@ services:
     image: "redis:6-alpine"
     command: "redis-server --save 60 1 --loglevel warning --requirepass ${EVRANE_BLOG_API_REDIS_PASSWORD}"
     ports:
-      - "36479:6379"
+      - "30001:6379"
     volumes:
       - "evrane-blog-api-redis-volume:/data"
   evrane-blog-api-postgres:
     image: "postgres:14-alpine"
     ports:
-      - "35532:5432"
+      - "30002:5432"
     environment:
       POSTGRES_USER: "${EVRANE_BLOG_API_POSTGRES_USER}"
       POSTGRES_PASSWORD: "${EVRANE_BLOG_API_POSTGRES_PASSWORD}"

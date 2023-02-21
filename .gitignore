@@ -24,3 +24,5 @@ riderModule.iml
 *.swp
 .vs
 .vscode
+
+*.local

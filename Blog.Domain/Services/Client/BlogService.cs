@@ -158,6 +158,16 @@ public class BlogService
         return result!;
     }
 
+    public async Task<DomainDto> GetDomainByNameAsync(string domainName)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, $"api/v1/Domain/nameof/{domainName}");
+
+        var resp = await _httpClient.SendAsync(request);
+        resp.EnsureSuccessStatusCode();
+        var result = await resp.Content.ReadFromJsonAsync<DomainDto>();
+        return result!;
+    }
+
     public async Task<DomainDto> UpdateDomain(string domainId, DomainUpdateDto updateDto, string accessToken)
     {
         var request = new HttpRequestMessage(HttpMethod.Put, $"api/v1/Domain/{domainId}");

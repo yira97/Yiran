@@ -88,6 +88,13 @@ public class DomainRepository : IDomainRepository
         return domain?.DomainDto();
     }
 
+    public async Task<DomainDto?> GetDomainInfoByName(string domainName)
+    {
+        var domain = await _context.Domains.Where(d => d.Name == domainName && d.DeletedAt == null)
+            .FirstOrDefaultAsync();
+        return domain?.DomainDto();
+    }
+
     public async Task<DomainDto> UpdateDomain(string domainId, DomainUpdateDto updateDto, string userId)
     {
         var domain = await GetDomain(domainId);

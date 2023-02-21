@@ -52,6 +52,23 @@ public class DomainController : ControllerBase
     }
 
     /// <summary>
+    /// 获取单个 Domain
+    /// </summary>
+    /// <returns></returns>
+    [AllowAnonymous]
+    [HttpGet("/nameof/{domainName}")]
+    public async Task<ActionResult<DomainDto>> GetByName(string domainName)
+    {
+        var data = await _unitOfWork.DomainRepository.GetDomainInfoByName(domainName);
+        if (data == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(data);
+    }
+
+    /// <summary>
     /// 创建 Domain
     /// </summary>
     /// <param name="updateDto"></param>
