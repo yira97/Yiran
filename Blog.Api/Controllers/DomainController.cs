@@ -56,7 +56,7 @@ public class DomainController : ControllerBase
     /// </summary>
     /// <returns></returns>
     [AllowAnonymous]
-    [HttpGet("/nameof/{domainName}")]
+    [HttpGet("nameof/{domainName}")]
     public async Task<ActionResult<DomainDto>> GetByName(string domainName)
     {
         var data = await _unitOfWork.DomainRepository.GetDomainInfoByName(domainName);

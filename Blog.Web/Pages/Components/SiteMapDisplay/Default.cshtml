@@ -2,7 +2,7 @@
 
 @if (Model.SiteMap.Sections.Count() == 1)
 {
-    <nav class="flex justify-center items-center">
+    <nav class="flex justify-center items-center gap-4">
         @foreach (var link in Model.SiteMap.Sections[0].Links)
         {
             <a href="@link.Href" class="text-sm leading-6 text-gray-600 hover:text-gray-900">@link.Name</a>

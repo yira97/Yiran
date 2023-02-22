@@ -1,0 +1,11 @@
+### GET request with a header
+GET http://localhost:30003/api/v1/Domain/nameof/Yiran
+Accept: application/json
+
+### GET request with parameter
+GET http://localhost:30003/api/v1/Domain/a6a106fd-99e7-4c6f-a6b4-f72b897deb57
+Accept: application/json
+
+### GET request with parameter
+GET http://localhost:30003/api/v1/Post/a86cfcb5-e290-4af6-8bae-95a5f1596770
+Accept: application/json`

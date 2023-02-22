@@ -90,7 +90,10 @@ public class DomainRepository : IDomainRepository
 
     public async Task<DomainDto?> GetDomainInfoByName(string domainName)
     {
-        var domain = await _context.Domains.Where(d => d.Name == domainName && d.DeletedAt == null)
+        var domain = await _context.Domains
+            .Include(d => d.Categories)
+            .Include(d => d.Topics)
+            .Where(d => d.Name == domainName && d.DeletedAt == null)
             .FirstOrDefaultAsync();
         return domain?.DomainDto();
     }
