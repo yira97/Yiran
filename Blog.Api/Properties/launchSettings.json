@@ -6,14 +6,21 @@
       "applicationUrl": "http://localhost:4010",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "JwtSettings__IssuerKeyPath": "/Users/yiran/Developer/RockMoss/src/Auth/rsa-public-key.pem",
+        "RsaSettings__PemFilePath__PrivateKeyFilePath": "/Users/yiran/yiran/project/github.com/Yiran/Blog.Api/rsa-private-key.pem",
+        "RsaSettings__PemFilePath__PublicKeyFilePath": "/Users/yiran/yiran/project/github.com/Yiran/Blog.Api/rsa-public-key.pem",
+        "JwtSettings__IssuerKeyPath": "/Users/yiran/yiran/project/github.com/Yiran/Blog.Api/rsa-public-key.pem",
+        "JwtSettings__Issuer": "api.blog.evrane.com",
+        "JwtSettings__Audience": "blog.evrane.com",
+        "AwsSettings__Region": "ap-northeast-1",
+        "AwsSettings__S3Settings__BucketName": "evrane-rockmoss",
+        "AwsSettings__AwsSolutionSettings__ServerlessImageHandlerSolutionConfiguration__SecretsManagerName": "RockMoss-SecretForUrlSignature",
+        "AwsSettings__AwsSolutionSettings__ServerlessImageHandlerSolutionConfiguration__SecretKey": "SecretForUrlSignature",
+        "AwsSettings__AwsSolutionSettings__ServerlessImageHandlerSolutionConfiguration__DistributionDomainName": "dy9thd0ewjmx0.cloudfront.net",
         "ConnectionSettings__Postgres__Address": "localhost",
         "ConnectionSettings__Postgres__Port": "35532",
         "ConnectionSettings__Postgres__Username": "postgres",
         "ConnectionSettings__Postgres__Password": "mypostgres",
-        "ConnectionSettings__Postgres__Database": "postgres",
-        "RsaSettings__PemFilePath__PrivateKeyFilePath": "/Users/yiran/Developer/RockMoss/src/Auth/rsa-private-key.pem",
-        "RsaSettings__PemFilePath__PublicKeyFilePath": "/Users/yiran/Developer/RockMoss/src/Auth/rsa-public-key.pem"
+        "ConnectionSettings__Postgres__Database": "postgres"
       }
     }
   }

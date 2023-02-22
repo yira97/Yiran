@@ -31,8 +31,8 @@ elif args.cmd == 'generate-script':
     elif args._from != '' and args._to == '':
         filename = f'{projectName}_from_{args._from}.sql'
         filepath = os.path.join(migrationDir, filename)
-        os.system(f"dotnet ef migrations script -o {filepath}")
+        os.system(f"dotnet ef migrations script {args._from} -o {filepath}")
     elif args._from != '' and args._to != '':
-        filename = f'{projectName}_from_{args._from}.sql'
+        filename = f'{projectName}_from_{args._from}_to_{args._to}.sql'
         filepath = os.path.join(migrationDir, filename)
-        os.system(f"dotnet ef migrations script -o {filepath}")
+        os.system(f"dotnet ef migrations script {args._from} {args._to} -o {filepath}")
