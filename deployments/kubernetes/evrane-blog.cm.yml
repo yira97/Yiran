@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: evrane-blog-api-redis
+data:
+  address: 'blog.state.evrane.com'
+  port: '30001'
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: evrane-blog-api-postgres
+data:
+  address: 'blog.state.evrane.com'
+  port: '30002'
+  database: 'evrane_blog'
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jwt
+data:
+  issuer: 'api.blog.evrane.com'
+  audience: 'blog.evrane.com'
+  issuerKey: |
+    -----BEGIN PUBLIC KEY-----
+    MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1hsNsEKqShi6RixOBngp
+    4I2v8JS+9WwM+QmKRqLzCJT0Xit6ST/TEme/Q87fyJ6UtX61YaA63MC+NwONE5Ci
+    zBlBPVPQZnR4htmyd6G0cRcibuuGNJOmWQ22M/3olWHysk12xZ6cbSTorNvLcYWR
+    CdmCdKT1B9nhWJeKwNt88/rneir5rLIZmp0T1Y7QoA9ayhVXBuYtH44DJa77MJwK
+    CDX9ly/UFoxhZ3VCr0sL1b4OOmRCW0HQCZQJkV+GFt9eRaoS94XVup4G4w39YaDE
+    yMeDJrzgoOY/Byiwva2AS32CmHSjDXKD7rbr8SNQ/jjz2o2FI/T6KzQu97lwAEBs
+    oQIDAQAB
+    -----END PUBLIC KEY-----
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: aws
+data:
+  region: 'ap-northeast-1'
+  s3BucketName: 'evrane-rockmoss'
+  solutionServerlessImageHandlerSecretsManagerName: 'RockMoss-SecretForUrlSignature'
+  solutionServerlessImageHandlerSecretKey: 'SecretForUrlSignature'
+  solutionServerlessImageHandlerDistributionDomainName: 'dy9thd0ewjmx0.cloudfront.net'

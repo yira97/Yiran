@@ -26,5 +26,7 @@ riderModule.iml
 .vscode
 
 *.env
-*.env.local
 *.pem
+*.secrets.yml
+*.secrets.yaml
+*.yml

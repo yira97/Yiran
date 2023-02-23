@@ -1,0 +1,289 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: evrane-blog-api
+  labels:
+    app: evrane-blog-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: evrane-blog-api
+  template:
+    metadata:
+      labels:
+        app: evrane-blog-api
+    spec:
+      containers:
+        - name: evrane-blog-api
+          image: ghcr.io/yira97/evrane-blog-api
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: Production
+            - name: ASPNETCORE_URLS
+              value: "http://+:80"
+            - name: RsaSettings__PemFilePath__PrivateKeyFilePath
+              value: '/app/config/rsa-private-key.pem'
+            - name: RsaSettings__PemFilePath__PublicKeyFilePath
+              value: '/app/config/rsa-public-key.pem'
+            - name: JwtSettings__IssuerKeyPath
+              value: '/app/config/jwt-key.pem'
+            - name: JwtSettings__Issuer
+              valueFrom:
+                configMapKeyRef:
+                  name: jwt
+                  key: issuer
+            - name: JwtSettings__Audience
+              valueFrom:
+                configMapKeyRef:
+                  name: jwt
+                  key: audience
+            - name: AwsSettings__AccessKeyId
+              valueFrom:
+                secretKeyRef:
+                  name: aws-key
+                  key: access-key-id
+            - name: AwsSettings__SecretAccessKey
+              valueFrom:
+                secretKeyRef:
+                  name: aws-key
+                  key: secret-access-key
+            - name: AwsSettings__Region
+              valueFrom:
+                configMapKeyRef:
+                  name: aws
+                  key: region
+            - name: AwsSettings__S3Settings__BucketName
+              valueFrom:
+                configMapKeyRef:
+                  name: aws
+                  key: s3BucketName
+            - name: AwsSettings__AwsSolutionSettings__ServerlessImageHandlerSolutionConfiguration__SecretsManagerName
+              valueFrom:
+                configMapKeyRef:
+                  name: aws
+                  key: solutionServerlessImageHandlerSecretsManagerName
+            - name: AwsSettings__AwsSolutionSettings__ServerlessImageHandlerSolutionConfiguration__SecretKey
+              valueFrom:
+                configMapKeyRef:
+                  name: aws
+                  key: solutionServerlessImageHandlerSecretKey
+            - name: AwsSettings__AwsSolutionSettings__ServerlessImageHandlerSolutionConfiguration__DistributionDomainName
+              valueFrom:
+                configMapKeyRef:
+                  name: aws
+                  key: solutionServerlessImageHandlerDistributionDomainName
+            - name: ConnectionSettings__Postgres__Address
+              valueFrom:
+                configMapKeyRef:
+                  name: evrane-blog-api-postgres
+                  key: address
+            - name: ConnectionSettings__Postgres__Port
+              valueFrom:
+                configMapKeyRef:
+                  name: evrane-blog-api-postgres
+                  key: port
+            - name: ConnectionSettings__Postgres__Database
+              valueFrom:
+                configMapKeyRef:
+                  name: evrane-blog-api-postgres
+                  key: database
+            - name: ConnectionSettings__Postgres__Username
+              valueFrom:
+                secretKeyRef:
+                  name: evrane-blog-api-postgres
+                  key: password
+            - name: ConnectionSettings__Postgres__Password
+              valueFrom:
+                secretKeyRef:
+                  name: evrane-blog-api-postgres
+                  key: password
+          volumeMounts:
+            - name: rsa-private-key
+              mountPath: '/app/config'
+            - name: rsa-public-key
+              mountPath: '/app/config'
+            - name: jwt-key
+              mountPath: '/app/config'
+      volumes:
+        - name: rsa-private-key
+          secret:
+            secretName: rsa-key
+            items:
+              - key: private-key
+                path: 'rsa-public-key.pem'
+        - name: rsa-public-key
+          secret:
+            secretName: rsa-key
+            items:
+              - key: public-key
+                path: 'rsa-public-key.pem'
+        - name: jwt-key
+          configMap:
+            name: jwt
+            items:
+              - key: issuerKey
+                path: 'jwt-key.pem'
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: evrane-blog-admin
+  labels:
+    app: evrane-blog-admin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: evrane-blog-admin
+  template:
+    metadata:
+      labels:
+        app: evrane-blog-admin
+    spec:
+      containers:
+        - name: evrane-blog-admin
+          image: ghcr.io/yira97/evrane-blog-admin
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: Production
+            - name: ASPNETCORE_URLS
+              value: "http://+:80"
+            - name: ServiceSettings__Blog
+              value: "http://evrane-blog-api:80"
+            - name: JwtSettings__IssuerKeyPath
+              value: '/app/config/jwt-key.pem'
+            - name: JwtSettings__Issuer
+              valueFrom:
+                configMapKeyRef:
+                  name: jwt
+                  key: issuer
+            - name: JwtSettings__Audience
+              valueFrom:
+                configMapKeyRef:
+                  name: jwt
+                  key: audience
+          volumeMounts:
+            - name: jwt-key
+              mountPath: '/app/config'
+      volumes:
+        - name: jwt-key
+          configMap:
+            name: jwt
+            items:
+              - key: issuerKey
+                path: 'jwt-key.pem'
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: evrane-blog-web-yiran
+  labels:
+    app: evrane-blog-web-yiran
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: evrane-blog-web-yiran
+  template:
+    metadata:
+      labels:
+        app: evrane-blog-web-yiran
+    spec:
+      containers:
+        - name: evrane-blog-web
+          image: ghcr.io/yira97/evrane-blog-web
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: Production
+            - name: ASPNETCORE_URLS
+              value: "http://+:80"
+            - name: ServiceSettings__Blog
+              value: "http://evrane-blog-api:80"
+            - name: Domain
+              value: "Yiran"
+            - name: JwtSettings__IssuerKeyPath
+              value: '/app/config/jwt-key.pem'
+            - name: JwtSettings__Issuer
+              valueFrom:
+                configMapKeyRef:
+                  name: jwt
+                  key: issuer
+            - name: JwtSettings__Audience
+              valueFrom:
+                configMapKeyRef:
+                  name: jwt
+                  key: audience
+          volumeMounts:
+            - name: jwt-key
+              mountPath: '/app/config'
+      volumes:
+        - name: jwt-key
+          configMap:
+            name: jwt
+            items:
+              - key: issuerKey
+                path: 'jwt-key.pem'
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: evrane-blog-web-rockmoss
+  labels:
+    app: evrane-blog-web-rockmoss
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: evrane-blog-web-rockmoss
+  template:
+    metadata:
+      labels:
+        app: evrane-blog-web-rockmoss
+    spec:
+      containers:
+        - name: evrane-blog-web
+          image: ghcr.io/yira97/evrane-blog-web
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: Production
+            - name: ASPNETCORE_URLS
+              value: "http://+:80"
+            - name: ServiceSettings__Blog
+              value: "http://evrane-blog-api:80"
+            - name: Domain
+              value: "RockMoss"
+            - name: JwtSettings__IssuerKeyPath
+              value: '/app/config/jwt-key.pem'
+            - name: JwtSettings__Issuer
+              valueFrom:
+                configMapKeyRef:
+                  name: jwt
+                  key: issuer
+            - name: JwtSettings__Audience
+              valueFrom:
+                configMapKeyRef:
+                  name: jwt
+                  key: audience
+          volumeMounts:
+            - name: jwt-key
+              mountPath: '/app/config'
+      volumes:
+        - name: jwt-key
+          configMap:
+            name: jwt
+            items:
+              - key: issuerKey
+                path: 'jwt-key.pem'
