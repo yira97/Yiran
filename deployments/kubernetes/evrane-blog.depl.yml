@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: evrane-blog-api
-          image: ghcr.io/yira97/evrane-blog-api
+          image: ghcr.io/yira97/evrane-blog-api:master
           imagePullPolicy: Always
           ports:
             - containerPort: 80
@@ -26,11 +26,11 @@ spec:
             - name: ASPNETCORE_URLS
               value: "http://+:80"
             - name: RsaSettings__PemFilePath__PrivateKeyFilePath
-              value: '/app/config/rsa-private-key.pem'
+              value: '/app/config/rsa-private-key/rsa-private-key.pem'
             - name: RsaSettings__PemFilePath__PublicKeyFilePath
-              value: '/app/config/rsa-public-key.pem'
+              value: '/app/config/rsa-public-key/rsa-public-key.pem'
             - name: JwtSettings__IssuerKeyPath
-              value: '/app/config/jwt-key.pem'
+              value: '/app/config/jwt-key/jwt-key.pem'
             - name: JwtSettings__Issuer
               valueFrom:
                 configMapKeyRef:
@@ -95,7 +95,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: evrane-blog-api-postgres
-                  key: password
+                  key: username
             - name: ConnectionSettings__Postgres__Password
               valueFrom:
                 secretKeyRef:
@@ -103,18 +103,18 @@ spec:
                   key: password
           volumeMounts:
             - name: rsa-private-key
-              mountPath: '/app/config'
+              mountPath: '/app/config/rsa-private-key'
             - name: rsa-public-key
-              mountPath: '/app/config'
+              mountPath: '/app/config/rsa-public-key'
             - name: jwt-key
-              mountPath: '/app/config'
+              mountPath: '/app/config/jwt-key'
       volumes:
         - name: rsa-private-key
           secret:
             secretName: rsa-key
             items:
               - key: private-key
-                path: 'rsa-public-key.pem'
+                path: 'rsa-private-key.pem'
         - name: rsa-public-key
           secret:
             secretName: rsa-key
@@ -146,7 +146,7 @@ spec:
     spec:
       containers:
         - name: evrane-blog-admin
-          image: ghcr.io/yira97/evrane-blog-admin
+          image: ghcr.io/yira97/evrane-blog-admin:master
           imagePullPolicy: Always
           ports:
             - containerPort: 80
@@ -198,7 +198,7 @@ spec:
     spec:
       containers:
         - name: evrane-blog-web
-          image: ghcr.io/yira97/evrane-blog-web
+          image: ghcr.io/yira97/evrane-blog-web:master
           imagePullPolicy: Always
           ports:
             - containerPort: 80
@@ -252,7 +252,7 @@ spec:
     spec:
       containers:
         - name: evrane-blog-web
-          image: ghcr.io/yira97/evrane-blog-web
+          image: ghcr.io/yira97/evrane-blog-web:master
           imagePullPolicy: Always
           ports:
             - containerPort: 80

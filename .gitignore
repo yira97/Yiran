@@ -29,4 +29,3 @@ riderModule.iml
 *.pem
 *.secrets.yml
 *.secrets.yaml
-*.yml
