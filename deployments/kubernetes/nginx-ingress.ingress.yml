@@ -1,0 +1,56 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-ingress
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/issuer: "letsencrypt-prod"
+spec:
+  tls:
+    - hosts:
+        - api.blog.evrane.com
+        - admin.blog.evrane.com
+        - yiran.blog.evrane.com
+        - rockmoss.blog.evrane.com
+      secretName: evrane-tls
+  rules:
+    - host: api.blog.evrane.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: evrane-blog-api
+                port:
+                  number: 80
+    - host: admin.blog.evrane.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: evrane-blog-admin
+                port:
+                  number: 80
+    - host: rockmoss.blog.evrane.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: evrane-blog-web-rockmoss
+                port:
+                  number: 80
+    - host: yiran.blog.evrane.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: evrane-blog-web-yiran
+                port:
+                  number: 80
