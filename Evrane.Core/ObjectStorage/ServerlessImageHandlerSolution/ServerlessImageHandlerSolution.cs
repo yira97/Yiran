@@ -5,6 +5,7 @@ using Amazon;
 using Amazon.Runtime;
 using Amazon.SecretsManager;
 using Amazon.SecretsManager.Model;
+using Evrane.Core.Helper;
 using Microsoft.Extensions.Configuration;
 using Evrane.Core.Settings;
 
@@ -58,13 +59,13 @@ public class ServerlessImageHandlerSolution : S3.S3
         var secret = await GetSecretValue();
         var bSecret = Encoding.ASCII.GetBytes(secret);
 
-        key = key.StartsWith("/") ? key : $"/{key}";
-
-        var xs = $"/fit-in/100x100/{key}";
-        var sm = $"/filters:quality(80)/fit-in/400x400/{key}";
-        var md = $"/filters:quality(80)/fit-in/1000x1000/{key}";
-        var lg = $"/filters:quality(75)/fit-in/2000x2000/{key}";
-        var xl = $"/filters:quality(70)/fit-in/3000x3000/{key}";
+        key = Helper.UrlPath.PrefixSlash(key);
+        
+        var xs = Helper.UrlPath.PrefixSlash("/fit-in/100x100".UrlPathCombine(key));
+        var sm = Helper.UrlPath.PrefixSlash("/filters:quality(90)/fit-in/200x200".UrlPathCombine(key));
+        var md = Helper.UrlPath.PrefixSlash("/filters:quality(85)/fit-in/400x400".UrlPathCombine(key));
+        var lg = Helper.UrlPath.PrefixSlash("/filters:quality(80)/fit-in/1000x1000".UrlPathCombine(key));
+        var xl = Helper.UrlPath.PrefixSlash("/filters:quality(80)/fit-in/2000x2000".UrlPathCombine(key));
 
         using HMACSHA256 hmac = new HMACSHA256(bSecret);
 
@@ -100,6 +101,6 @@ public class ServerlessImageHandlerSolution : S3.S3
         var resultExpiresAt = DateTime.Now.AddDays(1);
 
         return new ImageGetInfoDto(Url: resultUrlLg, UrlXs: resultUrlXs, UrlSm: resultUrlSm, UrlMd: resultUrlMd,
-            UrlLg: resultUrlLg, UrlXl: resultUrlXl, ExpiresAt: resultExpiresAt, "");
+            UrlLg: resultUrlLg, UrlXl: resultUrlXl, ExpiresAt: resultExpiresAt, string.Empty);
     }
 }
