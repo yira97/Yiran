@@ -8,6 +8,9 @@ module.exports = {
         extend: {
             width: {
                 '128': '32rem',
+            },
+            fontFamily: {
+                noto: "'Noto Sans SC', sans-serif"
             }
         },
     },

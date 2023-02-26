@@ -6,6 +6,10 @@
     <title>@ViewData["Title"] - Blog.Web</title>
     <link rel="stylesheet" href="~/css/tailwindcss.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
+    @* Google Fonts *@
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
 </head>
 <body
     x-data="{
@@ -18,7 +22,7 @@
             this.showTopDropDown = false;
         }
     }"
-    class="bg-white">
+    class="bg-white font-noto">
 
 @await Component.InvokeAsync("Nav", ViewData["CurrentTopic"])
 
