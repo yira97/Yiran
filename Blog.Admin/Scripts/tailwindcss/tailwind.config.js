@@ -6,7 +6,11 @@ module.exports = {
         "../../Areas/**/*.{cshtml,js}",
     ],
     theme: {
-        extend: {},
+        extend: {
+            fontFamily: {
+                noto: "'Noto Sans SC', sans-serif"
+            }
+        },
     },
     plugins: [
         require('@tailwindcss/forms'),
