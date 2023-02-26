@@ -17,7 +17,7 @@
         "AwsSettings__AwsSolutionSettings__ServerlessImageHandlerSolutionConfiguration__SecretKey": "SecretForUrlSignature",
         "AwsSettings__AwsSolutionSettings__ServerlessImageHandlerSolutionConfiguration__DistributionDomainName": "dy9thd0ewjmx0.cloudfront.net",
         "ConnectionSettings__Postgres__Address": "localhost",
-        "ConnectionSettings__Postgres__Port": "35532",
+        "ConnectionSettings__Postgres__Port": "30002",
         "ConnectionSettings__Postgres__Username": "postgres",
         "ConnectionSettings__Postgres__Password": "mypostgres",
         "ConnectionSettings__Postgres__Database": "postgres"

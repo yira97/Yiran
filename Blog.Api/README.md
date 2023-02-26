@@ -45,6 +45,7 @@ cat ./Blog.Api/Migrations/Blog.Api.sql
 添加AWS密钥
 
 ```bash
+cd Blog.Api
 dotnet user-secrets set "AwsSettings:AccessKeyId" "123456"
 dotnet user-secrets set "AwsSettings:SecretAccessKey" "123456"
 ```
