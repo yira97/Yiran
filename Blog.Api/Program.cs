@@ -47,20 +47,30 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
         var rsa = new RSACryptoServiceProvider();
         rsa.ImportFromPem(pem);
-
-        options.TokenValidationParameters = new TokenValidationParameters
+        
+        var p = new TokenValidationParameters
         {
             ValidateIssuer = true,
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = jwtSettings.Issuer,
             ValidAudiences = new[]
             {
                 jwtSettings.Audience,
             },
             IssuerSigningKey = new RsaSecurityKey(rsa)
         };
+        
+        if (jwtSettings.Issuers.Count > 0)
+        {
+            p.ValidIssuers = jwtSettings.Issuers;
+        }
+        else
+        {
+            p.ValidIssuer = jwtSettings.Issuer;
+        }
+
+        options.TokenValidationParameters = p;
     });
 
 builder.Services.AddAuthorization(options =>
