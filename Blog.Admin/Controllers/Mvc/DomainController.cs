@@ -1,4 +1,5 @@
 using Blog.Admin.Helper;
+using Blog.Admin.Middlewares;
 using Blog.Admin.Models;
 using Blog.Domain.Extensions;
 using Blog.Domain.Models;
@@ -57,14 +58,9 @@ public class DomainController : Controller
 
         var shape = new DomainUpdateDto(Name: vm.Name);
 
-        var (tokenUpdated, accessTokenDto) =
-            await _blogService.EnsureAccessToken(CookieHelper.GetAccessTokenFromCookie(HttpContext));
-        if (tokenUpdated)
-        {
-            CookieHelper.WriteAccessTokenToCookie(HttpContext, accessTokenDto);
-        }
+        var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
 
-        var domain = await _blogService.CreateDomain(shape, accessTokenDto.AccessToken);
+        var domain = await _blogService.CreateDomain(shape, accessToken.AccessToken);
         return RedirectToAction("Index", "Domain");
     }
 
@@ -105,14 +101,9 @@ public class DomainController : Controller
             return View(vm);
         }
 
-        var (tokenUpdated, accessTokenDto) =
-            await _blogService.EnsureAccessToken(CookieHelper.GetAccessTokenFromCookie(HttpContext));
-        if (tokenUpdated)
-        {
-            CookieHelper.WriteAccessTokenToCookie(HttpContext, accessTokenDto);
-        }
+        var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
 
-        _ = await _blogService.UpdateDomain(id, new DomainUpdateDto(vm.Name), accessTokenDto.AccessToken);
+        _ = await _blogService.UpdateDomain(id, new DomainUpdateDto(vm.Name), accessToken.AccessToken);
 
         return RedirectToAction("Index", "Domain");
     }
@@ -127,14 +118,9 @@ public class DomainController : Controller
     [HttpPost]
     public async Task<IActionResult> DeleteDomain(string id)
     {
-        var (tokenUpdated, accessTokenDto) =
-            await _blogService.EnsureAccessToken(CookieHelper.GetAccessTokenFromCookie(HttpContext));
-        if (tokenUpdated)
-        {
-            CookieHelper.WriteAccessTokenToCookie(HttpContext, accessTokenDto);
-        }
+        var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
 
-        await _blogService.DeleteDomain(id, accessTokenDto.AccessToken);
+        await _blogService.DeleteDomain(id, accessToken.AccessToken);
 
         return RedirectToAction("Index", "Domain");
     }

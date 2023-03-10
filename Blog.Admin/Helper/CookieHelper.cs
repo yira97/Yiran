@@ -32,7 +32,7 @@ public static class CookieHelper
         if (accessToken.RefreshToken != null)
         {
             httpContext.Response.Cookies.Append(RefreshTokenKey, accessToken.RefreshToken,
-                new CookieOptions { HttpOnly = true, SameSite = SameSiteMode.Strict });
+                new CookieOptions { HttpOnly = true, SameSite = SameSiteMode.Strict, Expires = DateTime.UtcNow.AddYears(1) });
         }
     }
 

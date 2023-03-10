@@ -1,4 +1,5 @@
 using Blog.Admin.Helper;
+using Blog.Admin.Middlewares;
 using Blog.Admin.Models;
 using Blog.Domain.Enums;
 using Blog.Domain.Models;
@@ -26,14 +27,9 @@ public class StorageController : ControllerBase
     [HttpGet("{resourceId}", Name = "GetTempGetInfo")]
     public async Task<ActionResult<GetInfo>> GetTempGetInfo(string resourceId)
     {
-        var (tokenUpdated, accessTokenDto) =
-            await _blogService.EnsureAccessToken(CookieHelper.GetAccessTokenFromCookie(HttpContext));
-        if (tokenUpdated)
-        {
-            CookieHelper.WriteAccessTokenToCookie(HttpContext, accessTokenDto);
-        }
+        var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
 
-        var info = await _blogService.GetTempGetInfo(resourceId, accessTokenDto.AccessToken);
+        var info = await _blogService.GetTempGetInfo(resourceId, accessToken.AccessToken);
 
         return info;
     }
@@ -42,23 +38,18 @@ public class StorageController : ControllerBase
     [HttpPost("upload/post-cover", Name = "UploadPostCover")]
     public async Task<ActionResult<GetInfo>> UploadPostCover(IFormFile file)
     {
-        var (tokenUpdated, accessTokenDto) =
-            await _blogService.EnsureAccessToken(CookieHelper.GetAccessTokenFromCookie(HttpContext));
-        if (tokenUpdated)
-        {
-            CookieHelper.WriteAccessTokenToCookie(HttpContext, accessTokenDto);
-        }
+        var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
 
         var info = await _blogService.GetPutInfo(new StaticResourceUpdateDto(
                 (int)StaticResourceAction.ADD_POST_COVER,
                 file.Length,
                 file.FileName
             )
-            , accessTokenDto.AccessToken);
+            , accessToken.AccessToken);
 
         await _s3HttpClient.PutSignedUrl(info.Url, file.OpenReadStream(), file.Length, file.ContentType);
 
-        var tempInfo = await _blogService.GetTempGetInfo(info.ResourceId, accessTokenDto.AccessToken);
+        var tempInfo = await _blogService.GetTempGetInfo(info.ResourceId, accessToken.AccessToken);
 
 
         return Ok(tempInfo);
@@ -68,23 +59,18 @@ public class StorageController : ControllerBase
     [HttpPost("upload/post-content-image", Name = "UploadPostContentImage")]
     public async Task<ActionResult<GetInfo>> UploadPostContentImage(IFormFile file)
     {
-        var (tokenUpdated, accessTokenDto) =
-            await _blogService.EnsureAccessToken(CookieHelper.GetAccessTokenFromCookie(HttpContext));
-        if (tokenUpdated)
-        {
-            CookieHelper.WriteAccessTokenToCookie(HttpContext, accessTokenDto);
-        }
+        var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
 
         var info = await _blogService.GetPutInfo(new StaticResourceUpdateDto(
                 (int)StaticResourceAction.ADD_POST_CONTENT_IMAGE,
                 file.Length,
                 file.FileName
             )
-            , accessTokenDto.AccessToken);
+            , accessToken.AccessToken);
 
         await _s3HttpClient.PutSignedUrl(info.Url, file.OpenReadStream(), file.Length, file.ContentType);
 
-        var tempInfo = await _blogService.GetTempGetInfo(info.ResourceId, accessTokenDto.AccessToken);
+        var tempInfo = await _blogService.GetTempGetInfo(info.ResourceId, accessToken.AccessToken);
 
         return Ok(tempInfo);
     }
