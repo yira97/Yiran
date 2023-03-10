@@ -9,7 +9,7 @@ public class DomainService : IDomainService
 
     private readonly BlogService _blogService;
     private string DomainName { get; set; }
-    private TimeSpan RefreshSpan { get; set; } = TimeSpan.FromSeconds(1);
+    private TimeSpan RefreshSpan { get; set; } = TimeSpan.FromMinutes(1);
     private DomainDto? DomainInfo { get; set; }
     private DateTime DomainInfoRefreshedAt { get; set; } = DateTime.UtcNow;
 
@@ -50,7 +50,7 @@ public class DomainService : IDomainService
 
     public async Task<SocialLinksDto> GetSocialLinksInfo()
     {
-        if (SocialLinksInfo != null && SocialLinksInfoRefreshedAt - DateTime.UtcNow < RefreshSpan)
+        if (SocialLinksInfo != null && DateTime.UtcNow - SocialLinksInfoRefreshedAt < RefreshSpan)
             return SocialLinksInfo;
         var socialLinksInfo = await UpdateSocialLinksInfo();
         return socialLinksInfo;
