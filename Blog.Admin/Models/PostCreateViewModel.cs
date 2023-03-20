@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Blog.Domain.Enums;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Blog.Admin.Models;
@@ -23,6 +24,11 @@ public class PostCreateViewModel
 
     public List<SelectListItem> DomainCategories = new();
     public List<SelectListItem> DomainTopics = new();
+
+    public List<SelectListItem> CodeSnippetLanguages = CodeSnippetLanguage.All.Select(l => new SelectListItem(
+        text: CodeSnippetLanguage.GetLanguageName(l),
+        value: l
+    )).ToList();
 
     public IEnumerable<SelectListItem> SupportLanguages { get; set; } = new List<SelectListItem>();
 }

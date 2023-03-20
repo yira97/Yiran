@@ -64,7 +64,6 @@
 
     <ItemGroup>
         <Folder Include="Resources\Controllers\Mvc" />
-        <Folder Include="wwwroot\lib" />
         <Folder Include="Enums\" />
     </ItemGroup>
 

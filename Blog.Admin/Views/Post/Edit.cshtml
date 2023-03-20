@@ -181,6 +181,7 @@
                     <div class="py-1" role="none">
                         <button x-on:click="turnIntoImagesBlock(index)" type="button" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-2">Turn into images</button>
                         <button x-on:click="turnIntoParagraphBlock(index)" type="button" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-3">Turn into paragraph</button>
+                        <button x-on:click="turnIntoCodeSnippetBlock(index)" type="button" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-3">Turn into code snippet</button>
                     </div>
                     <div class="py-1" role="none">
                         <button type="button" x-on:click="deleteBlock(index)" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-6">@CommonLocalization.Get("删除")</button>
@@ -239,6 +240,26 @@
                 </div>
             </template>
             @* 图片块 END *@
+
+            @* 代码块 BEGIN *@
+            <template x-if="block.code != null">
+                <div class="max-w-lg w-full">
+                    <div class="flex mb-2 gap-2">
+                        <input type="text" x-model="block.code.fileName" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" placeholder="index">
+
+                        <select x-model="block.code.language" class="block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                            <option value="" disabled>Select A Language</option>
+                            @foreach (var l in Model.CodeSnippetLanguages)
+                            {
+                                <option value="@l.Value">@l.Text</option>
+                            }
+                        </select>
+                    </div>
+                    <textarea x-model="block.code.content" rows="12" class="block bg-black text-white font-mono w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
+                </div>
+            </template>
+            @* 代码块 END *@
+
         </div>
     </template>
     <button x-on:click="addBlockAtEnd()" type="button" class="w-10 h-10 opacity-10 hover:opacity-80">

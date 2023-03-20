@@ -16,9 +16,10 @@ dotnet ef --help
 dotnet tool install --global dotnet-ef
 ```
 
-### 1. 生成class定义
+### 1. 生成table定义
 
 ```bash
+chmod +x ./Blog.Api/Scripts/database.py
 python3 ./Blog.Api/Scripts/database.py update-scheme --name InitialCreate
 ```
 

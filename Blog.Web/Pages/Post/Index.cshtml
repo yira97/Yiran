@@ -1,4 +1,5 @@
 @page "{PostId}"
+@using Blog.Domain.Enums
 @model Blog.Web.Pages.Post.Index
 
 @{
@@ -39,6 +40,15 @@
                     <p class="text-lg">@b.Paragraph</p>
                 </div>
             }
+            else if (b.Code != null)
+            {
+                <div class="lg:w-[653px] w-[576px] mx-auto">
+                    <pre><code class="@CodeSnippetLanguage.GetPrismjsClassName(b.Code.Language)">@b.Code.Content</code></pre>
+                </div>
+                <div class="lg:w-[653px] w-[576px] mx-auto text-xs py-4 text-gray-500">
+                    @b.Code.FileName
+                </div>
+            }
             else if (b.Images != null)
             {
                 if (b.Images.Count() == 1)
@@ -57,3 +67,14 @@
     }
     @* Article Content Block End *@
 </article>
+
+@section Styles
+{
+    <link href="~/css/code-snippet-theme.css" rel="stylesheet" />
+}
+
+@section Scripts
+{
+    <script src="https://unpkg.com/prismjs@v1.x/components/prism-core.min.js"></script>
+    <script src="https://unpkg.com/prismjs@v1.x/plugins/autoloader/prism-autoloader.min.js"></script>
+}
