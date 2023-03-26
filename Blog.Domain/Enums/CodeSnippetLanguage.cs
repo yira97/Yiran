@@ -10,6 +10,7 @@ public class CodeSnippetLanguage
     public const string JavaScript ="js";
     public const string Python ="py";
     public const string Bash ="bash";
+    public const string Sql = "sql";
     
     public static string GetLanguageName(string language)
     {
@@ -23,6 +24,7 @@ public class CodeSnippetLanguage
             JavaScript => "JavaScript",
             Python => "Python",
             Bash => "Bash",
+            Sql => "sql",
             _ => language
         };
     }
@@ -36,7 +38,8 @@ public class CodeSnippetLanguage
         Css,
         JavaScript,
         Python,
-        Bash
+        Bash,
+        Sql
     };
     
     public static string GetPrismjsClassName(string language)
@@ -51,6 +54,7 @@ public class CodeSnippetLanguage
             JavaScript => "language-javascript",
             Python => "language-python",
             Bash => "language-bash",
+            Sql => "language-sql",
             _ => language
         };
     }
