@@ -11,6 +11,7 @@ public class CodeSnippetLanguage
     public const string Python ="py";
     public const string Bash ="bash";
     public const string Sql = "sql";
+    public const string ProtocolBuffers = "protobuf";
     
     public static string GetLanguageName(string language)
     {
@@ -25,6 +26,7 @@ public class CodeSnippetLanguage
             Python => "Python",
             Bash => "Bash",
             Sql => "sql",
+            ProtocolBuffers => "protobuf",
             _ => language
         };
     }
@@ -39,7 +41,8 @@ public class CodeSnippetLanguage
         JavaScript,
         Python,
         Bash,
-        Sql
+        Sql,
+        ProtocolBuffers,
     };
     
     public static string GetPrismjsClassName(string language)
@@ -55,6 +58,7 @@ public class CodeSnippetLanguage
             Python => "language-python",
             Bash => "language-bash",
             Sql => "language-sql",
+            ProtocolBuffers => "language-protobuf",
             _ => language
         };
     }
