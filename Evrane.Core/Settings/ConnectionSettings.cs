@@ -15,6 +15,8 @@ public class ConnectionSettings
     public PostgresSettings Postgres { get; set; } = new();
     public RedisSettings Redis { get; set; } = new();
     public RabbitMqSettings RabbitMq { get; set; } = new();
+    
+    public MongoDbSettings MongoDb { get; set; } = new();
 
     public string DebugInfo =>
         $@"
@@ -35,6 +37,12 @@ public class ConnectionSettings
             Port: {RabbitMq.Port}
             Username: {RabbitMq.Username}
             Password: {new string('*', RabbitMq.Password.Length)}
+        MongoDb:
+            Address: {MongoDb.Address}
+            Port: {MongoDb.Port}
+            Database: {MongoDb.Database}
+            Username: {MongoDb.Username}
+            Password: {new string('*', MongoDb.Password.Length)}
         ---
         ";
 }

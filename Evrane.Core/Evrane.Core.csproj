@@ -7,7 +7,7 @@
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Authors>Yiran Feng</Authors>
         <RepositoryUrl>https://github.com/yira97/Yiran</RepositoryUrl>
-        <Version>1.0.2</Version>
+        <Version>1.0.4</Version>
     </PropertyGroup>
 
     <ItemGroup>
