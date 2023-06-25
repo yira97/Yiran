@@ -157,6 +157,12 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 
 var app = builder.Build();
 
+if (builder.Configuration.GetValue<string>("Host:Type") == "Proxied")
+{
+    logger.LogInformation("Using Proxied Host");
+    app.UseForwardedHeaders();
+}
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
