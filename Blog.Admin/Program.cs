@@ -94,14 +94,7 @@ builder.Services.AddAuthentication(authenticationOptions =>
         // this is needed to the standard token store to manage the artefacts
         openIdConnectOptions.SaveTokens = true;
         
-        openIdConnectOptions.Events.OnRedirectToIdentityProvider = async context =>
-        {
-            context.ProtocolMessage.RedirectUri = "https://admin.blog.local.evrane.com:8100/signin-oidc";
-        };
-        openIdConnectOptions.Events.OnRedirectToIdentityProviderForSignOut = async context =>
-        {
-            context.ProtocolMessage.RedirectUri = "https://admin.blog.local.evrane.com:8100/signout-callback-oidc";
-        };
+
         openIdConnectOptions.TokenValidationParameters = new TokenValidationParameters
         {
             NameClaimType = "name",
