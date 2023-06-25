@@ -4,7 +4,7 @@ using Blog.Admin.Models;
 using Blog.Admin.Services;
 using Blog.Domain.Models;
 using Blog.Domain.Services.Client;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Admin.Controllers.Mvc;
@@ -53,12 +53,8 @@ public class CategoryController : Controller
     [HttpPost]
     public async Task<IActionResult> AddCategory(AddCategoryViewModel vm)
     {
-        var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
-        if (string.IsNullOrEmpty(accessToken.AccessToken))
-            return RedirectToAction("Index", "SignIn", new { Area = "Account" });
 
-        var res = await _blogService.AddCategory(vm.DomainId, new DomainCategoryUpdateDto(Name: vm.Name),
-            accessToken.AccessToken!);
+        var res = await _blogService.AddCategory(vm.DomainId, new DomainCategoryUpdateDto(Name: vm.Name));
 
         return RedirectToAction("Index", new { domainId = vm.DomainId });
     }
@@ -90,11 +86,9 @@ public class CategoryController : Controller
     [HttpPost]
     public async Task<IActionResult> EditCategory(EditCategoryViewModel vm)
     {
-        var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
 
         var res = await _blogService.EditCategory(vm.DomainId, vm.CategoryId,
-            new DomainCategoryUpdateDto(Name: vm.Name),
-            accessToken.AccessToken!);
+            new DomainCategoryUpdateDto(Name: vm.Name));
 
         return RedirectToAction("Index", new { domainId = vm.DomainId });
     }
@@ -106,12 +100,9 @@ public class CategoryController : Controller
     [HttpPost]
     public async Task<IActionResult> DeleteCategory(DeleteCategoryDto deleteCategoryDto)
     {
-        var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
-        if (string.IsNullOrEmpty(accessToken.RefreshToken))
-            return RedirectToAction("Index", "SignIn", new { Area = "Account" });
+        var accessToken = await HttpContext.GetTokenAsync("access_token");
 
-        await _blogService.DeleteCategory(deleteCategoryDto.DomainId, deleteCategoryDto.CategoryId,
-            accessToken.AccessToken!);
+        await _blogService.DeleteCategory(deleteCategoryDto.DomainId, deleteCategoryDto.CategoryId);
 
         return RedirectToAction("Index", new { domainId = deleteCategoryDto.DomainId });
     }

@@ -21,6 +21,8 @@ public class CultureDisplayViewComponent : ViewComponent
             vm.Culture = cultureFeature.RequestCulture.UICulture;
         }
 
+        await Task.CompletedTask;
+        
         return View(vm);
     }
 }

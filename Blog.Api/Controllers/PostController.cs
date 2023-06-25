@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Api.Controllers;
 
-[Authorize(Policy = Policy.RequireAdmin)]
+[Authorize(Policy = Policies.RequireAdminRole)]
 [ApiController]
 [Route("api/v1/[controller]")]
 public class PostController : ControllerBase

@@ -107,14 +107,14 @@
             @* SMALL 6 *@
             @for (var sIndex = 5; sIndex <= 10; sIndex++)
             {
-                var small = @Model.Posts.Count() >= sIndex + 1 ? @Model.Posts[sIndex + 1] : null;
-                <a asp-route-culture="@HttpContext.Request.RouteValues["culture"]" asp-page="/Post/Index" asp-route-PostId="@small?.Id" class="block mt-[36px] w-[303px] rounded-xl overflow-hidden">
-                    <picture class="h-[170px]">
+                var small = @Model.Posts.Count() >= sIndex + 1 ? @Model.Posts[sIndex] : null;
+                <a asp-route-culture="@HttpContext.Request.RouteValues["culture"]" asp-page="/Post/Index" asp-route-PostId="@small?.Id" class="block mt-[36px] w-[303px] rounded-xl overflow-hidden group">
+                    <picture class="h-[170px] block overflow-hidden bg-black">
                         @{
                             var mCover = small?.Content.Cover;
                             if (mCover != null)
                             {
-                                <img class="w-full h-[170px] object-cover scale-100 group-hover:scale-105 ease-in duration-200 opacity-100 group-hover:opacity-80" src="@mCover?.GetInfo?.UrlXl"/>
+                                <img class="w-full bg-black h-[170px] object-cover scale-100 group-hover:scale-105 ease-in duration-200 opacity-100 group-hover:opacity-80" src="@mCover?.GetInfo?.UrlXl"/>
                             }
                             else
                             {
@@ -133,14 +133,14 @@
                             }
                         }
                     </picture>
-                    @if (small != null)
-                    {
-                        <div class="ml-10">
+                    <div class="p-5 pl-7 bg-white h-full">
+                        @if (small != null)
+                        {
                             <p class="text-xs font-medium text-gray-600">@Model.Categories.Find(c => c.Id == small?.Category)?.Name</p>
                             <h3 class="text-2xl font-semibold mt-2">@small?.Title</h3>
                             <p class="text-sm font-medium text-gray-500 mt-2">@small?.CreatedAt.ToString("D")</p>
-                        </div>
-                    }
+                        }
+                    </div>
                 </a>
             }
 

@@ -20,33 +20,16 @@ namespace Blog.Domain.Services.Client;
 public class BlogService
 {
     private readonly HttpClient _httpClient;
-    private readonly IJwtService _jwtService;
 
-    public BlogService(HttpClient httpClient, IConfiguration configuration, IJwtService jwtService)
+    public BlogService(HttpClient httpClient, IConfiguration configuration)
     {
         _httpClient = httpClient;
-        _jwtService = jwtService;
         var blogAddress = configuration.GetSection(nameof(ServiceSettings) + ":Blog").Get<string>()!;
 
         _httpClient.BaseAddress = new Uri(blogAddress);
         _httpClient.DefaultRequestHeaders
             .Accept
             .Add(new MediaTypeWithQualityHeaderValue("application/json"));
-    }
-
-    public async Task<(bool, AccessTokenDto)> EnsureAccessToken(AccessTokenDto currentAccessToken)
-    {
-        if (string.IsNullOrEmpty(currentAccessToken.AccessToken)) return (false, currentAccessToken);
-
-        var t = _jwtService.GetExpiresTime(currentAccessToken.AccessToken);
-        var needRefresh = t < DateTime.UtcNow.AddSeconds(10);
-        var newAccessToken = currentAccessToken;
-        if (needRefresh)
-        {
-            newAccessToken = await Refresh(currentAccessToken);
-        }
-
-        return (needRefresh, newAccessToken);
     }
 
     public async Task<AccessTokenDto> EmailRegister(EmailPasswordAuthDto authDto)
@@ -93,10 +76,9 @@ public class BlogService
         return result!;
     }
 
-    public async Task<PostDto> CreatePost(PostUpdateDto updateDto, string accessToken)
+    public async Task<PostDto> CreatePost(PostUpdateDto updateDto)
     {
         var request = new HttpRequestMessage(HttpMethod.Post, "api/v1/Post");
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         request.Content =
             new StringContent(JsonSerializer.Serialize(updateDto), Encoding.UTF8, "application/json");
 
@@ -106,10 +88,9 @@ public class BlogService
         return result!;
     }
 
-    public async Task<PostDto> EditPost(string postId, PostUpdateDto updateDto, string accessToken)
+    public async Task<PostDto> EditPost(string postId, PostUpdateDto updateDto)
     {
         var request = new HttpRequestMessage(HttpMethod.Put, $"api/v1/Post/{postId}");
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         request.Content =
             new StringContent(JsonSerializer.Serialize(updateDto), Encoding.UTF8, "application/json");
 
@@ -119,10 +100,9 @@ public class BlogService
         return result!;
     }
 
-    public async Task<DomainDto> CreateDomain(DomainUpdateDto updateDto, string accessToken)
+    public async Task<DomainDto> CreateDomain(DomainUpdateDto updateDto)
     {
         var request = new HttpRequestMessage(HttpMethod.Post, "api/v1/Domain");
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         request.Content =
             new StringContent(JsonSerializer.Serialize(updateDto), Encoding.UTF8, "application/json");
 
@@ -132,18 +112,16 @@ public class BlogService
         return result!;
     }
 
-    public async Task DeletePost(string postId, string accessToken)
+    public async Task DeletePost(string postId)
     {
         var request = new HttpRequestMessage(HttpMethod.Delete, $"api/v1/Post/{postId}");
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         var resp = await _httpClient.SendAsync(request);
         resp.EnsureSuccessStatusCode();
     }
 
-    public async Task DeleteDomain(string domainId, string accessToken)
+    public async Task DeleteDomain(string domainId)
     {
         var request = new HttpRequestMessage(HttpMethod.Delete, $"api/v1/Domain/{domainId}");
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         var resp = await _httpClient.SendAsync(request);
         resp.EnsureSuccessStatusCode();
     }
@@ -168,10 +146,9 @@ public class BlogService
         return result!;
     }
 
-    public async Task<DomainDto> UpdateDomain(string domainId, DomainUpdateDto updateDto, string accessToken)
+    public async Task<DomainDto> UpdateDomain(string domainId, DomainUpdateDto updateDto)
     {
         var request = new HttpRequestMessage(HttpMethod.Put, $"api/v1/Domain/{domainId}");
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         request.Content =
             new StringContent(JsonSerializer.Serialize(updateDto), Encoding.UTF8, "application/json");
 
@@ -181,11 +158,9 @@ public class BlogService
         return result!;
     }
 
-    public async Task<PostDto> GetPost(string postId, string? accessToken = null)
+    public async Task<PostDto> GetPost(string postId)
     {
         var request = new HttpRequestMessage(HttpMethod.Get, $"api/v1/Post/{postId}");
-        if (!string.IsNullOrEmpty(accessToken))
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         var resp = await _httpClient.SendAsync(request);
         resp.EnsureSuccessStatusCode();
         var result = await resp.Content.ReadFromJsonAsync<PostDto>();
@@ -200,8 +175,7 @@ public class BlogService
         string? domainId,
         bool? publicOnly,
         string? categoryId,
-        string? topicId,
-        string? accessToken = null
+        string? topicId
     )
     {
         var query = new Dictionary<string, string>();
@@ -217,19 +191,15 @@ public class BlogService
         var requestUri = QueryHelpers.AddQueryString("api/v1/Post", query!);
         var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
 
-        if (!string.IsNullOrEmpty(accessToken))
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-
         var resp = await _httpClient.SendAsync(request);
         resp.EnsureSuccessStatusCode();
         var result = await resp.Content.ReadFromJsonAsync<CursorBasedQueryResult<PostDto>>();
         return result!;
     }
 
-    public async Task<GetInfo> GetTempGetInfo(string resourceId, string accessToken)
+    public async Task<GetInfo> GetTempGetInfo(string resourceId)
     {
         var request = new HttpRequestMessage(HttpMethod.Get, $"api/v1/StaticResource/{resourceId}");
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
         var resp = await _httpClient.SendAsync(request);
         resp.EnsureSuccessStatusCode();
@@ -237,10 +207,9 @@ public class BlogService
         return result!;
     }
 
-    public async Task<PutInfo> GetPutInfo(StaticResourceUpdateDto updateDto, string accessToken)
+    public async Task<PutInfo> GetPutInfo(StaticResourceUpdateDto updateDto)
     {
         var request = new HttpRequestMessage(HttpMethod.Post, "api/v1/StaticResource");
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         request.Content =
             new StringContent(JsonSerializer.Serialize(updateDto), Encoding.UTF8, "application/json");
 
@@ -250,11 +219,9 @@ public class BlogService
         return result!;
     }
 
-    public async Task<DomainCategoryDto> AddCategory(string domainId, DomainCategoryUpdateDto updateDto,
-        string accessToken)
+    public async Task<DomainCategoryDto> AddCategory(string domainId, DomainCategoryUpdateDto updateDto)
     {
         var request = new HttpRequestMessage(HttpMethod.Post, $"api/v1/Domain/{domainId}/categories");
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         request.Content =
             new StringContent(JsonSerializer.Serialize(updateDto), Encoding.UTF8, "application/json");
 
@@ -264,11 +231,9 @@ public class BlogService
         return result!;
     }
 
-    public async Task<DomainTopicDto> AddTopic(string domainId, DomainTopicUpdateDto updateDto,
-        string accessToken)
+    public async Task<DomainTopicDto> AddTopic(string domainId, DomainTopicUpdateDto updateDto)
     {
         var request = new HttpRequestMessage(HttpMethod.Post, $"api/v1/Domain/{domainId}/topics");
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         request.Content =
             new StringContent(JsonSerializer.Serialize(updateDto), Encoding.UTF8, "application/json");
 
@@ -279,10 +244,9 @@ public class BlogService
     }
 
     public async Task<DomainCategoryDto> EditCategory(string domainId, string categoryId,
-        DomainCategoryUpdateDto updateDto, string accessToken)
+        DomainCategoryUpdateDto updateDto)
     {
         var request = new HttpRequestMessage(HttpMethod.Put, $"api/v1/Domain/{domainId}/categories/{categoryId}");
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         request.Content =
             new StringContent(JsonSerializer.Serialize(updateDto), Encoding.UTF8, "application/json");
 
@@ -293,10 +257,9 @@ public class BlogService
     }
 
     public async Task<DomainTopicDto> EditTopic(string domainId, string topicId,
-        DomainTopicUpdateDto updateDto, string accessToken)
+        DomainTopicUpdateDto updateDto)
     {
         var request = new HttpRequestMessage(HttpMethod.Put, $"api/v1/Domain/{domainId}/topics/{topicId}");
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         request.Content =
             new StringContent(JsonSerializer.Serialize(updateDto), Encoding.UTF8, "application/json");
 
@@ -306,19 +269,17 @@ public class BlogService
         return result!;
     }
 
-    public async Task DeleteCategory(string domainId, string categoryId, string accessToken)
+    public async Task DeleteCategory(string domainId, string categoryId)
     {
         var request = new HttpRequestMessage(HttpMethod.Delete, $"api/v1/Domain/{domainId}/categories/{categoryId}");
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
         var resp = await _httpClient.SendAsync(request);
         resp.EnsureSuccessStatusCode();
     }
 
-    public async Task DeleteTopic(string domainId, string topicId, string accessToken)
+    public async Task DeleteTopic(string domainId, string topicId)
     {
         var request = new HttpRequestMessage(HttpMethod.Delete, $"api/v1/Domain/{domainId}/topics/{topicId}");
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
         var resp = await _httpClient.SendAsync(request);
         resp.EnsureSuccessStatusCode();
@@ -362,11 +323,10 @@ public class BlogService
         return result!;
     }
 
-    public async Task UpdateSocialLinks(string domainId, SocialLinksDto socialLinks, string accessToken)
+    public async Task UpdateSocialLinks(string domainId, SocialLinksDto socialLinks)
     {
         var url = $"api/v1/Domain/{domainId}/social-links";
         var request = new HttpRequestMessage(HttpMethod.Put, url);
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         request.Content =
             new StringContent(JsonSerializer.Serialize(socialLinks), Encoding.UTF8, "application/json");
 
@@ -374,11 +334,10 @@ public class BlogService
         resp.EnsureSuccessStatusCode();
     }
 
-    public async Task UpdateSiteMap(string domainId, SiteMapDto siteMap, string accessToken)
+    public async Task UpdateSiteMap(string domainId, SiteMapDto siteMap)
     {
         var url = $"api/v1/Domain/{domainId}/site-map";
         var request = new HttpRequestMessage(HttpMethod.Put, url);
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         request.Content =
             new StringContent(JsonSerializer.Serialize(siteMap), Encoding.UTF8, "application/json");
 
@@ -386,11 +345,10 @@ public class BlogService
         resp.EnsureSuccessStatusCode();
     }
 
-    public async Task UpdateSiteMapTranslation(string domainId, string language, SiteMapDto siteMap, string accessToken)
+    public async Task UpdateSiteMapTranslation(string domainId, string language, SiteMapDto siteMap)
     {
         var url = $"api/v1/Domain/{domainId}/site-map/translation/{language}";
         var request = new HttpRequestMessage(HttpMethod.Put, url);
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         request.Content =
             new StringContent(JsonSerializer.Serialize(siteMap), Encoding.UTF8, "application/json");
 
@@ -398,33 +356,30 @@ public class BlogService
         resp.EnsureSuccessStatusCode();
     }
 
-    public async Task<UserInfoDto> GetUserProfile(string userId, string accessToken)
+    public async Task<UserInfoDto> GetUserProfile(string userId)
     {
         var url = $"api/v1/Account/profile/{userId}";
         var request = new HttpRequestMessage(HttpMethod.Get, url);
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         var resp = await _httpClient.SendAsync(request);
         resp.EnsureSuccessStatusCode();
         var result = await resp.Content.ReadFromJsonAsync<UserInfoDto>();
         return result!;
     }
 
-    public async Task<UserInfoDto> GetUserProfile(string accessToken)
+    public async Task<UserInfoDto> GetUserProfile()
     {
         var url = $"api/v1/Account/profile";
         var request = new HttpRequestMessage(HttpMethod.Get, url);
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         var resp = await _httpClient.SendAsync(request);
         resp.EnsureSuccessStatusCode();
         var result = await resp.Content.ReadFromJsonAsync<UserInfoDto>();
         return result!;
     }
 
-    public async Task<UserInfoDto> UpdateUserNickName(string nickName, string accessToken)
+    public async Task<UserInfoDto> UpdateUserNickName(string nickName)
     {
         var url = $"api/v1/Account/profile/nick-name";
         var request = new HttpRequestMessage(HttpMethod.Patch, url);
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         var updateDto = new UpdateUserNickNameDto
         {
             NickName = nickName,

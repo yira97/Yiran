@@ -1,5 +1,4 @@
 using System.Globalization;
-using Blog.Admin.Models;
 using Blog.Domain.Models;
 using Microsoft.AspNetCore.Localization;
 
@@ -21,28 +20,6 @@ public static class CookieHelper
         return new AccessTokenDto(accessToken, refreshToken);
     }
 
-    public static void WriteAccessTokenToCookie(HttpContext httpContext, AccessTokenDto accessToken)
-    {
-        if (accessToken.AccessToken != null)
-        {
-            httpContext.Response.Cookies.Append(AccessTokenKey, accessToken.AccessToken,
-                new CookieOptions { HttpOnly = true, SameSite = SameSiteMode.Strict });
-        }
-
-        if (accessToken.RefreshToken != null)
-        {
-            httpContext.Response.Cookies.Append(RefreshTokenKey, accessToken.RefreshToken,
-                new CookieOptions { HttpOnly = true, SameSite = SameSiteMode.Strict, Expires = DateTime.UtcNow.AddYears(1) });
-        }
-    }
-
-    public static void ClearLoginInfo(HttpContext httpContext)
-    {
-        httpContext.Response.Cookies.Delete(UserEmailKey);
-        httpContext.Response.Cookies.Delete(UserNickNameKey);
-        httpContext.Response.Cookies.Delete(AccessTokenKey);
-        httpContext.Response.Cookies.Delete(RefreshTokenKey);
-    }
 
     public static string? GetDefaultDomainFromCookie(HttpContext httpContext)
     {
@@ -62,26 +39,5 @@ public static class CookieHelper
             CookieRequestCultureProvider.DefaultCookieName,
             CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture))
         );
-    }
-
-    public static UserInfoDto GetUserInfoFromCookie(HttpContext httpContext)
-    {
-        var email = httpContext.Request.Cookies[UserEmailKey];
-        var displayName = httpContext.Request.Cookies[UserNickNameKey];
-
-        return new UserInfoDto
-        {
-            Email = email ?? string.Empty,
-            NickName = displayName ?? string.Empty,
-        };
-    }
-
-    public static void WriteUserInfoToCookie(HttpContext httpContext, UserInfoDto userInfoDto)
-    {
-        httpContext.Response.Cookies.Append(UserEmailKey, userInfoDto.Email,
-            new CookieOptions { HttpOnly = true, SameSite = SameSiteMode.Strict });
-
-        httpContext.Response.Cookies.Append(UserNickNameKey, userInfoDto.NickName,
-            new CookieOptions { HttpOnly = true, SameSite = SameSiteMode.Strict });
     }
 }

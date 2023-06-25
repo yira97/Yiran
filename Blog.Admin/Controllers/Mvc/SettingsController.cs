@@ -1,12 +1,11 @@
 using System.Text.Json;
 using Blog.Admin.Helper;
 using Blog.Admin.Middlewares;
-using Blog.Admin.Models;
 using Blog.Admin.ViewModels;
 using Blog.Domain.Models;
 using Blog.Domain.Services.Client;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Blog.Admin.Controllers.Mvc;
 
@@ -96,9 +95,6 @@ public class SettingsController : Controller
     [HttpPost]
     public async Task<IActionResult> UpdateSocialLinks(SettingsIndexViewModel vm)
     {
-        var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
-        if (string.IsNullOrEmpty(accessToken.AccessToken))
-            return RedirectToAction("Index", "SignIn", new { Area = "Account" });
 
         var domainId = vm.SocialLinksForm.DomainId;
 
@@ -111,7 +107,7 @@ public class SettingsController : Controller
             Youtube: string.IsNullOrEmpty(vm.SocialLinksForm.Youtube) ? null : vm.SocialLinksForm.Youtube,
             BiliBili: string.IsNullOrEmpty(vm.SocialLinksForm.BiliBili) ? null : vm.SocialLinksForm.BiliBili
         );
-        await _blogService.UpdateSocialLinks(domainId, socialLinks, accessToken.AccessToken);
+        await _blogService.UpdateSocialLinks(domainId, socialLinks);
 
         return RedirectToAction("Index", "Settings", new { domainId = domainId, tab = Config.TabSocialLinks });
     }
@@ -119,9 +115,6 @@ public class SettingsController : Controller
     [HttpPost]
     public async Task<IActionResult> UpdateSiteMap(SettingsIndexViewModel vm)
     {
-        var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
-        if (string.IsNullOrEmpty(accessToken.AccessToken))
-            return RedirectToAction("Index", "SignIn", new { Area = "Account" });
 
         var domainId = vm.SiteMapUpdateFormInput.DomainId;
         var siteMapJson = vm.SiteMapUpdateFormInput.SiteMapDataJson;
@@ -132,7 +125,7 @@ public class SettingsController : Controller
         };
         var siteMap = JsonSerializer.Deserialize<SiteMapDto>(siteMapJson, options);
 
-        await _blogService.UpdateSiteMap(domainId, siteMap!, accessToken.AccessToken);
+        await _blogService.UpdateSiteMap(domainId, siteMap!);
 
         return RedirectToAction("Index", "Settings", new { domainId = domainId, tab = Config.TabSiteMap });
     }
@@ -140,9 +133,6 @@ public class SettingsController : Controller
     [HttpPost]
     public async Task<IActionResult> UpdateSiteMapTranslation(SettingsIndexViewModel vm)
     {
-        var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
-        if (string.IsNullOrEmpty(accessToken.AccessToken))
-            return RedirectToAction("Index", "SignIn", new { Area = "Account" });
 
         var domainId = vm.SiteMapTranslationUpdateFormInput.DomainId;
         var siteMapJson = vm.SiteMapTranslationUpdateFormInput.SiteMapDataJson;
@@ -153,7 +143,7 @@ public class SettingsController : Controller
         };
         var siteMap = JsonSerializer.Deserialize<SiteMapDto>(siteMapJson, options);
 
-        await _blogService.UpdateSiteMapTranslation(domainId, siteMap!.Language, siteMap!, accessToken.AccessToken);
+        await _blogService.UpdateSiteMapTranslation(domainId, siteMap!.Language, siteMap!);
 
         return RedirectToAction("Index", "Settings", new { domainId = domainId, tab = Config.TabSiteMap });
     }

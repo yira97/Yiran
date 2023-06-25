@@ -1,8 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using Blog.Admin.Controllers.Mvc;
-using Blog.Admin.Models;
 using Blog.Domain.Models;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Blog.Admin.ViewModels;
 

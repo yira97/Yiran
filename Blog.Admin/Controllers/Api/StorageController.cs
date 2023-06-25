@@ -1,12 +1,9 @@
-using Blog.Admin.Helper;
-using Blog.Admin.Middlewares;
-using Blog.Admin.Models;
 using Blog.Domain.Enums;
 using Blog.Domain.Models;
 using Blog.Domain.Services.Client;
 using Evrane.Core.ObjectStorage;
 using Evrane.Core.ObjectStorage.S3;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Admin.Controllers.Api;
@@ -27,9 +24,8 @@ public class StorageController : ControllerBase
     [HttpGet("{resourceId}", Name = "GetTempGetInfo")]
     public async Task<ActionResult<GetInfo>> GetTempGetInfo(string resourceId)
     {
-        var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
 
-        var info = await _blogService.GetTempGetInfo(resourceId, accessToken.AccessToken);
+        var info = await _blogService.GetTempGetInfo(resourceId);
 
         return info;
     }
@@ -38,18 +34,16 @@ public class StorageController : ControllerBase
     [HttpPost("upload/post-cover", Name = "UploadPostCover")]
     public async Task<ActionResult<GetInfo>> UploadPostCover(IFormFile file)
     {
-        var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
 
         var info = await _blogService.GetPutInfo(new StaticResourceUpdateDto(
                 (int)StaticResourceAction.ADD_POST_COVER,
                 file.Length,
                 file.FileName
-            )
-            , accessToken.AccessToken);
+            ));
 
         await _s3HttpClient.PutSignedUrl(info.Url, file.OpenReadStream(), file.Length, file.ContentType);
 
-        var tempInfo = await _blogService.GetTempGetInfo(info.ResourceId, accessToken.AccessToken);
+        var tempInfo = await _blogService.GetTempGetInfo(info.ResourceId);
 
 
         return Ok(tempInfo);
@@ -59,18 +53,17 @@ public class StorageController : ControllerBase
     [HttpPost("upload/post-content-image", Name = "UploadPostContentImage")]
     public async Task<ActionResult<GetInfo>> UploadPostContentImage(IFormFile file)
     {
-        var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
+        var accessToken = await HttpContext.GetTokenAsync("access_token");
 
         var info = await _blogService.GetPutInfo(new StaticResourceUpdateDto(
                 (int)StaticResourceAction.ADD_POST_CONTENT_IMAGE,
                 file.Length,
                 file.FileName
-            )
-            , accessToken.AccessToken);
+            ));
 
         await _s3HttpClient.PutSignedUrl(info.Url, file.OpenReadStream(), file.Length, file.ContentType);
 
-        var tempInfo = await _blogService.GetTempGetInfo(info.ResourceId, accessToken.AccessToken);
+        var tempInfo = await _blogService.GetTempGetInfo(info.ResourceId);
 
         return Ok(tempInfo);
     }

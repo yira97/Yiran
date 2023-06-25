@@ -1,5 +1,4 @@
-﻿using System;
-namespace Blog.Admin.Enums;
+﻿namespace Blog.Admin.Enums;
 
 
 public enum ActionResultType

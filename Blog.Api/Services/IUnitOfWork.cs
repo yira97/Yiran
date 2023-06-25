@@ -8,8 +8,6 @@ public interface IUnitOfWork
 
     IStaticResourceRepository StaticResourceRepository { get; }
 
-    IAccountRepository AccountRepository { get; }
-
     IDomainRepository DomainRepository { get; }
 
     Task<bool> CompleteAsync();

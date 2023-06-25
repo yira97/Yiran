@@ -60,6 +60,8 @@
         <_ContentIncludedByDefault Remove="wwwroot\lib\jquery-validation\dist\jquery.validate.min.js" />
         <_ContentIncludedByDefault Remove="wwwroot\lib\jquery-validation\LICENSE.md" />
         <_ContentIncludedByDefault Remove="Areas\Account\Views\LogOut\Index.cshtml" />
+        <_ContentIncludedByDefault Remove="Areas\Account\Views\Register\Index.cshtml" />
+        <_ContentIncludedByDefault Remove="Areas\Account\Views\SignIn\Index.cshtml" />
     </ItemGroup>
 
     <ItemGroup>
@@ -68,7 +70,10 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="Duende.AccessTokenManagement" Version="2.0.1" />
+      <PackageReference Include="Duende.AccessTokenManagement.OpenIdConnect" Version="2.0.1" />
       <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.3" />
+      <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="7.0.5" />
       <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="7.0.3" />
       <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.3" />
     </ItemGroup>

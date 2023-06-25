@@ -1,6 +1,5 @@
 using System.Security.Cryptography;
 using Blog.Api.Data;
-using Blog.Api.Entities;
 using Blog.Domain.Enums;
 using Blog.Api.Services;
 using Evrane.Core.ObjectStorage;
@@ -8,7 +7,6 @@ using Evrane.Core.ObjectStorage.ServerlessImageHandlerSolution;
 using Evrane.Core.Security;
 using Evrane.Core.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
@@ -25,69 +23,41 @@ builder.Services
         options.UseNpgsql(connectionSettings.Postgres.ConnectionString);
     });
 
-builder.Services.AddIdentityCore<ApplicationUserEntity>(options =>
-    {
-        options.User.RequireUniqueEmail = true;
-        options.SignIn.RequireConfirmedAccount = false;
-
-        options.Password.RequireNonAlphanumeric = false;
-        options.Password.RequireDigit = false;
-        options.Password.RequireUppercase = false;
-    })
-    .AddRoles<ApplicationRoleEntity>()
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddDefaultTokenProviders();
-
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        var jwtSettings = builder.Configuration.GetSection(nameof(JwtSettings)).Get<JwtSettings>()!;
-
-        var pem = File.ReadAllText(jwtSettings.IssuerKeyPath);
-
-        var rsa = new RSACryptoServiceProvider();
-        rsa.ImportFromPem(pem);
-        
-        var p = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidAudiences = new[]
-            {
-                jwtSettings.Audience,
-            },
-            IssuerSigningKey = new RsaSecurityKey(rsa)
-        };
-        
-        if (jwtSettings.Issuers.Count > 0)
-        {
-            p.ValidIssuers = jwtSettings.Issuers;
-        }
-        else
-        {
-            p.ValidIssuer = jwtSettings.Issuer;
-        }
-
-        options.TokenValidationParameters = p;
-    });
-
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy(Policy.RequireAdmin,
-        policyBuilder => { policyBuilder.RequireClaim(Claim.Role, new[] { Role.Admin }); });
-});
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddSingleton<IRsaCryptographyTool, RsaCryptographyTool>();
-builder.Services.AddSingleton<IJwtService, JwtService>();
-builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddSingleton<IObjectStorageService, ServerlessImageHandlerSolution>();
+
+var authority = builder.Configuration["AuthSettings:Authority"];
+var audience = builder.Configuration["AuthSettings:Audience"];
+logger.LogInformation("authority: {authority}, audience: {audience}", authority, audience);
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(jwtBearerOptions =>
+    {
+        jwtBearerOptions.Authority = authority;
+        jwtBearerOptions.Audience = audience;
+
+        jwtBearerOptions.TokenValidationParameters.ValidateIssuer = true;
+        jwtBearerOptions.TokenValidationParameters.ValidateAudience = true;
+        jwtBearerOptions.TokenValidationParameters.ValidateIssuerSigningKey = true;
+        jwtBearerOptions.TokenValidationParameters.ValidateLifetime = true;
+
+        // 如果不设置，role 将会被自动映射成 http://schemas.microsoft.com/ws/2008/06/identity/claims/role
+         jwtBearerOptions.MapInboundClaims = false;
+        jwtBearerOptions.TokenValidationParameters = new TokenValidationParameters
+        {
+            NameClaimType = "name",
+            RoleClaimType = Claims.UserRole
+        };
+    });
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(Policies.RequireAdminRole, policy => policy.RequireClaim(Claims.UserRole, UserRole.Admin));
+});
 
 var app = builder.Build();
 

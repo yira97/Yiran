@@ -1,9 +1,9 @@
 using Blog.Admin.Helper;
-using Blog.Admin.Middlewares;
 using Blog.Admin.Models;
 using Blog.Domain.Extensions;
 using Blog.Domain.Models;
 using Blog.Domain.Services.Client;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Admin.Controllers.Mvc;
@@ -58,9 +58,7 @@ public class DomainController : Controller
 
         var shape = new DomainUpdateDto(Name: vm.Name);
 
-        var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
-
-        var domain = await _blogService.CreateDomain(shape, accessToken.AccessToken);
+        var domain = await _blogService.CreateDomain(shape);
         return RedirectToAction("Index", "Domain");
     }
 
@@ -101,9 +99,7 @@ public class DomainController : Controller
             return View(vm);
         }
 
-        var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
-
-        _ = await _blogService.UpdateDomain(id, new DomainUpdateDto(vm.Name), accessToken.AccessToken);
+        _ = await _blogService.UpdateDomain(id, new DomainUpdateDto(vm.Name));
 
         return RedirectToAction("Index", "Domain");
     }
@@ -118,9 +114,8 @@ public class DomainController : Controller
     [HttpPost]
     public async Task<IActionResult> DeleteDomain(string id)
     {
-        var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
 
-        await _blogService.DeleteDomain(id, accessToken.AccessToken);
+        await _blogService.DeleteDomain(id);
 
         return RedirectToAction("Index", "Domain");
     }

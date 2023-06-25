@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using Blog.Domain.Enums;
-using Blog.Domain.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Blog.Admin.Models;

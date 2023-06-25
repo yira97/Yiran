@@ -5,6 +5,7 @@ using Blog.Admin.Models;
 using Blog.Admin.Services;
 using Blog.Domain.Models;
 using Blog.Domain.Services.Client;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Options;
@@ -64,10 +65,6 @@ namespace Blog.Admin.Controllers.Mvc
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
-            if (string.IsNullOrEmpty(accessToken.AccessToken))
-                return RedirectToAction("Index", "SignIn", new { Area = "Account" });
-
             var domainId = HttpContext.GetDomainIdFromHttpContextItems();
             if (string.IsNullOrEmpty(domainId)) return RedirectToAction("Index", "Domain");
 
@@ -108,10 +105,6 @@ namespace Blog.Admin.Controllers.Mvc
         {
             var input = vm.PostCreateFormData;
 
-            var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
-            if (string.IsNullOrEmpty(accessToken.AccessToken))
-                return RedirectToAction("Index", "SignIn", new { Area = "Account" });
-
             var options = new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -129,7 +122,7 @@ namespace Blog.Admin.Controllers.Mvc
                 DomainId: input.DomainId,
                 Content: postContent!
             );
-            var post = await _blogService.CreatePost(updateDto, accessToken.AccessToken);
+            var post = await _blogService.CreatePost(updateDto);
 
             return RedirectToAction("CreateResult",
                 new { DomainId = vm.DomainId, status = "succeed", postId = post.Id, postTitle = post.Title });
@@ -138,15 +131,12 @@ namespace Blog.Admin.Controllers.Mvc
         [HttpGet]
         public async Task<IActionResult> Edit(string id)
         {
-            var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
-            if (string.IsNullOrEmpty(accessToken.AccessToken))
-                return RedirectToAction("Index", "SignIn", new { Area = "Account" });
 
             var domainId = HttpContext.GetDomainIdFromHttpContextItems();
             if (string.IsNullOrEmpty(domainId)) return RedirectToAction("Index", "Domain");
             var domain = await _blogService.GetDomainAsync(domainId);
 
-            var post = await _blogService.GetPost(id, accessToken.AccessToken);
+            var post = await _blogService.GetPost(id);
 
             var vm = new PostEditViewModel();
             // except input model
@@ -198,10 +188,6 @@ namespace Blog.Admin.Controllers.Mvc
         {
             var input = vm.PostEditFormData;
 
-            var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
-            if (string.IsNullOrEmpty(accessToken.AccessToken))
-                return RedirectToAction("Index", "SignIn", new { Area = "Account" });
-
             var options = new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -218,7 +204,7 @@ namespace Blog.Admin.Controllers.Mvc
                 IsPublic: input.IsPublic,
                 Content: postContent!
             );
-            var updated = await _blogService.EditPost(id, updateDto, accessToken.AccessToken);
+            var updated = await _blogService.EditPost(id, updateDto);
 
             return RedirectToAction("EditResult",
                 new { DomainId = vm.DomainId, status = "succeed", postId = id, postTitle = updated.Title });
@@ -267,12 +253,9 @@ namespace Blog.Admin.Controllers.Mvc
         [HttpPost]
         public async Task<IActionResult> Delete(DeletePostDto deletePostDto)
         {
-            var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
-            if (string.IsNullOrEmpty(accessToken.RefreshToken))
-                return RedirectToAction("Index", "SignIn", new { Area = "Account" });
+            var accessToken = await HttpContext.GetTokenAsync("access_token");
 
-            await _blogService.DeletePost(deletePostDto.PostId,
-                accessToken.AccessToken!);
+            await _blogService.DeletePost(deletePostDto.PostId);
 
             return RedirectToAction("Index", new { domainId = deletePostDto.DomainId });
         }

@@ -1,6 +1,6 @@
-using Blog.Admin.Middlewares;
 using Blog.Domain.Models;
 using Blog.Domain.Services.Client;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Admin.Controllers.Api;
@@ -19,8 +19,8 @@ public class PostController : ControllerBase
     [HttpGet("{id}/post-content", Name = "GetPostContent")]
     public async Task<ActionResult<PostContentDto>> GetPostContent(string id)
     {
-        var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
-        var post = await _blogService.GetPost(id, accessToken.AccessToken);
+        var accessToken = await HttpContext.GetTokenAsync("access_token");
+        var post = await _blogService.GetPost(id);
         return post.Content;
     }
 }

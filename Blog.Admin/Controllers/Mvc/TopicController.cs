@@ -4,6 +4,7 @@ using Blog.Admin.Models;
 using Blog.Admin.Services;
 using Blog.Domain.Models;
 using Blog.Domain.Services.Client;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Admin.Controllers.Mvc;
@@ -53,12 +54,7 @@ public class TopicController : Controller
     [HttpPost]
     public async Task<IActionResult> AddTopic(AddTopicViewModel vm)
     {
-        var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
-        if (string.IsNullOrEmpty(accessToken.AccessToken))
-            return RedirectToAction("Index", "SignIn", new { Area = "Account" });
-
-        var res = await _blogService.AddTopic(vm.DomainId, new DomainTopicUpdateDto(Name: vm.Name),
-            accessToken.AccessToken);
+        var res = await _blogService.AddTopic(vm.DomainId, new DomainTopicUpdateDto(Name: vm.Name));
 
         return RedirectToAction("Index", new { domainId = vm.DomainId });
     }
@@ -89,12 +85,9 @@ public class TopicController : Controller
     [HttpPost]
     public async Task<IActionResult> EditTopic(EditTopicViewModel vm)
     {
-        var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
-        if (string.IsNullOrEmpty(accessToken.AccessToken))
-            return RedirectToAction("Index", "SignIn", new { Area = "Account" });
+        var accessToken = await HttpContext.GetTokenAsync("access_token");
 
-        var res = await _blogService.EditTopic(vm.DomainId, vm.TopicId, new DomainTopicUpdateDto(Name: vm.Name),
-            accessToken.AccessToken!);
+        var res = await _blogService.EditTopic(vm.DomainId, vm.TopicId, new DomainTopicUpdateDto(Name: vm.Name));
 
         return RedirectToAction("Index", new { domainId = vm.DomainId });
     }
@@ -106,13 +99,9 @@ public class TopicController : Controller
     [HttpPost]
     public async Task<IActionResult> DeleteTopic(DeleteTopicDto deleteTopicDto)
     {
-        var accessToken = HttpContext.GetAccessTokenInfoFromHttpContextItems();
-        if (string.IsNullOrEmpty(accessToken.RefreshToken))
-            return RedirectToAction("Index", "SignIn", new { Area = "Account" });
 
 
-        await _blogService.DeleteTopic(deleteTopicDto.DomainId, deleteTopicDto.TopicId,
-            accessToken.AccessToken!);
+        await _blogService.DeleteTopic(deleteTopicDto.DomainId, deleteTopicDto.TopicId);
 
         return RedirectToAction("Index", new { domainId = deleteTopicDto.DomainId });
     }

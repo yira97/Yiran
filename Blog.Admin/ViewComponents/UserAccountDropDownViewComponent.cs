@@ -1,6 +1,6 @@
-using Blog.Admin.Helper;
 using Blog.Admin.Models;
 using Blog.Admin.Services;
+using Blog.Domain.Extensions;
 using Blog.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,14 +18,12 @@ public class UserAccountDropDownViewComponent : ViewComponent
     public async Task<IViewComponentResult> InvokeAsync(
         string type = "Default")
     {
-        var userInfo = CookieHelper.GetUserInfoFromCookie(HttpContext);
-
         var vm = new UserAccountDropDownViewModel
         {
-            DisplayName = string.IsNullOrEmpty(userInfo.NickName)
+            DisplayName = string.IsNullOrEmpty(HttpContext.User.GetName())
                 ? _commonLocalizationService.Get("未设置昵称")
-                : userInfo.NickName,
-            Email = string.IsNullOrEmpty(userInfo.Email) ? _commonLocalizationService.Get("未设置邮箱") : userInfo.Email,
+                : HttpContext.User.GetName(),
+            Email = string.IsNullOrEmpty(HttpContext.User.GetEmail()) ? _commonLocalizationService.Get("未设置邮箱") : HttpContext.User.GetEmail(),
             UserNavigation = new List<NavigationDto>
             {
                 new NavigationDto(Name: _commonLocalizationService.Get("内容管理"),
