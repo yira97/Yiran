@@ -193,11 +193,11 @@ public class PostRepository : IPostRepository
                 {
                     {
                         nameof(PostOrderBy.CreatedAt),
-                        next.CreatedAt.ToUniversalTime().ToString()
+                        next.CreatedAt.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss.fffffff")
                     },
                     {
                         "prev",
-                        queryResult.First().CreatedAt.ToString()!
+                        queryResult.First().CreatedAt.ToString("yyyy-MM-dd HH:mm:ss.fffffff")
                     }
                 }),
             };
@@ -211,7 +211,7 @@ public class PostRepository : IPostRepository
                 {
                     {
                         nameof(PostOrderBy.CreatedAt),
-                        previousPosition.ToString()!
+                        previousPosition.Value.ToString("yyyy-MM-dd HH:mm:ss.fffffff")
                     },
                 }),
             };
