@@ -73,7 +73,7 @@ public class PostRepository : IPostRepository
 
         DateTime? createdAtOrderCreatedAt = null;
         DateTime? previousPosition = null;
-        
+
         // 排序
         switch ((PostOrderBy)order.OrderBy)
         {
@@ -92,7 +92,9 @@ public class PostRepository : IPostRepository
                         {
                             previousPosition = DateTime.Parse(prevPosStr).ToUniversalTime();
                         }
-                        _logger.LogDebug("parse page token success: pageToken = {PageToken}, createdAtOrderCreatedAt = {CreatedAtOrderCreatedAt}, previousPosition = {PreviousPosition}",
+
+                        _logger.LogDebug(
+                            "parse page token success: pageToken = {PageToken}, createdAtOrderCreatedAt = {CreatedAtOrderCreatedAt}, previousPosition = {PreviousPosition}",
                             order.PageToken, createdAtOrderCreatedAt, previousPosition);
                     }
                 }
@@ -191,8 +193,12 @@ public class PostRepository : IPostRepository
                 {
                     {
                         nameof(PostOrderBy.CreatedAt),
-                        next.CreatedAt.ToUniversalTime().ToString(CultureInfo.InvariantCulture)
+                        next.CreatedAt.ToUniversalTime().ToString()
                     },
+                    {
+                        "prev",
+                        queryResult.First().CreatedAt.ToString()!
+                    }
                 }),
             };
         }
