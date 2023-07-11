@@ -218,7 +218,7 @@
         }
         else
         {
-            <a asp-page="Archive/Index" asp-route-pageToken="@Model.PreviousPageToken" class="">Previous</a>
+            <a asp-page="/Archive/Index" asp-route-pageToken="@Model.PreviousPageToken" class="">Previous</a>
         }
 
         @if (Model.NextPageToken == null)
@@ -227,7 +227,7 @@
         }
         else
         {
-            <a asp-page="Archive/Index" asp-route-pageToken="@Model.NextPageToken" class="">Next</a>
+            <a asp-page="/Archive/Index" asp-route-pageToken="@Model.NextPageToken" class="">Next</a>
         }
     </div>
 </div>

@@ -87,6 +87,8 @@ public class PostController : ControllerBase
                 return info;
             });
         }
+        
+        _logger.LogDebug("count of posts= {0}, prev= {1}, next={2}, has more={3}", list.Data.Count, list.PreviousPage, list.NextPage, list.HasMore  );
 
         return Ok(list);
     }
