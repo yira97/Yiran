@@ -71,13 +71,15 @@ public class PostRepository : IPostRepository
     {
         var query = _context.Posts.Where(p => p.DeletedAt == null);
 
+        DateTime? createdAtOrderCreatedAt = null;
+        DateTime? previousPosition = null;
+        
         // 排序
         switch ((PostOrderBy)order.OrderBy)
         {
             case PostOrderBy.CreatedAt:
                 query = order.Ascending ? query.OrderBy(e => e.CreatedAt) : query.OrderByDescending(e => e.CreatedAt);
 
-                DateTime? createdAtOrderCreatedAt = null;
                 var createdAtOrderCreatedAtKey = nameof(PostOrderBy.CreatedAt);
 
                 try
@@ -86,6 +88,12 @@ public class PostRepository : IPostRepository
                     {
                         var m = PageTokenHelper.ToDict(order.PageToken);
                         createdAtOrderCreatedAt = DateTime.Parse(m[createdAtOrderCreatedAtKey]).ToUniversalTime();
+                        if (m.TryGetValue("prev", out var prevPosStr))
+                        {
+                            previousPosition = DateTime.Parse(prevPosStr).ToUniversalTime();
+                        }
+                        _logger.LogDebug("parse page token success: pageToken = {PageToken}, createdAtOrderCreatedAt = {CreatedAtOrderCreatedAt}, previousPosition = {PreviousPosition}",
+                            order.PageToken, createdAtOrderCreatedAt, previousPosition);
                     }
                 }
                 catch (Exception e)
@@ -170,11 +178,11 @@ public class PostRepository : IPostRepository
         var result = new CursorBasedQueryResult<PostDto>
         {
             Data = returnList,
-            HasMore = queryResult.Count > order.PageSize,
-            PreviousPage = order.PageToken,
+            HasNext = queryResult.Count > order.PageSize,
+            HasPrevious = previousPosition != null,
         };
 
-        if (result.HasMore)
+        if (result.HasNext)
         {
             var next = queryResult.Last();
             result.NextPage = (PostOrderBy)order.OrderBy switch
@@ -184,6 +192,20 @@ public class PostRepository : IPostRepository
                     {
                         nameof(PostOrderBy.CreatedAt),
                         next.CreatedAt.ToUniversalTime().ToString(CultureInfo.InvariantCulture)
+                    },
+                }),
+            };
+        }
+
+        if (result.HasPrevious)
+        {
+            result.PreviousPage = (PostOrderBy)order.OrderBy switch
+            {
+                PostOrderBy.CreatedAt => PageTokenHelper.FromDict(new Dictionary<string, string>
+                {
+                    {
+                        nameof(PostOrderBy.CreatedAt),
+                        previousPosition.ToString()!
                     },
                 }),
             };

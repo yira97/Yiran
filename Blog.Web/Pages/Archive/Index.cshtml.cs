@@ -101,7 +101,7 @@ public class Index : PageModel
         
         PreviousPageToken = Posts.PreviousPage;
 
-        if (Posts.HasMore)
+        if (Posts.HasNext)
         {
             NextPageToken = Posts.NextPage;
         }
@@ -110,7 +110,7 @@ public class Index : PageModel
             NextPageToken = null;
         }
         
-        if (pageToken == null)
+        if (pageToken == null || !Posts.HasPrevious)
         {
             PreviousPageToken = null;
         }
