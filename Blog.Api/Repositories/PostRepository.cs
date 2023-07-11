@@ -85,7 +85,7 @@ public class PostRepository : IPostRepository
                     if (!string.IsNullOrEmpty(order.PageToken))
                     {
                         var m = PageTokenHelper.ToDict(order.PageToken);
-                        createdAtOrderCreatedAt = DateTime.Parse(m[createdAtOrderCreatedAtKey]);
+                        createdAtOrderCreatedAt = DateTime.Parse(m[createdAtOrderCreatedAtKey]).ToUniversalTime();
                     }
                 }
                 catch (Exception e)
