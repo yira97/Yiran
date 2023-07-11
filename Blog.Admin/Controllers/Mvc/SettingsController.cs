@@ -2,13 +2,16 @@ using System.Text.Json;
 using Blog.Admin.Helper;
 using Blog.Admin.Middlewares;
 using Blog.Admin.ViewModels;
+using Blog.Domain.Enums;
 using Blog.Domain.Models;
 using Blog.Domain.Services.Client;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Admin.Controllers.Mvc;
 
+[Authorize(Policy = Policies.RequireAdminRole)]
 public class SettingsController : Controller
 {
     public class Config

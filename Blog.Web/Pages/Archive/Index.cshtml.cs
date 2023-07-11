@@ -14,6 +14,9 @@ public class Index : PageModel
     private readonly IDomainService _domainService;
     private readonly BlogService _blogService;
     private readonly IStringLocalizer<Index> _localizer;
+    private readonly ILogger<Index> _logger;
+
+    public readonly int PageSize = 10;
 
     [BindProperty(SupportsGet = true)] public string? TopicIdFilter { get; set; }
     [BindProperty(SupportsGet = true)] public int? YearFilter { get; set; }
@@ -36,30 +39,33 @@ public class Index : PageModel
     public List<DomainCategoryDto> Categories { get; set; } = new();
     public List<DomainTopicDto> Topics { get; set; } = new();
 
-    public Index(IDomainService domainService, BlogService blogService, IStringLocalizer<Index> localizer)
+    public string? PreviousPageToken { get; set; } = null;
+    public string? NextPageToken { get; set; } = null;
+
+    public Index(IDomainService domainService, BlogService blogService, IStringLocalizer<Index> localizer, ILogger<Index> logger)
     {
         _domainService = domainService;
         _blogService = blogService;
         _localizer = localizer;
+        _logger = logger;
 
         DefaultTopicSelectionDisplay = _localizer["所有话题"];
         DefaultYearSelectionDisplay = _localizer["全部年份"];
         DefaultMonthSelectionDisplay = _localizer["全部月份"];
     }
 
-    public async Task OnGet()
+    public async Task OnGet(string? pageToken = null)
     {
         var domainInfo = await _domainService.GetDomainInfo();
 
-        const int pageSize = 10;
-        var pageToken = Posts.NextPage;
+        var parsedPageToken = string.IsNullOrEmpty(pageToken) ? string.Empty : pageToken;
         const int orderBy = 0;
         const bool ascending = false;
         var domainId = domainInfo.Id;
         const bool publicOnly = true;
         var topicId = TopicIdFilter == "all" ? null : TopicIdFilter;
 
-        Posts = await _blogService.ListPosts(pageSize, pageToken, orderBy, ascending, domainId, publicOnly, null,
+        Posts = await _blogService.ListPosts(PageSize, parsedPageToken, orderBy, ascending, domainId, publicOnly, null,
             topicId);
 
         Posts.Data.ForEach(p =>
@@ -86,5 +92,21 @@ public class Index : PageModel
         TopicSelectionDisplay = Topics.Find(t => t.Id == topicId)?.Name ?? DefaultTopicSelectionDisplay;
         YearSelectionDisplay = YearFilter == null ? DefaultYearSelectionDisplay : YearFilter.ToString()!;
         MonthSelectionDisplay = MonthFilter == null ? DefaultMonthSelectionDisplay : MonthFilter.ToString()!;
+        
+        // log for parameter
+        _logger.LogDebug("TopicSelectionDisplay: {TopicSelectionDisplay}, YearSelectionDisplay: {YearSelectionDisplay}, MonthSelectionDisplay: {MonthSelectionDisplay}, PageToken: {PageToken}", TopicSelectionDisplay, YearSelectionDisplay, MonthSelectionDisplay, pageToken);
+
+        // log the posts 
+        _logger.LogDebug("Posts: {Posts}", Posts);
+        
+        PreviousPageToken = Posts.PreviousPage;
+        NextPageToken = Posts.NextPage;
+        
+        if (pageToken == null)
+        {
+            PreviousPageToken = null;
+        }
+        
+        _logger.LogDebug("PreviousPageToken: {PreviousPageToken}, NextPageToken: {NextPageToken}", PreviousPageToken, NextPageToken);
     }
 }

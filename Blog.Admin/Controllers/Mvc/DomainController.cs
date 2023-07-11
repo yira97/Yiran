@@ -1,13 +1,16 @@
 using Blog.Admin.Helper;
 using Blog.Admin.Models;
+using Blog.Domain.Enums;
 using Blog.Domain.Extensions;
 using Blog.Domain.Models;
 using Blog.Domain.Services.Client;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Admin.Controllers.Mvc;
 
+[Authorize(Policy = Policies.RequireAdminRole)]
 public class DomainController : Controller
 {
     private readonly ILogger<DomainController> _logger;

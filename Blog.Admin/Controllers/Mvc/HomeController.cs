@@ -1,11 +1,12 @@
 ﻿using Blog.Admin.Middlewares;
+using Blog.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Blog.Domain.Services.Client;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Blog.Admin.Controllers.Mvc;
 
-[Authorize]
+[Authorize(Policy = Policies.RequireAdminRole)]
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;

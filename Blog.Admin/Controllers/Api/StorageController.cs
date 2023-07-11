@@ -4,10 +4,12 @@ using Blog.Domain.Services.Client;
 using Evrane.Core.ObjectStorage;
 using Evrane.Core.ObjectStorage.S3;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Admin.Controllers.Api;
 
+[Authorize(Policy = Policies.RequireAdminRole)]
 [Route("api/[controller]")]
 [ApiController]
 public class StorageController : ControllerBase

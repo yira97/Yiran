@@ -2,13 +2,16 @@ using Blog.Admin.Helper;
 using Blog.Admin.Middlewares;
 using Blog.Admin.Models;
 using Blog.Admin.Services;
+using Blog.Domain.Enums;
 using Blog.Domain.Models;
 using Blog.Domain.Services.Client;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Admin.Controllers.Mvc;
 
+[Authorize(Policy = Policies.RequireAdminRole)]
 public class TopicController : Controller
 {
     private readonly BlogService _blogService;
