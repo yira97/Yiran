@@ -11,6 +11,8 @@ public class IndexModel : PageModel
     private readonly ILogger<IndexModel> _logger;
     private readonly BlogService _blogService;
     private readonly IDomainService _domainService;
+    
+    public readonly int PageSize = 11;
 
     [BindProperty(SupportsGet = true)] public string? TopicId { get; set; }
 
@@ -29,7 +31,6 @@ public class IndexModel : PageModel
     {
         var domainInfo = await _domainService.GetDomainInfo();
 
-        const int pageSize = 10;
         var pageToken = string.Empty;
         const int orderBy = 0;
         const bool ascending = false;
@@ -37,7 +38,7 @@ public class IndexModel : PageModel
         const bool publicOnly = true;
 
         var result = await _blogService.ListPosts(
-            pageSize: pageSize,
+            pageSize: PageSize,
             pageToken: pageToken,
             orderBy: orderBy,
             ascending: ascending,

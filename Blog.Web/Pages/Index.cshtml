@@ -105,7 +105,7 @@
             }
 
             @* SMALL 6 *@
-            @for (var sIndex = 5; sIndex <= 10; sIndex++)
+            @for (var sIndex = 5; sIndex <= Model.PageSize; sIndex++)
             {
                 var small = @Model.Posts.Count() >= sIndex + 1 ? @Model.Posts[sIndex] : null;
                 <a asp-route-culture="@HttpContext.Request.RouteValues["culture"]" asp-page="/Post/Index" asp-route-PostId="@small?.Id" class="block mt-[36px] w-[303px] rounded-xl overflow-hidden group">
