@@ -61,11 +61,11 @@ public class ServerlessImageHandlerSolution : S3.S3
 
         key = Helper.UrlPath.PrefixSlash(key);
         
-        var xs = Helper.UrlPath.PrefixSlash("/fit-in/100x100".UrlPathCombine(key));
-        var sm = Helper.UrlPath.PrefixSlash("/filters:quality(90)/fit-in/200x200".UrlPathCombine(key));
-        var md = Helper.UrlPath.PrefixSlash("/filters:quality(85)/fit-in/400x400".UrlPathCombine(key));
-        var lg = Helper.UrlPath.PrefixSlash("/filters:quality(80)/fit-in/1000x1000".UrlPathCombine(key));
-        var xl = Helper.UrlPath.PrefixSlash("/filters:quality(80)/fit-in/2000x2000".UrlPathCombine(key));
+        var xs = Helper.UrlPath.PrefixSlash("/fit-in/200x200".UrlPathCombine(key));
+        var sm = Helper.UrlPath.PrefixSlash("/filters:quality(90)/fit-in/400x400".UrlPathCombine(key));
+        var md = Helper.UrlPath.PrefixSlash("/filters:quality(85)/fit-in/800x800".UrlPathCombine(key));
+        var lg = Helper.UrlPath.PrefixSlash("/filters:quality(80)/fit-in/1200x1200".UrlPathCombine(key));
+        var xl = Helper.UrlPath.PrefixSlash("/filters:quality(80)/fit-in/2400x2400".UrlPathCombine(key));
 
         using HMACSHA256 hmac = new HMACSHA256(bSecret);
 
