@@ -5,6 +5,7 @@ using Blog.Admin.Services;
 using Blog.Domain.Enums;
 using Blog.Domain.Services.Client;
 using Evrane.Core.ObjectStorage.S3;
+using IdentityModel;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -100,6 +101,8 @@ builder.Services.AddAuthentication(authenticationOptions =>
             NameClaimType = "name",
             RoleClaimType = Claims.UserRole
         };
+        
+        openIdConnectOptions.ClaimActions.MapJsonKey(JwtClaimTypes.Role, JwtClaimTypes.Role);
     });
 
 builder.Services.AddOpenIdConnectAccessTokenManagement();

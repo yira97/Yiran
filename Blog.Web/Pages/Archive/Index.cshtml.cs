@@ -116,7 +116,7 @@ public class Index : PageModel
         }
         else
         {
-            PreviousPageToken = pageToken;
+            PreviousPageToken = Posts.PreviousPage;
         }
         
         _logger.LogDebug("PreviousPageToken: {PreviousPageToken}, NextPageToken: {NextPageToken}", PreviousPageToken, NextPageToken);

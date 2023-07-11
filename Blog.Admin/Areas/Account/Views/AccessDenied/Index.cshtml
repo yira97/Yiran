@@ -1,0 +1,21 @@
+@page
+@model Blog.Admin.Areas.Account.Views.AccessDenied.Index
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>禁止访问</title>
+</head>
+<body>
+<div>
+    你好像没有足够的权限
+    
+    <a asp-area="Account" asp-controller="LogOut" asp-action="Index">注销</a>
+</div>
+</body>
+</html>
