@@ -100,11 +100,23 @@ public class Index : PageModel
         _logger.LogDebug("Posts: {Posts}", Posts);
         
         PreviousPageToken = Posts.PreviousPage;
-        NextPageToken = Posts.NextPage;
+
+        if (Posts.HasMore)
+        {
+            NextPageToken = Posts.NextPage;
+        }
+        else
+        {
+            NextPageToken = null;
+        }
         
         if (pageToken == null)
         {
             PreviousPageToken = null;
+        }
+        else
+        {
+            PreviousPageToken = pageToken;
         }
         
         _logger.LogDebug("PreviousPageToken: {PreviousPageToken}, NextPageToken: {NextPageToken}", PreviousPageToken, NextPageToken);
