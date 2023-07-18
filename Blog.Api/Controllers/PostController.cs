@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Blog.Domain.Enums;
 using Blog.Domain.Models;
 using Blog.Api.Services;
@@ -128,6 +129,7 @@ public class PostController : ControllerBase
     public async Task<ActionResult<PostDto>> Create(PostUpdateDto updateDto)
     {
         var userId = HttpContext.User.GetUserId();
+        _logger.LogInformation("创建 Post, userId={0}, updateDto={1}", userId, JsonSerializer.Serialize(updateDto));
         var result = _unitOfWork.PostRepository.CreatePost(updateDto, userId);
         foreach (var (resourceId, category) in result.Added)
         {

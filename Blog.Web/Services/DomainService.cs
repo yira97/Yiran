@@ -29,6 +29,7 @@ public class DomainService : IDomainService
 
     private async Task<DomainDto> UpdateDomainInfo()
     {
+        _logger.LogInformation("更新Domain信息, DomainName={DomainName}", DomainName);
         var info = await _blogService.GetDomainByNameAsync(DomainName);
         DomainInfo = info;
         return DomainInfo;

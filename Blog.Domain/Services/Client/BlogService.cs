@@ -54,17 +54,6 @@ public class BlogService
         return result!;
     }
 
-    public async Task<AccessTokenDto> Refresh(AccessTokenDto accessTokenDto)
-    {
-        var request = new HttpRequestMessage(HttpMethod.Post, "api/v1/Account/refresh");
-        request.Content =
-            new StringContent(JsonSerializer.Serialize(accessTokenDto), Encoding.UTF8, "application/json");
-
-        var resp = await _httpClient.SendAsync(request);
-        resp.EnsureSuccessStatusCode();
-        var result = await resp.Content.ReadFromJsonAsync<AccessTokenDto>();
-        return result!;
-    }
 
     public async Task<List<DomainDto>> ListDomains()
     {
