@@ -8,6 +8,7 @@ public class DomainService : IDomainService
     private const string SiteMapInfoDefault = "_default";
 
     private readonly BlogService _blogService;
+    private readonly ILogger<DomainService> _logger;
     private string DomainName { get; set; }
     private TimeSpan RefreshSpan { get; set; } = TimeSpan.FromMinutes(1);
     private DomainDto? DomainInfo { get; set; }
@@ -18,9 +19,10 @@ public class DomainService : IDomainService
     private Dictionary<string, SiteMapDto?> SiteMapInfos { get; set; }
     private DateTime SiteMapInfosRefreshedAt { get; set; } = DateTime.UtcNow;
 
-    public DomainService(BlogService blogService, IConfiguration configuration)
+    public DomainService(BlogService blogService, IConfiguration configuration, ILogger<DomainService> logger)
     {
         _blogService = blogService;
+        _logger = logger;
         DomainName = configuration.GetSection("Domain").Get<string>()!;
         SiteMapInfos = new Dictionary<string, SiteMapDto?>();
     }
@@ -75,6 +77,15 @@ public class DomainService : IDomainService
 
     public async Task<SiteMapDto> GetSiteMapInfo(string language)
     {
+        _logger.LogDebug("language={0}, SiteMapInfos.ContainsKey(SiteMapInfoDefault)={1}, SiteMapInfosRefreshedAt={2}, DateTime.UtcNow={3}, RefreshSpan={4}, SiteMapInfos.ContainsKey(language)={5}",
+            language,
+            SiteMapInfos.ContainsKey(SiteMapInfoDefault),
+            SiteMapInfosRefreshedAt,
+            DateTime.UtcNow,
+            RefreshSpan,
+            SiteMapInfos.ContainsKey(language)
+            );
+        
         // 确保默认语言进行过查询
         if (!SiteMapInfos.ContainsKey(SiteMapInfoDefault) || SiteMapInfosRefreshedAt - DateTime.UtcNow > RefreshSpan)
         {
