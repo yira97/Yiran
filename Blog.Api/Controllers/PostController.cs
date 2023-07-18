@@ -126,10 +126,23 @@ public class PostController : ControllerBase
     /// <param name="updateDto"></param>
     /// <returns></returns>
     [HttpPost]
-    public async Task<ActionResult<PostDto>> Create(PostUpdateDto updateDto)
+    public async Task<ActionResult<PostDto>> Create(PostUpdateRequestDto requestDto)
     {
         var userId = HttpContext.User.GetUserId();
-        _logger.LogInformation("创建 Post, userId={0}, updateDto={1}", userId, JsonSerializer.Serialize(updateDto));
+        _logger.LogInformation("创建 Post, userId={0}, requestDto={1}", userId, JsonSerializer.Serialize(requestDto));
+        
+        var updateDto = new PostUpdateDto(
+            requestDto.Title,
+            requestDto.SubTitle,
+            requestDto.Slug,
+            requestDto.Topic,
+            requestDto.Category,
+            requestDto.Language,
+            requestDto.IsPublic,
+            requestDto.Content,
+            requestDto.DomainId
+        );
+        
         var result = _unitOfWork.PostRepository.CreatePost(updateDto, userId);
         foreach (var (resourceId, category) in result.Added)
         {

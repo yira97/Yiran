@@ -1,4 +1,5 @@
 using System.Security.Cryptography;
+using System.Text.Json;
 using Blog.Api.Data;
 using Blog.Domain.Enums;
 using Blog.Api.Services;
@@ -7,6 +8,8 @@ using Evrane.Core.ObjectStorage.ServerlessImageHandlerSolution;
 using Evrane.Core.Security;
 using Evrane.Core.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
@@ -53,6 +56,34 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             RoleClaimType = Claims.UserRole
         };
     });
+
+// 当模型验证失败时，返回自定义的错误信息
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.InvalidModelStateResponseFactory = context =>
+    {
+        context.HttpContext.Response.Headers["X-ERROR-CODE"] = "Format.ModelInvalid";
+        
+        var responseObj = new
+        {
+            path = context.HttpContext.Request.Path.ToString(),
+            method = context.HttpContext.Request.Method,
+            controller = (context.ActionDescriptor as ControllerActionDescriptor)?.ControllerName,
+            errors = context.ModelState.Keys.Select(k =>
+            {
+                return new
+                {
+                    field = k,
+                    Messages = context.ModelState[k]?.Errors.Select(e => e.ErrorMessage)
+                };
+            })
+        };
+        
+        logger.LogInformation("InvalidModelStateResponseFactory: {responseObj}", JsonSerializer.Serialize(responseObj));
+        
+        return new BadRequestObjectResult(responseObj);
+    };
+});
 
 builder.Services.AddAuthorization(options =>
 {
