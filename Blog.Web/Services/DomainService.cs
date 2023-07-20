@@ -37,7 +37,7 @@ public class DomainService : IDomainService
 
     public async Task<DomainDto> GetDomainInfo()
     {
-        if (DomainInfo != null && DomainInfoRefreshedAt - DateTime.UtcNow < RefreshSpan) return DomainInfo;
+        if (DomainInfo != null &&  DateTime.UtcNow - DomainInfoRefreshedAt < RefreshSpan) return DomainInfo;
         var domainInfo = await UpdateDomainInfo();
         return domainInfo;
     }
@@ -88,13 +88,13 @@ public class DomainService : IDomainService
             );
         
         // 确保默认语言进行过查询
-        if (!SiteMapInfos.ContainsKey(SiteMapInfoDefault) || SiteMapInfosRefreshedAt - DateTime.UtcNow > RefreshSpan)
+        if (!SiteMapInfos.ContainsKey(SiteMapInfoDefault) || DateTime.UtcNow - SiteMapInfosRefreshedAt  > RefreshSpan)
         {
             await UpdateDefaultSiteMapInfo();
         }
 
         // 确保该语言进行过查询
-        if (!SiteMapInfos.ContainsKey(language) || SiteMapInfosRefreshedAt - DateTime.UtcNow > RefreshSpan)
+        if (!SiteMapInfos.ContainsKey(language) || DateTime.UtcNow - SiteMapInfosRefreshedAt > RefreshSpan)
         {
             await UpdateSiteMapInfo(language);
         }
