@@ -28,7 +28,7 @@
             {
                 var large = @Model.Posts.First();
                 <a asp-route-culture="@HttpContext.Request.RouteValues["culture"]" asp-page="/Post/Index" asp-route-PostId="@large?.Id" class="col-span-6 bg-white rounded-xl flex flex-col sm:flex-row overflow-hidden group cursor-pointer">
-                    <picture class="sm:basis-[453px] lg:basis-[643px] overflow-hidden bg-black w-full shrink-0">
+                    <picture class="sm:basis-[340px] lg:basis-[643px] overflow-hidden bg-black w-full shrink-0">
                         <img alt="post-cover" class="h-full object-cover scale-100 group-hover:scale-105 ease-in duration-200 opacity-100 group-hover:opacity-80" src="@large?.Content.Cover?.GetInfo?.UrlLgCrop169"/>
                     </picture>
                     <div class="p-[24px] lg:p-[32px] flex flex-col justify-between grow">
@@ -43,7 +43,7 @@
             else
             {
                 <div class="basis-full bg-white rounded-xl flex items-center overflow-hidden">
-                    <picture class="sm:basis-[453px] lg:basis-[643px] overflow-hidden bg-black">
+                    <picture class="sm:basis-[340px] lg:basis-[643px] overflow-hidden bg-black">
                         @* <img alt="post-cover" class="w-full aspect-[16/9] object-cover scale-100 group-hover:scale-105 ease-in duration-200 opacity-100 group-hover:opacity-80" src="@large?.Content.Cover?.GetInfo?.UrlXl"/> *@
                         <div class="w-full h-[264px] flex items-center justify-center bg-gray-300">
                             <svg class="h-10 w-10" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
@@ -68,7 +68,7 @@
             {
                 var medium = @Model.Posts.Count() >= mIndex + 1 ? @Model.Posts[mIndex] : null;
                 <a asp-route-culture="@HttpContext.Request.RouteValues["culture"]" asp-page="/Post/Index" asp-route-PostId="@medium?.Id" class="col-span-6 sm:col-span-3 bg-white rounded-xl flex flex-col overflow-hidden group cursor-pointer">
-                    <picture class="sm:basis-[187px] lg:basis-[266px] block overflow-hidden bg-black">
+                    <picture class="sm:basis-[158px] lg:basis-[266px] block overflow-hidden bg-black">
                         @{
                             var mCover = medium?.Content.Cover;
                             if (mCover != null)
@@ -77,7 +77,7 @@
                             }
                             else
                             {
-                                <div class="w-full sm:h-[187px] lg:h-[266px] flex items-center justify-center bg-gray-300">
+                                <div class="w-full sm:h-[158px] lg:h-[266px] flex items-center justify-center bg-gray-300">
                                     <svg class="h-10 w-10" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
                                         <g>
                                             <g>
@@ -120,7 +120,7 @@
                             }
                             else
                             {
-                                <div class="w-full h-[170px] flex items-center justify-center bg-gray-300">
+                                <div class="w-full h-[158px] flex items-center justify-center bg-gray-300">
                                     <svg class="h-10 w-10" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
                                         <g>
                                             <g>

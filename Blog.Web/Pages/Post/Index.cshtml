@@ -23,7 +23,7 @@
     </div>
     @* Article Header End *@
     @* Article Cover Begin *@
-    <div class="max-w-full sm:w-[366px]  md:w-[600px] lg:w-[980px] mx-auto my-10">
+    <div class="max-w-full sm:w-[576px] md:w-[600px] lg:w-[980px] mx-auto my-10">
         <img class="w-full  sm:rounded-lg  object-cover" src="@Model.Post.Content.Cover?.GetInfo?.UrlXl"/>
         <div class="lg:w-[653px] w-[576px] mx-auto text-xs py-4 text-gray-500">
             @Model.Post.Content.Cover?.Caption
@@ -36,7 +36,7 @@
         <div class="max-w-full sm:w-[576px] md:w-[600px] lg:w-[980px] mx-auto my-10">
             @if (b.Paragraph != null)
             {
-                <div class="sm:w-[576px] lg:w-[653px]  mx-auto">
+                <div class="w-5/6 sm:w-[576px] lg:w-[653px]  mx-auto">
                     <p class="text-lg">@b.Paragraph</p>
                 </div>
             }

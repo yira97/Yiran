@@ -198,8 +198,8 @@
         @foreach (var p in list)
         {
             <a asp-route-culture="@HttpContext.Request.RouteValues["culture"]" asp-page="/Post/Index" asp-route-PostId="@p.Id" class="border-t border-gray-900/20 block flex py-8 items-center">
-                <picture class="lg:w-[295px] w-[264px]">
-                    <img alt="cover" class="w-full aspect-[1.8/1] object-cover rounded-xl " src="@p.Content.Cover?.GetInfo?.UrlSm"/>
+                <picture class="lg:basis-[295px] basis-[264px] shrink-0">
+                    <img alt="cover" class="w-full aspect-[1.8/1] object-cover rounded-xl " src="@p.Content.Cover?.GetInfo?.UrlSmCrop169"/>
                 </picture>
                 <div class="ml-10">
                     <p class="text-xs font-medium text-gray-600">@Model.Categories.Find(c => c.Id == p.Category)?.Name</p>
