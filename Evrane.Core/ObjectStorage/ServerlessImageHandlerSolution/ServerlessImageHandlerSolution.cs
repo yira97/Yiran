@@ -64,9 +64,16 @@ public class ServerlessImageHandlerSolution : S3.S3
         var xs = Helper.UrlPath.PrefixSlash("/fit-in/200x200".UrlPathCombine(key));
         var sm = Helper.UrlPath.PrefixSlash("/filters:quality(90)/fit-in/400x400".UrlPathCombine(key));
         var md = Helper.UrlPath.PrefixSlash("/filters:quality(85)/fit-in/800x800".UrlPathCombine(key));
-        var lg = Helper.UrlPath.PrefixSlash("/filters:quality(80)/fit-in/1200x1200".UrlPathCombine(key));
+        var lg = Helper.UrlPath.PrefixSlash("/filters:quality(80)/fit-in/1600x1600".UrlPathCombine(key));
         var xl = Helper.UrlPath.PrefixSlash("/filters:quality(80)/fit-in/2400x2400".UrlPathCombine(key));
-
+        
+        // 16:9
+        var xsCrop169 = Helper.UrlPath.PrefixSlash("/200x122".UrlPathCombine(key));
+        var smCrop169 = Helper.UrlPath.PrefixSlash("/400x225".UrlPathCombine(key));
+        var mdCrop169 = Helper.UrlPath.PrefixSlash("/800x450".UrlPathCombine(key));
+        var lgCrop169 = Helper.UrlPath.PrefixSlash("/1600x900".UrlPathCombine(key));
+        var xlCrop169 = Helper.UrlPath.PrefixSlash("/2400x1350".UrlPathCombine(key));
+        
         using HMACSHA256 hmac = new HMACSHA256(bSecret);
 
         byte[] bKey;
@@ -97,10 +104,38 @@ public class ServerlessImageHandlerSolution : S3.S3
         hashValue = hmac.ComputeHash(bKey);
         hash = Convert.ToHexString(hashValue).ToLower();
         var resultUrlXl = $"https://{_solutionConfiguration.DistributionDomainName}{xl}?signature={hash}";
+        
+        bKey = Encoding.ASCII.GetBytes(xsCrop169);
+        hashValue = hmac.ComputeHash(bKey);
+        hash = Convert.ToHexString(hashValue).ToLower();
+        var resultUrlXsCrop169 = $"https://{_solutionConfiguration.DistributionDomainName}{xsCrop169}?signature={hash}";
+        
+        bKey = Encoding.ASCII.GetBytes(smCrop169);
+        hashValue = hmac.ComputeHash(bKey);
+        hash = Convert.ToHexString(hashValue).ToLower();
+        var resultUrlSmCrop169 = $"https://{_solutionConfiguration.DistributionDomainName}{smCrop169}?signature={hash}";
+        
+        bKey = Encoding.ASCII.GetBytes(mdCrop169);
+        hashValue = hmac.ComputeHash(bKey);
+        hash = Convert.ToHexString(hashValue).ToLower();
+        var resultUrlMdCrop169 = $"https://{_solutionConfiguration.DistributionDomainName}{mdCrop169}?signature={hash}";
+        
+        bKey = Encoding.ASCII.GetBytes(lgCrop169);
+        hashValue = hmac.ComputeHash(bKey);
+        hash = Convert.ToHexString(hashValue).ToLower();
+        var resultUrlLgCrop169 = $"https://{_solutionConfiguration.DistributionDomainName}{lgCrop169}?signature={hash}";
+        
+        bKey = Encoding.ASCII.GetBytes(xlCrop169);
+        hashValue = hmac.ComputeHash(bKey);
+        hash = Convert.ToHexString(hashValue).ToLower();
+        var resultUrlXlCrop169 = $"https://{_solutionConfiguration.DistributionDomainName}{xlCrop169}?signature={hash}";
+        
 
         var resultExpiresAt = DateTime.Now.AddDays(1);
 
         return new ImageGetInfoDto(Url: resultUrlLg, UrlXs: resultUrlXs, UrlSm: resultUrlSm, UrlMd: resultUrlMd,
-            UrlLg: resultUrlLg, UrlXl: resultUrlXl, ExpiresAt: resultExpiresAt, string.Empty);
+            UrlLg: resultUrlLg, UrlXl: resultUrlXl, ExpiresAt: resultExpiresAt, string.Empty,
+            UrlXsCrop169: resultUrlXsCrop169, UrlSmCrop169: resultUrlSmCrop169, UrlMdCrop169: resultUrlMdCrop169,
+            UrlLgCrop169: resultUrlLgCrop169, UrlXlCrop169: resultUrlXlCrop169);
     }
 }

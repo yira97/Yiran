@@ -6,10 +6,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation",
-        "JwtSettings__IssuerKeyPath": "/Users/yiran/yiran/project/github.com/Yiran/Blog.Api/rsa-public-key.pem",
-        "JwtSettings__Issuer": "api.blog.evrane.com",
-        "JwtSettings__Audience": "blog.evrane.com",
-        "ServiceSettings__Blog": "http://localhost:4010",
+        "ServiceSettings__Blog": "https://api.blog.evrane.com",
         "Domain": "Yiran"
       }
     }

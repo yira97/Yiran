@@ -9,12 +9,12 @@
 <div class="h-16"></div>
 <article>
     @* Article Header Begin *@
-    <div class="lg:w-[653px] w-[576px] mx-auto">
+    <div class="max-w-[366px] sm:max-w-full w-5/6 sm:w-[576px] lg:w-[653px]  mx-auto">
         <div class="text-xs font-medium text-gray-500">
             <div>@Model.CategoryInfo.Name</div>
             <div class="mt-1">@Model.Post.CreatedAt.ToString("D")</div>
         </div>
-        <div class="mt-4 text-4xl font-bold">
+        <div class="mt-4 text-3xl font-bold">
             @Model.Post.Title
         </div>
         <div class="mt-4 text-xl font-medium">
@@ -23,8 +23,8 @@
     </div>
     @* Article Header End *@
     @* Article Cover Begin *@
-    <div class="lg:w-[980px] w-[692px] mx-auto my-10">
-        <img class="w-full rounded-lg aspect-[16/9] object-cover" src="@Model.Post.Content.Cover?.GetInfo?.UrlXl"/>
+    <div class="max-w-full sm:w-[366px]  md:w-[600px] lg:w-[980px] mx-auto my-10">
+        <img class="w-full  sm:rounded-lg  object-cover" src="@Model.Post.Content.Cover?.GetInfo?.UrlXl"/>
         <div class="lg:w-[653px] w-[576px] mx-auto text-xs py-4 text-gray-500">
             @Model.Post.Content.Cover?.Caption
         </div>
@@ -33,19 +33,19 @@
     @* Article Content Block Begin *@
     @foreach (var b in Model.Post.Content.Blocks)
     {
-        <div class="lg:w-[980px] w-[692px] mx-auto my-10">
+        <div class="max-w-full sm:w-[576px] md:w-[600px] lg:w-[980px] mx-auto my-10">
             @if (b.Paragraph != null)
             {
-                <div class="lg:w-[653px] w-[576px] mx-auto">
+                <div class="sm:w-[576px] lg:w-[653px]  mx-auto">
                     <p class="text-lg">@b.Paragraph</p>
                 </div>
             }
             else if (b.Code != null)
             {
-                <div class="lg:w-[653px] w-[576px] mx-auto">
+                <div class="sm:w-[576px] lg:w-[653px]  mx-auto">
                     <pre><code class="@CodeSnippetLanguage.GetPrismjsClassName(b.Code.Language)">@b.Code.Content</code></pre>
                 </div>
-                <div class="lg:w-[653px] w-[576px] mx-auto text-xs py-4 text-gray-500">
+                <div class="sm:w-[576px] lg:w-[653px]  mx-auto text-xs py-4 text-gray-500">
                     @b.Code.FileName
                 </div>
             }
@@ -54,8 +54,8 @@
                 if (b.Images.Count() == 1)
                 {
                     var blockImg = b.Images.First();
-                    <img class="w-full rounded-lg aspect-[16/9] object-cover" src="@blockImg.GetInfo?.UrlLg"/>
-                    <div class="lg:w-[653px] w-[576px] mx-auto text-xs py-4 text-gray-500">
+                    <img class="w-full sm:rounded-lg object-cover" src="@blockImg.GetInfo?.UrlLg"/>
+                    <div class="w-full sm:w-[576px] lg:w-[653px] mx-auto text-xs py-4 text-gray-500">
                         @blockImg.Caption
                     </div>
                 }

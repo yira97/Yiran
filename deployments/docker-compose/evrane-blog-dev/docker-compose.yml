@@ -1,13 +1,13 @@
 version: "3.9"
 services:
-  evrane-blog-api-redis:
+  api-redis:
     image: "redis:6-alpine"
     command: "redis-server --save 60 1 --loglevel warning --requirepass ${EVRANE_BLOG_API_REDIS_PASSWORD}"
     ports:
-      - "${EVRANE_BLOG_API_REDIS_PORT}:6379"
+      - "8020:6379"
     volumes:
-      - "evrane-blog-api-redis-volume:/data"
-  evrane-blog-api-server:
+      - "api-redis-volume:/data"
+  api-server:
     build:
       context: "../../.."
       dockerfile: "./Blog.Api/Dockerfile"
@@ -28,27 +28,44 @@ services:
       "AuthSettings__Authority": "${OIDC_AUTHORITY}"
       "AuthSettings__Audience": "${OIDC_AUDIENCE}"
     depends_on: 
-      - evrane-blog-api-redis
-  evrane-blog-admin-server:
+      - api-redis
+    ports:
+      - "8029:8000"
+  admin-server:
     build:
       context: "../../.."
       dockerfile: "./Blog.Admin/Dockerfile"
     environment:
       "ASPNETCORE_URLS": "http://+:8000"
-      "ServiceSettings__Blog": "http://evrane-blog-api-server:8000"
+      "ServiceSettings__Blog": "http://api-server:8000"
       "AuthSettings__Authority": "${OIDC_AUTHORITY}"
       "AuthSettings__ClientId": "${ADMIN_OIDC_CLIENT_ID}"
       "AuthSettings__ClientSecret": "${ADMIN_OIDC_CLIENT_SECRET}"
       "ASPNETCORE_ENVIRONMENT": "Development"
-  evrane-blog-web-1-server:
+    ports:
+      - "8022:8000"
+  web-1-server:
     build:
       context: "../../.."
       dockerfile: "./Blog.Web/Dockerfile"
     environment:
       "ASPNETCORE_URLS": "http://+:8000"
-      "ServiceSettings__Blog": "http://evrane-blog-api-server:8000"
+      "ServiceSettings__Blog": "http://api-server:8000"
       "Domain": "${WEB_1_DOMAIN}"
       "ASPNETCORE_ENVIRONMENT": "Development"
+    ports:
+      - "8023:8000"
+  web-2-server:
+    build:
+      context: "../../.."
+      dockerfile: "./Blog.Web/Dockerfile"
+    environment:
+      "ASPNETCORE_URLS": "http://+:8000"
+      "ServiceSettings__Blog": "http://api-server:8000"
+      "Domain": "${WEB_2_DOMAIN}"
+      "ASPNETCORE_ENVIRONMENT": "Development"
+    ports:
+      - "8024:8000"
   nginx:
     image: nginx:1.23
     ports:
@@ -57,8 +74,9 @@ services:
       - ./nginx.conf:/etc/nginx/nginx.conf
       - ./certs:/etc/nginx/cert
     depends_on:
-      - evrane-blog-api-server
-      - evrane-blog-admin-server
-      - evrane-blog-web-1-server
+      - api-server
+      - admin-server
+      - web-1-server
+      - web-2-server
 volumes:
-  evrane-blog-api-redis-volume:
+  api-redis-volume:

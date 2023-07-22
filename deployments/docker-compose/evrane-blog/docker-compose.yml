@@ -30,7 +30,7 @@ services:
     depends_on: 
       - api-redis
     ports:
-      - "8021:8000"
+      - "8029:8000"
   admin-server:
     build:
       context: "../../.."

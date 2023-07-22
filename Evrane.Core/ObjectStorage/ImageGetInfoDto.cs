@@ -9,5 +9,10 @@ public record ImageGetInfoDto
     string UrlLg,
     string UrlXl,
     DateTime ExpiresAt,
-    string ResourceId
+    string ResourceId,
+    string? UrlXsCrop169 = "",
+    string? UrlSmCrop169 = "",
+    string? UrlMdCrop169 = "",
+    string? UrlLgCrop169 = "",
+    string UrlXlCrop169 = ""
 ) : GetInfo(Url, ExpiresAt, ResourceId);

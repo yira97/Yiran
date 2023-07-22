@@ -77,7 +77,12 @@ public class S3 : IObjectStorageService
             result.Url,
             result.Url,
             result.ExpiresAt,
-            ""
+            "",
+            result.Url,
+            result.Url,
+            result.Url,
+            result.Url,
+            result.Url
         );
     }
 }
