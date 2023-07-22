@@ -29,7 +29,7 @@
                 var large = @Model.Posts.First();
                 <a asp-route-culture="@HttpContext.Request.RouteValues["culture"]" asp-page="/Post/Index" asp-route-PostId="@large?.Id" class="col-span-6 bg-white rounded-xl flex flex-col sm:flex-row overflow-hidden group cursor-pointer">
                     <picture class="sm:basis-[340px] lg:basis-[643px] overflow-hidden bg-black w-full shrink-0">
-                        <img alt="post-cover" class="h-full object-cover scale-100 group-hover:scale-105 ease-in duration-200 opacity-100 group-hover:opacity-80" src="@large?.Content.Cover?.GetInfo?.UrlLgCrop169"/>
+                        <img alt="post-cover" class="object-cover scale-100 group-hover:scale-105 ease-in duration-200 opacity-100 group-hover:opacity-80" src="@large?.Content.Cover?.GetInfo?.UrlLgCrop169"/>
                     </picture>
                     <div class="p-[24px] lg:p-[32px] flex flex-col justify-between grow">
                         <div>
@@ -73,7 +73,7 @@
                             var mCover = medium?.Content.Cover;
                             if (mCover != null)
                             {
-                                <img alt="cover" class="h-full object-cover scale-100 group-hover:scale-105 ease-in duration-200 opacity-100 group-hover:opacity-80" src="@mCover?.GetInfo?.UrlLgCrop169"/>
+                                <img alt="cover" class="object-cover scale-100 group-hover:scale-105 ease-in duration-200 opacity-100 group-hover:opacity-80" src="@mCover?.GetInfo?.UrlLgCrop169"/>
                             }
                             else
                             {
@@ -116,7 +116,7 @@
                             var mCover = small?.Content.Cover;
                             if (mCover != null)
                             {
-                                <img alt="cover" class="h-full object-cover scale-100 group-hover:scale-105 ease-in duration-200 opacity-100 group-hover:opacity-80" src="@mCover?.GetInfo?.UrlMdCrop169"/>
+                                <img alt="cover" class="object-cover scale-100 group-hover:scale-105 ease-in duration-200 opacity-100 group-hover:opacity-80" src="@mCover?.GetInfo?.UrlMdCrop169"/>
                             }
                             else
                             {
