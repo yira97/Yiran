@@ -1,11 +1,13 @@
 ﻿@page
 @using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Blog.Web.Services
 @model IndexModel
 @inject IStringLocalizer<IndexModel> Localizer
+@inject CommonLocalizationService CommonLocalization
 
 @{
     ViewData["Title"] = "Home page";
-
+    
 }
 
 <div class="bg-gray-100 pb-20 z-1">
@@ -17,8 +19,9 @@
         }
         else
         {
+            var currentTopic = Model.Topics.FirstOrDefault(t => t.Id == Model.TopicId);
             <p class="text-xs font-semibold text-gray-500">@Localizer["最新文章"].ToString().ToUpper()</p>
-            <p class="text-3xl font-bold mb-[24px] mt-1">@Model.Topics.FirstOrDefault(t => t.Id == Model.TopicId).Name</p>
+            <p class="text-3xl font-bold mb-[24px] mt-1">@CommonLocalization.Get(currentTopic.Name)</p>
         }
 
         <div class="grid grid-cols-6 gap-10">

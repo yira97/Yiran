@@ -212,4 +212,19 @@
     <data name="密码" xml:space="preserve">
         <value>Password</value>
     </data>
+    <data name="日常（Topic）" xml:space="preserve">
+        <value>Daily Life</value>
+    </data>
+    <data name="游戏（Topic）" xml:space="preserve">
+        <value>Game</value>
+    </data>
+    <data name="想法（Category）" xml:space="preserve">
+        <value>Thinking</value>
+    </data>
+    <data name="话题筛选（Nav）" xml:space="preserve">
+        <value>Select Topic</value>
+    </data>
+    <data name="搜索（Nav）" xml:space="preserve">
+        <value>Search {0}</value>
+    </data>
 </root>

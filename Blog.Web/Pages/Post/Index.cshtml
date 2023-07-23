@@ -1,9 +1,12 @@
 @page "{PostId}"
 @using Blog.Domain.Enums
+@using Blog.Web.Services
 @model Blog.Web.Pages.Post.Index
+@inject CommonLocalizationService CommonLocalization
 
 @{
     Layout = "_Layout";
+    var localizedCategoryName = @CommonLocalization.Get(Model.CategoryInfo.Name);
 }
 
 <div class="h-16"></div>
@@ -11,7 +14,7 @@
     @* Article Header Begin *@
     <div class="max-w-[366px] sm:max-w-full w-5/6 sm:w-[576px] lg:w-[653px]  mx-auto">
         <div class="text-xs font-medium text-gray-500">
-            <div>@Model.CategoryInfo.Name</div>
+            <div>@localizedCategoryName</div>
             <div class="mt-1">@Model.Post.CreatedAt.ToString("D")</div>
         </div>
         <div class="mt-4 text-3xl font-bold">

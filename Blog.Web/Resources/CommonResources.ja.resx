@@ -21,4 +21,22 @@
     <data name="热门话题" xml:space="preserve">
         <value>人気のトピックス</value>
     </data>
+    <data name="想法（Category）" xml:space="preserve">
+        <value>かんがえ</value>
+    </data>
+    <data name="搜索（Nav）" xml:space="preserve">
+        <value>{0}検索</value>
+    </data>
+    <data name="日常（Topic）" xml:space="preserve">
+        <value>日常</value>
+    </data>
+    <data name="游戏（Topic）" xml:space="preserve">
+        <value>ゲーム</value>
+    </data>
+    <data name="话题筛选（Nav）" xml:space="preserve">
+        <value>トピックス選択</value>
+    </data>
+    <data name="计算机编程（Category）" xml:space="preserve">
+        <value>プログラミング</value>
+    </data>
 </root>
