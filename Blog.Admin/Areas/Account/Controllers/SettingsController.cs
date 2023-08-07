@@ -1,4 +1,6 @@
+using System.Globalization;
 using Blog.Admin.Areas.Account.VIewModels.Settings;
+using Blog.Admin.Helper;
 using Blog.Admin.Models;
 using Blog.Domain.Models;
 using Blog.Domain.Services.Client;
@@ -54,5 +56,20 @@ public class SettingsController : Controller
         });
 
         return View(vm);
+    }
+    
+    [HttpPost]
+    public IActionResult UpdateLanguage(UpdateLanguageViewModel vm)
+    {
+        var input = vm.FormInput;
+        CookieHelper.WriteCultureToCookie(HttpContext, new CultureInfo(input.Language));
+        return RedirectToAction("Index", "Settings", new { Area = "Account" });
+    }
+    
+    [HttpGet]
+    public IActionResult EditorAccounts()
+    {
+        // TODO: 
+        return RedirectToAction("Index", "Settings", new { Area = "Account" });
     }
 }
