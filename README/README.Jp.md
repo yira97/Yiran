@@ -2,10 +2,8 @@
 
 これは私が余暇に開発したブログシステムで、管理者向けのブログバックエンドシステムと訪問者向けのフロントエンドシステムから構成されています。プロジェクトは伝統的なサーバーサイドレンダリングモデルを採用していますが、フロントエンドとバックエンドの分離されたプロジェクト構造を特徴としています。両方のウェブシステムは、データベースやビジネスロジックに触れることなく、RESTful APIを使用してAPIサービスにアクセスします。
 
-次の言語でこの文書を閲覧してください:
-- [中文](../README.md)
-- [English](./README.En.md)
-- 日本語
+*次の言語でこの文書を閲覧してください:*  
+[🇨🇳中文](../README.md) [🇬🇧English](./README.En.md) 🇯🇵日本語
 ## 使用された技術
 
 - [Tailwind CSS](https://tailwindcss.com)
@@ -121,5 +119,5 @@ deployments/kubernetesディ
 
 ## 動画
 
-- [AWS Serverless Image Handler Deployment Tutorial](https://www.youtube.com/watch?v=ZpnQLg4Co9A)
+- [AWS Serverless Image Handler デプロイ手順](https://www.youtube.com/watch?v=ZpnQLg4Co9A)
 - [プロジェクトの紹介](https://www.youtube.com/watch?v=N76b9gZ28D8)
