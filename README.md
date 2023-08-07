@@ -117,6 +117,6 @@
 
 ## 视频
 
-[AWS Serverless Image Handler 部署教程](https://www.youtube.com/watch?v=ZpnQLg4Co9A)
-[项目介绍](https://www.youtube.com/watch?v=N76b9gZ28D8)
+- [AWS Serverless Image Handler 部署教程](https://www.youtube.com/watch?v=ZpnQLg4Co9A)
+- [项目介绍](https://www.youtube.com/watch?v=N76b9gZ28D8)
 
