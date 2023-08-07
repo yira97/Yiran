@@ -3,7 +3,7 @@
 This is a blog system that I developed in my spare time, consisting of an admin-oriented blog backend system and a visitor-oriented frontend system. Though the project adopts the traditional server-side rendering model, it features a separated frontend and backend project structure. Both web systems use RESTful APIs to access API services without touching the database or business logic.
 
 View this document in the following languages:
-- [Chinese](../README.md)
+- [中文](../README.md)
 - English
 - [日本語](./README.Jp.md)
 
