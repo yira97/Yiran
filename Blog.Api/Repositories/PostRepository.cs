@@ -72,7 +72,8 @@ public class PostRepository : IPostRepository
         var query = _context.Posts.Where(p => p.DeletedAt == null);
 
         DateTime? createdAtOrderCreatedAt = null;
-        DateTime? previousPosition = null;
+        
+        var createdAtOrderCreatedAtKey = "createdAt";
 
         // 排序
         switch ((PostOrderBy)order.OrderBy)
@@ -80,7 +81,7 @@ public class PostRepository : IPostRepository
             case PostOrderBy.CreatedAt:
                 query = order.Ascending ? query.OrderBy(e => e.CreatedAt) : query.OrderByDescending(e => e.CreatedAt);
 
-                var createdAtOrderCreatedAtKey = nameof(PostOrderBy.CreatedAt);
+                
 
                 try
                 {
@@ -88,14 +89,10 @@ public class PostRepository : IPostRepository
                     {
                         var m = PageTokenHelper.ToDict(order.PageToken);
                         createdAtOrderCreatedAt = DateTime.Parse(m[createdAtOrderCreatedAtKey]).ToUniversalTime();
-                        if (m.TryGetValue("prev", out var prevPosStr))
-                        {
-                            previousPosition = DateTime.Parse(prevPosStr).ToUniversalTime();
-                        }
 
                         _logger.LogDebug(
-                            "parse page token success: pageToken = {PageToken}, createdAtOrderCreatedAt = {CreatedAtOrderCreatedAt}, previousPosition = {PreviousPosition}",
-                            order.PageToken, createdAtOrderCreatedAt, previousPosition);
+                            "parse page token success: pageToken = {PageToken}, createdAtOrderCreatedAt = {CreatedAtOrderCreatedAt}",
+                            order.PageToken, createdAtOrderCreatedAt);
                     }
                 }
                 catch (Exception e)
@@ -177,11 +174,42 @@ public class PostRepository : IPostRepository
 
         var returnList = queryResult.Take(order.PageSize).Select(e => e.PostDto()).ToList();
 
+        String? prevPageIndex = null;
+        var prevQuery = _context.Posts.Where(p => p.DeletedAt == null);
+        switch (order.OrderBy)
+        {
+            case (int)PostOrderBy.CreatedAt:
+                if (createdAtOrderCreatedAt != null)
+                {
+                    
+                    prevQuery = order.Ascending ?  prevQuery.OrderByDescending(e => e.CreatedAt) : prevQuery.OrderBy(e => e.CreatedAt);
+                    
+                    prevQuery = prevQuery.Where(e =>
+                        order.Ascending
+                            ? e.CreatedAt < createdAtOrderCreatedAt
+                            : e.CreatedAt > createdAtOrderCreatedAt
+                    );
+
+                    prevQuery = prevQuery.Take(order.PageSize);
+
+                    var prevList = prevQuery.ToListAsync();
+                    
+                    if (prevList.Result.Count > 0)
+                    {
+                        var prev = prevList.Result.Last();
+                        prevPageIndex = prev.CreatedAt.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss.fffffff");
+                    }
+
+                   
+                }
+                break;
+        }
+        
         var result = new CursorBasedQueryResult<PostDto>
         {
             Data = returnList,
             HasNext = queryResult.Count > order.PageSize,
-            HasPrevious = previousPosition != null,
+            HasPrevious = prevPageIndex != null,
         };
 
         if (result.HasNext)
@@ -192,12 +220,8 @@ public class PostRepository : IPostRepository
                 PostOrderBy.CreatedAt => PageTokenHelper.FromDict(new Dictionary<string, string>
                 {
                     {
-                        nameof(PostOrderBy.CreatedAt),
+                        createdAtOrderCreatedAtKey,
                         next.CreatedAt.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss.fffffff")
-                    },
-                    {
-                        "prev",
-                        queryResult.First().CreatedAt.ToString("yyyy-MM-dd HH:mm:ss.fffffff")
                     }
                 }),
             };
@@ -210,8 +234,8 @@ public class PostRepository : IPostRepository
                 PostOrderBy.CreatedAt => PageTokenHelper.FromDict(new Dictionary<string, string>
                 {
                     {
-                        nameof(PostOrderBy.CreatedAt),
-                        previousPosition.Value.ToString("yyyy-MM-dd HH:mm:ss.fffffff")
+                        createdAtOrderCreatedAtKey,
+                        prevPageIndex
                     },
                 }),
             };
