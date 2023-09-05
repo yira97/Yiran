@@ -81,8 +81,6 @@ public class PostRepository : IPostRepository
             case PostOrderBy.CreatedAt:
                 query = order.Ascending ? query.OrderBy(e => e.CreatedAt) : query.OrderByDescending(e => e.CreatedAt);
 
-                
-
                 try
                 {
                     if (!string.IsNullOrEmpty(order.PageToken))
@@ -176,6 +174,42 @@ public class PostRepository : IPostRepository
 
         String? prevPageIndex = null;
         var prevQuery = _context.Posts.Where(p => p.DeletedAt == null);
+        
+        // 筛选
+        foreach (var (key, value) in order.Filter)
+        {
+            var filterKey = (PostFilterKey)key;
+            var count = value.Count;
+
+            switch (filterKey)
+            {
+                case PostFilterKey.DomainId:
+                    // 长度范围： 等于1
+                    if (count != 1) throw new BadHttpRequestException("length invalid");
+                    prevQuery = prevQuery.Where(p => p.DomainId == value[0]);
+                    break;
+                case PostFilterKey.PublicOnly:
+                    // 长度范围： 等于1
+                    if (count != 1) throw new BadHttpRequestException("length invalid");
+                    prevQuery = prevQuery.Where(p => p.isPublic == true);
+                    break;
+                case PostFilterKey.Topic:
+                    // 长度范围： 等于1
+                    if (count != 1) throw new BadHttpRequestException("length invalid");
+                    var topic = value[0];
+                    prevQuery = prevQuery.Where(p => p.Topic == topic);
+                    break;
+                case PostFilterKey.Category:
+                    // 长度范围： 等于1
+                    if (count != 1) throw new BadHttpRequestException("length invalid");
+                    var category = value[0];
+                    prevQuery = prevQuery.Where(p => p.Category == category);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+        
         switch (order.OrderBy)
         {
             case (int)PostOrderBy.CreatedAt:
